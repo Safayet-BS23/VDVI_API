@@ -1,14 +1,14 @@
 ﻿using CSharpFunctionalExtensions;
 using Framework.Core.Base.ModelEntity;
 using Framework.Core.Exceptions;
-using Framework.Core.Utility; 
+using Framework.Core.Utility;
 using SOAPService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VDVI.DB.Dtos;
-using VDVI.Services.Interfaces; 
+using VDVI.Services.Interfaces;
 
 namespace VDVI.Services
 {
@@ -27,8 +27,7 @@ namespace VDVI.Services
         }
 
         public async Task<Result<PrometheusResponse>> ReportManagementSummaryAsync(DateTime StartDate, DateTime EndDate)
-        {
-
+        { 
             return await TryCatchExtension.ExecuteAndHandleErrorAsync(
                 async () =>
                 {
@@ -37,18 +36,28 @@ namespace VDVI.Services
                     List<ReservationDashboardRoomSummaryHistoryDto> roomSummaries = new List<ReservationDashboardRoomSummaryHistoryDto>();
                     List<LedgerBalanceHistoryDto> ledgerBalances = new List<LedgerBalanceHistoryDto>();
 
-                    foreach (string property in ApmaProperties)
+                    for (int i = 0; i < ApmaProperties.Length; i++)
                     {
-                        var res = await client.HcsReportManagementSummaryAsync(pmsAuthentication, PropertyCode: property, StartDate: StartDate, EndDate: EndDate, "");
+                        var propertyCode = ApmaProperties[i];
+                        var res = await client.HcsReportManagementSummaryAsync(pmsAuthentication, PropertyCode: propertyCode, StartDate: StartDate, EndDate: EndDate, "");
 
                         List<ManagementSummary> managementSummary = res.HcsReportManagementSummaryResult.ManagementSummaries.ToList();
 
-                        FormatSummaryObject(roomSummaries, ledgerBalances, managementSummary, property);
+                       if(managementSummary.Count>0)
+                            FormatSummaryObject(roomSummaries, ledgerBalances, managementSummary, propertyCode);
                     }
 
 
-                    var dbroomSummariesRes = _hcsroomSummaryService.BulkInsertWithProcAsync(roomSummaries);
-                    var dbledgerBalancesRes = _hcsLedgerBalanceService.BulkInsertWithProcAsync(ledgerBalances);
+                    if (roomSummaries.Count > 0) 
+                    { 
+                        await _hcsroomSummaryService.BulkInsertWithProcAsync(roomSummaries);
+                        roomSummaries.Clear();
+                    }
+                    if (ledgerBalances.Count > 0)
+                    {
+                        await _hcsLedgerBalanceService.BulkInsertWithProcAsync(ledgerBalances);
+                        ledgerBalances.Clear();
+                    } 
 
                     return PrometheusResponse.Success("", "Data retrieval is successful");
                 },
@@ -96,7 +105,7 @@ namespace VDVI.Services
                 LodgingTurnover = x.LedgerBalance.LodgingTurnover,
                 PaymentsDebitor = x.LedgerBalance.PaymentsDebitor,
                 PaymentsCash = x.LedgerBalance.PaymentsCash,
-                CityLedger = x.LedgerBalance.CityLedger   
+                CityLedger = x.LedgerBalance.CityLedger
 
             }).ToList();
 

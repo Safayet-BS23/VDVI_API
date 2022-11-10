@@ -87,40 +87,39 @@ namespace VDVI.Services.APMA
                 var scheduler = new1[i];
 
                 // LastBusinessDate marked to NextExecutionDate 
-                if (scheduler.LastBusinessDate != null)
-                    scheduler.LastBusinessDate = ((DateTime)scheduler.LastBusinessDate).AddDays(1);
+                //if (scheduler.LastBusinessDate != null)
+                //    scheduler.LastBusinessDate = ((DateTime)scheduler.LastBusinessDate).AddDays(1);
 
                 if (
-                     (scheduler.NextExecutionDateTime == null || scheduler.NextExecutionDateTime <= currentDateTime)
+                     scheduler.NextExecutionDateTime <= currentDateTime
                      &&
-                     (
+                     (   scheduler.LastBusinessDate == null // for Initial Load Data
+                         ||
                          (scheduler.isFuture == false && scheduler.LastBusinessDate.Value.Date < currentDateTime.Date) // for History Condition
                          ||
-                         (scheduler.isFuture == true && (scheduler.LastBusinessDate == null || scheduler.LastBusinessDate.Value.Date <= currentDateTime.Date)) // for Future Condition
+                         (scheduler.isFuture == true &&  scheduler.LastBusinessDate.Value.Date <= currentDateTime.Date) // for Future Condition
                      )
                   )
                 {
                     //History
                     if (scheduler.isFuture == false
-                        && scheduler.NextExecutionDateTime == null)
+                        && scheduler.LastBusinessDate == null)
                     {
                         _startDate = (DateTime)scheduler.BusinessStartDate;
                         _endDate = _startDate.AddDays(scheduler.DaysLimit);
                     }
                     else if (scheduler.isFuture == false
-                        && scheduler.NextExecutionDateTime != null)
+                        && scheduler.LastBusinessDate != null)
                     {
                         _startDate = ((DateTime)scheduler.LastBusinessDate);
                         _endDate = _startDate.AddDays(scheduler.DaysLimit);
                     }
 
                     // for future Method
-                    else if (scheduler.isFuture && scheduler.NextExecutionDateTime == null)
+                    else if (scheduler.isFuture && scheduler.LastBusinessDate == null)
                         _startDate = new DateTime(currentDateTime.Year, currentDateTime.Month, currentDateTime.Day, 0, 0, 0);
 
-                    else if (scheduler.isFuture && scheduler.NextExecutionDateTime != null)
-                        _startDate = (DateTime)scheduler.NextExecutionDateTime;
-
+                
                     if (_endDate >= currentDateTime) _endDate = currentDateTime.AddDays(-1); // if endDate cross the CurrentDate; then endDate would be change 
 
                     if (_endDate.Date < _startDate.Date) _endDate = _startDate;
@@ -181,10 +180,11 @@ namespace VDVI.Services.APMA
 
                         default:
                             break;
+                    
                     }
                     DateTime? dateTime = null;
-                    dtos.LastExecutionDateTime = DateTime.UtcNow;
-                    dtos.NextExecutionDateTime = DateTime.UtcNow.AddMinutes(scheduler.ExecutionIntervalMins);
+                    dtos.LastExecutionDateTime = currentDateTime;
+                    dtos.NextExecutionDateTime = scheduler.NextExecutionDateTime.Value.AddMinutes(scheduler.ExecutionIntervalMins); //NextExecutionDateTime=NextExecutionDateTime+ExecutionIntervalMins
                     dtos.LastBusinessDate = scheduler.isFuture == false ? _endDate.Date : dateTime; //_Future does not need LastBusinessDate, because tartingpoint is always To
                     dtos.SchedulerName = scheduler.SchedulerName;
 

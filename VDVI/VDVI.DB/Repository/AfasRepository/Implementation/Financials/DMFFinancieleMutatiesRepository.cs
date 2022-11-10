@@ -56,23 +56,30 @@ namespace VDVI.Repository.AfasRepository.Implementation
 
             return dto;
         }
-        public async Task<string> BulkInsertWithProcAsync(IEnumerable<DMFFinancieleMutatiesDto> dto, bool isInitial)
+        public async Task<string> BulkInsertWithProcAsync(IEnumerable<DMFFinancieleMutatiesDto> dto)
         {
             DataTable dt = JsonConvert.DeserializeObject<DataTable>(JsonConvert.SerializeObject(dto));
             var queryResult = await _dbContext.Connection.QueryAsync<string>("spINSERT_dmf_Financiele_Mutaties",
                 new
                 {
 
-                    Financiele_Mutaties_UDT = dt,
-                    IsInitial=  isInitial
+                    Financiele_Mutaties_UDT = dt
                 }, commandType: CommandType.StoredProcedure);
             return queryResult.ToString();
         }
 
-        public async Task<MutationDto> GetInitialRecordAndLastRecordDatetime()
+        public async Task<string> BulkInsertWithBoekingsdagenMutatiesAsync(IEnumerable<DMFFinancieleMutatiesDto> dto)
         {
-            var obj = await _dbContext.Connection.QueryFirstAsync<MutationDto>("spGet_FinancialMutationRecordCheckAndLastBusinessDate", commandType: CommandType.StoredProcedure);
-            return obj;
+            DataTable dt = JsonConvert.DeserializeObject<DataTable>(JsonConvert.SerializeObject(dto));
+            var queryResult = await _dbContext.Connection.QueryAsync<string>("spINSERT_dmf_Financiele_Boekingsdagen_Mutaties",
+                new
+                { 
+                    Financiele_Mutaties_UDT = dt
+                }, commandType: CommandType.StoredProcedure);
+            return queryResult.ToString();
         }
+
+        
+
     }
 }

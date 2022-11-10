@@ -9,7 +9,7 @@ using Serilog;
 using System;
 using Unity;
 using VDVI.Client.IoC;
-using VDVI.Services;
+using VDVI.Services.Configurations;
 using VDVI.Services.Interfaces.AFAS;
 using VDVI.Services.Interfaces.APMA;
 using StartupBase = Framework.Core.Base.Startup.StartupBase;
@@ -24,8 +24,14 @@ namespace VDVI
         // This method gets called by the runtime. Use this method to add services to the container.
         public override void ConfigureServices(IServiceCollection services )
         {
-            base.ConfigureServices(services); 
+            base.ConfigureServices(services);
 
+
+            // Add Afas Configuration
+            services.AddAfasConfig(Configuration);
+
+            // Add Scheduler Log config
+            services.AddSchedulerLogConfig(Configuration, "SchedulerLog");
 
             //Hangfire
             services.AddHangfire(config =>

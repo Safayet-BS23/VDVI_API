@@ -1,13 +1,15 @@
 ﻿using CSharpFunctionalExtensions;
+using DutchGrit.Afas;
 using Framework.Core.Base.ModelEntity;
 using Framework.Core.Exceptions;
+using Framework.Core.Extensions;
 using Framework.Core.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VDVI.Repository.AfasDtos;
-using VDVI.Repository.AfasModels;
+using VDVI.Repository.Dtos.AfasDtos.AfasCommonDtos;
 using VDVI.Services.AfasInterfaces;
 using VDVI.Services.Services.BaseService;
 
@@ -16,7 +18,11 @@ namespace VDVI.Services.AfasServices
     public class DmfGrootboekrekeningensService : AfasBaseService, IdmfGrootboekrekeningen
     {
         private readonly IdmfGrootboekrekeningenService _dmfGrootboekrekeningenService;
-        public DmfGrootboekrekeningensService(IdmfGrootboekrekeningenService dmfGrootboekrekeningenService)
+        public DmfGrootboekrekeningensService
+            (
+                IdmfGrootboekrekeningenService dmfGrootboekrekeningenService,
+                AfasCrenditalsDto afasCrenditalsDto
+            ) : base (afasCrenditalsDto)
         {
             _dmfGrootboekrekeningenService = dmfGrootboekrekeningenService;
         }        
@@ -26,16 +32,13 @@ namespace VDVI.Services.AfasServices
                 async () =>
                 {
                     List<DMFGrootboekrekeningenDto> dto = new List<DMFGrootboekrekeningenDto>();
-                    var getConnector = GetAfmaConnectors();
 
                     //Netherlands (=Dutch)=aa  | Spain =ac| Bonaire =ad | Belgium=ae
-                    var _aa = await getConnector.clientAA.Query<DMFGrootboekrekeningenDto>().Skip(-1).Take(-1).OrderBy(x => x.Rekeningnummer).GetAsync();
-                    var _ac = await getConnector.clientAC.Query<DMFGrootboekrekeningenDto>().Skip(-1).Take(-1).OrderBy(x => x.Rekeningnummer).GetAsync();
-                    var _ad = await getConnector.clientAD.Query<DMFGrootboekrekeningenDto>().Skip(-1).Take(-1).OrderBy(x => x.Rekeningnummer).GetAsync();
-                    var _ae = await getConnector.clientAE.Query<DMFGrootboekrekeningenDto>().Skip(-1).Take(-1).OrderBy(x => x.Rekeningnummer).GetAsync();
 
-                    //Format data
-                    FormatSummaryObject(_aa.ToList(), _ac.ToList(), _ad.ToList(), _ae.ToList(), dto);
+                    dto.AddRange(await GetDMFGrootboekrekeningenAsync(AfasClients.clientAA, p => true, "AA"));
+                    dto.AddRange(await GetDMFGrootboekrekeningenAsync(AfasClients.clientAC, p => true, "AC"));
+                    dto.AddRange(await GetDMFGrootboekrekeningenAsync(AfasClients.clientAD, p => true, "AD"));
+                    dto.AddRange(await GetDMFGrootboekrekeningenAsync(AfasClients.clientAE, p => true, "AE"));
 
 
                     // DB operation
@@ -54,19 +57,13 @@ namespace VDVI.Services.AfasServices
             );
         }
 
-        private void FormatSummaryObject(List<DMFGrootboekrekeningenDto> aa, List<DMFGrootboekrekeningenDto> ac, List<DMFGrootboekrekeningenDto> ad, List<DMFGrootboekrekeningenDto> ae, List<DMFGrootboekrekeningenDto> dto)
+        private async Task<List<DMFGrootboekrekeningenDto>> GetDMFGrootboekrekeningenAsync(AfasClient Client, Func<DMFGrootboekrekeningenDto, bool> predicate, string environmentCode)
         {
-            aa.ForEach(a => a.Omgeving_code = "AA");
-            dto.AddRange(aa);
+            var result = (await Client.Query<DMFGrootboekrekeningenDto>().Skip(-1).Take(-1).OrderBy(x => x.Rekeningnummer).GetAsync()).Where(predicate).ToList();
+            if (result.Count > 0)
+                return result.FormatList(x => x.Omgeving_code, environmentCode);
 
-            ac.ForEach(a => a.Omgeving_code = "AC");
-            dto.AddRange(ac);
-
-            ad.ForEach(a => a.Omgeving_code = "AD");
-            dto.AddRange(ad);
-
-            ae.ForEach(a => a.Omgeving_code = "AE");
-            dto.AddRange(ae); 
+            return new List<DMFGrootboekrekeningenDto>();
         }
 
     }

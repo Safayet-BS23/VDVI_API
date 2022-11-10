@@ -24,7 +24,7 @@ namespace VDVI.Services
             _hcsDailyHistoryService = hcsDailyHistoryService;
         }
         public async Task<Result<PrometheusResponse>> HcsGetDailyHistoryAsyc(DateTime StartDate, DateTime EndDate)
-        {
+        {            
             return await TryCatchExtension.ExecuteAndHandleErrorAsync(
                  async () =>
                  {
@@ -33,21 +33,19 @@ namespace VDVI.Services
                      List<DailyHistoryDto> dto = new List<DailyHistoryDto>();
                      HcsGetDailyHistoryResponse res = new HcsGetDailyHistoryResponse();
 
-                     for (int i = 0; i < ApmaProperties.Length; i++)
-                     {
-                         var propertyCode = ApmaProperties[i];
-                         int x = 0;
+                 for (int i = 0; i < ApmaProperties.Length; i++)
+                 {
+                     var propertyCode =ApmaProperties[i];
                          res = await client.HcsGetDailyHistoryAsync(pmsAuthentication, PropertyCode: propertyCode, StartDate: StartDate, EndDate: EndDate, "", 100, 1, "");
-                         do
+
+                         for (int j = 1; j <= res.HcsGetDailyHistoryResult.TotalPages; j++)
                          {
-                             var dailyHistoryList = res.HcsGetDailyHistoryResult.DailyHistories.ToList();
-                             FormatSummaryObject(dto, dailyHistoryList, propertyCode);
-                             x++;
-                         } while (x < res.HcsGetDailyHistoryResult.TotalPages);
+                             var dailyHistoryList=client.HcsGetDailyHistoryAsync(pmsAuthentication, PropertyCode: propertyCode, StartDate: StartDate, EndDate: EndDate, "", 100, j, "").Result.HcsGetDailyHistoryResult.DailyHistories.ToList();
+                             if (dailyHistoryList.Count > 0) FormatSummaryObject(dto, dailyHistoryList, propertyCode);
+                         }
+                         var result = _hcsDailyHistoryService.BulkInsertWithProcAsync(dto);
+                         dto.Clear();
                      }
-
-                     var result = _hcsDailyHistoryService.BulkInsertWithProcAsync(dto);
-
                      return PrometheusResponse.Success("", "Data retrieval is successful");
                  },
                  exception => new TryCatchExtensionResult<Result<PrometheusResponse>>
@@ -58,44 +56,48 @@ namespace VDVI.Services
         }
         private void FormatSummaryObject(List<DailyHistoryDto> sourceStatDtos, List<DailyHistory> dailyHistoryList, string propertyCode)
         {
-            List<DailyHistoryDto> sourceStatz = dailyHistoryList.Select(x => new DailyHistoryDto()
+            if (dailyHistoryList.Count > 0)
             {
-                PropertyCode = propertyCode,
-                Date = x.Date,
-                PmsSegmentNumber = x.PmsSegmentNumber,
-                PmsSegmentType = x.PmsSegmentType,
-                RoomType = x.RoomType,
-                Source = x.Source,
-                SubSource = x.SubSource,
-                RateType = x.RateType,
-                Mealplan = x.Mealplan,
-                Package = x.Package,
-                CountryIso2Code = x.CountryIso2Code,
-                PaymentDebitor = x.PaymentDebitor,
-                PaymentNonDebitor = x.PaymentNonDebitor,
-                Adults = x.Adults,
-                Children = x.Children,
-                Infants = x.Infants,
-                IsDayuse = x.IsDayuse,
+                List<DailyHistoryDto> sourceStatz = dailyHistoryList.Select(x => new DailyHistoryDto()
+                {
+                    PropertyCode = propertyCode,
+                    Date = x.Date,
+                    PmsSegmentNumber = x.PmsSegmentNumber,
+                    PmsSegmentType = x.PmsSegmentType,
+                    RoomType = x.RoomType,
+                    Source = x.Source,
+                    SubSource = x.SubSource,
+                    RateType = x.RateType,
+                    Mealplan = x.Mealplan,
+                    Package = x.Package,
+                    CountryIso2Code = x.CountryIso2Code,
+                    PaymentDebitor = x.PaymentDebitor,
+                    PaymentNonDebitor = x.PaymentNonDebitor,
+                    Adults = x.Adults,
+                    Children = x.Children,
+                    Infants = x.Infants,
+                    IsDayuse = x.IsDayuse,
 
-                RevenueInclusiveA = x.RevenuesInclusive.RevenueA,
-                RevenueInclusiveB = x.RevenuesInclusive.RevenueB,
-                RevenueInclusiveC = x.RevenuesInclusive.RevenueC,
-                RevenueInclusiveD = x.RevenuesInclusive.RevenueD,
-                RevenueInclusiveE = x.RevenuesInclusive.RevenueE,
-                RevenueInclusiveF = x.RevenuesInclusive.RevenueF,
-                RevenueInclusiveUndefined = x.RevenuesInclusive.RevenueUndefined,
+                    RevenueInclusiveA = x.RevenuesInclusive.RevenueA,
+                    RevenueInclusiveB = x.RevenuesInclusive.RevenueB,
+                    RevenueInclusiveC = x.RevenuesInclusive.RevenueC,
+                    RevenueInclusiveD = x.RevenuesInclusive.RevenueD,
+                    RevenueInclusiveE = x.RevenuesInclusive.RevenueE,
+                    RevenueInclusiveF = x.RevenuesInclusive.RevenueF,
+                    RevenueInclusiveUndefined = x.RevenuesInclusive.RevenueUndefined,
 
-                RevenueExclusiveA = x.RevenuesExclusive.RevenueA,
-                RevenueExclusiveB = x.RevenuesExclusive.RevenueB,
-                RevenueExclusiveC = x.RevenuesExclusive.RevenueC,
-                RevenueExclusiveD = x.RevenuesExclusive.RevenueD,
-                RevenueExclusiveE = x.RevenuesExclusive.RevenueE,
-                RevenueExclusiveF = x.RevenuesExclusive.RevenueF,
-                RevenueExclusiveUndefined = x.RevenuesExclusive.RevenueUndefined
+                    RevenueExclusiveA = x.RevenuesExclusive.RevenueA,
+                    RevenueExclusiveB = x.RevenuesExclusive.RevenueB,
+                    RevenueExclusiveC = x.RevenuesExclusive.RevenueC,
+                    RevenueExclusiveD = x.RevenuesExclusive.RevenueD,
+                    RevenueExclusiveE = x.RevenuesExclusive.RevenueE,
+                    RevenueExclusiveF = x.RevenuesExclusive.RevenueF,
+                    RevenueExclusiveUndefined = x.RevenuesExclusive.RevenueUndefined
 
-            }).ToList();
-            sourceStatDtos.AddRange(sourceStatz);
+                }).ToList();
+                sourceStatDtos.AddRange(sourceStatz);
+            }
+
         }
 
     }

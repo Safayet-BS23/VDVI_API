@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Threading.Tasks;
-using VDVI.DB.Dtos;
+using System.Threading.Tasks; 
 using VDVI.Services.Interfaces;
+using static Framework.Constants.Constants;
 
-namespace VDVI.Client.Controllers.ApmaControllers
+namespace VDVI.Client.ApmaControllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -17,10 +17,10 @@ namespace VDVI.Client.Controllers.ApmaControllers
         }
 
 
-        [HttpGet("PostReportManagement")]
-        public async Task<IActionResult> PostReportManagement()
-        {
-            var response = await _hcsBISourceStatisticsService.ReportManagementSummaryAsync(Convert.ToDateTime("2018/01/01"), Convert.ToDateTime("2018/06/01"));
+        [HttpPost("HcsReportManagementSummary")]
+        public async Task<IActionResult> HcsReportManagementSummary(DateTime startDate,DateTime endDate)
+        {            
+            var response = await _hcsBISourceStatisticsService.ReportManagementSummaryAsync(startDate, endDate);
 
             return Ok(response);
         }

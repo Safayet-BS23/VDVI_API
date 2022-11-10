@@ -10,6 +10,6 @@ namespace VDVI.Services.AfasInterfaces
 {
     public interface IdmfBoekingsdagenMutatiesService 
     {
-        Task<Result<PrometheusResponse>> DmfBoekingsdagenMutatiesServiceAsync(DateTime startDate);
+        Task<Result<PrometheusResponse>> DmfBoekingsdagenMutatiesServiceAsync();
     }
 }

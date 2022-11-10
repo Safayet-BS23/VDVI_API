@@ -1,6 +1,7 @@
 ﻿using CSharpFunctionalExtensions;
 using Framework.Core.Base.ModelEntity;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 using System;
@@ -8,6 +9,7 @@ using System.Globalization;
 using System.Linq;
 using System.Security.Policy;
 using System.Threading.Tasks;
+using VDVI.Repository.Models;
 using VDVI.Repository.Models.AfasModels.Dto;
 using VDVI.Services.AfasInterfaces;
 using VDVI.Services.Interfaces.AFAS;
@@ -23,21 +25,22 @@ namespace VDVI.Services.AFAS
         private readonly IdmfBeginbalaniesService _idmfBeginbalaniesService;
         private readonly IdmfGrootboekrekeningen _idmfGrootboekrekeningen;
         private readonly IdmfFinancieleMutatiesService _idmfFinancieleMutatiesService;
-        private readonly IdmfBoekingsdagenMutatiesService _idmfBoekingsdagenMutatiesService; 
+        private readonly IdmfBoekingsdagenMutatiesService _idmfBoekingsdagenMutatiesService;
 
-        
-        IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
-        public IConfiguration _config;
+
+        private readonly SchedulerLog schedulerLog;
 
         AfasSchedulerSetupDto dtos = new AfasSchedulerSetupDto();
         public AfasTaskSchedulerService(IAfasSchedulerSetupService afasschedulerSetupService,
-            IdmfAdministratiesService idmfAdministratiesService,
-            IdmfBeginbalaniesService idmfBeginbalaniesService,
-            IAfasSchedulerLogService afasSchedulerLogService,
-            IAfasSchedulerSetupService afasSchedulerSetupService,
-            IdmfGrootboekrekeningen idmfGrootboekrekeningen,
-            IdmfFinancieleMutatiesService idmfFinancieleMutatiesService,
-            IdmfBoekingsdagenMutatiesService idmfBoekingsdagenMutatiesService)
+                IdmfAdministratiesService idmfAdministratiesService,
+                IdmfBeginbalaniesService idmfBeginbalaniesService,
+                IAfasSchedulerLogService afasSchedulerLogService,
+                IAfasSchedulerSetupService afasSchedulerSetupService,
+                IdmfGrootboekrekeningen idmfGrootboekrekeningen,
+                IdmfFinancieleMutatiesService idmfFinancieleMutatiesService,
+                IdmfBoekingsdagenMutatiesService idmfBoekingsdagenMutatiesService,
+                IOptions<SchedulerLog> schedulerLogOptions
+            )
         {
             _afasschedulerSetupService = afasschedulerSetupService;
             _idmfAdministratiesService = idmfAdministratiesService;
@@ -48,8 +51,7 @@ namespace VDVI.Services.AFAS
             _idmfFinancieleMutatiesService = idmfFinancieleMutatiesService;
             _idmfBoekingsdagenMutatiesService = idmfBoekingsdagenMutatiesService;
 
-            configurationBuilder.AddJsonFile("AppSettings.json");
-            _config = configurationBuilder.Build();
+            schedulerLog = schedulerLogOptions.Value;
         }
 
 
@@ -58,23 +60,28 @@ namespace VDVI.Services.AFAS
             bool flag = false;
             Result<PrometheusResponse> response;
             DateTime currentDateTime = DateTime.UtcNow;
-            var logDayLimits = Convert.ToInt32(_config.GetSection("SchedulerLog").GetSection("AFASSchedulerLogLimitDays").Value);
+
+            var logDayLimits = schedulerLog.AFASSchedulerLogLimitDays;
 
             var afasschedulers = await _afasschedulerSetupService.FindByAllScheduleAsync();
+
             var new1 = afasschedulers.ToList();
 
             for (int i = 0; i < new1.Count(); i++)
             {
                 var afasscheduler = new1[i];
 
-                if (afasscheduler.NextExecutionDateTime != null || afasscheduler.NextExecutionDateTime <= currentDateTime)
+                if (
+                        afasscheduler.NextExecutionDateTime != null
+                        && afasscheduler.NextExecutionDateTime <= currentDateTime
+                    )
                 {
                     switch (afasscheduler.SchedulerName)
                     {
                         case "DMFAdministraties":
                             response = await _idmfAdministratiesService.DmfAdministratiesAsync();
                             flag = response.IsSuccess;
-                            break; 
+                            break;
                         case "DMFBeginbalans"://Opening Balance
                             response = await _idmfBeginbalaniesService.DmfBeginbalanieServiceAsync((DateTime)afasscheduler.BusinessStartDate);
                             flag = response.IsSuccess;
@@ -88,16 +95,16 @@ namespace VDVI.Services.AFAS
                             flag = response.IsSuccess;
                             break;
                         case "DMFBoekingsdagenMutaties"://Booking Dates Mutations
-                            response = await _idmfBoekingsdagenMutatiesService.DmfBoekingsdagenMutatiesServiceAsync((DateTime)afasscheduler.BusinessStartDate);
+                            response = await _idmfBoekingsdagenMutatiesService.DmfBoekingsdagenMutatiesServiceAsync();
                             flag = response.IsSuccess;
                             break;
                         default:
                             break;
-                    } 
+                    }
 
                     dtos.LastExecutionDateTime = currentDateTime;
                     //NextExecutionDateTime: 2022-10-25 15:30 ; ExecutionIntervalMins: 15 ;NextExecutionDateTime: 2022-10-25 15:45 
-                    dtos.NextExecutionDateTime = afasscheduler.NextExecutionDateTime.Value.AddMinutes(afasscheduler.ExecutionIntervalMins);                  
+                    dtos.NextExecutionDateTime = afasscheduler.NextExecutionDateTime.Value.AddMinutes(afasscheduler.ExecutionIntervalMins);
                     dtos.SchedulerName = afasscheduler.SchedulerName;
 
                     if (flag)
