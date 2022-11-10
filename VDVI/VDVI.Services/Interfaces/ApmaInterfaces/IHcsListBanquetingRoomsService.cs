@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 
 namespace VDVI.Services.Interfaces
 {
-    public interface IHcsGetFullReservationDetailsService
+    public interface IHcsListBanquetingRoomsService
     {
-        Task<Result<PrometheusResponse>> HcsGetFullReservationDetailsAsync();
+         Task<Result<PrometheusResponse>> HcsListBanquetingRoomsAsync(); 
     }
 }
