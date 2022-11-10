@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using VDVI.DB.Dtos;
 using VDVI.Services.Interfaces;
-using VDVI.Services.Interfaces.APMA;
+using VDVI.Services.Interfaces.APMA; 
 
 namespace VDVI.Services.APMA
 {
@@ -22,7 +22,8 @@ namespace VDVI.Services.APMA
         private readonly IHcsGetDailyHistoryService _hcsGetDailyHistoryService;
         private readonly IHcsGetDailyFutureService _hcsGetDailyFutureService;
         private readonly IHcsGetFullReservationDetailsService _hcsGetFullReservationDetailsService;
-
+        private readonly IHcsListMealPlansService _hcsListMealPlans;
+        private readonly IHcsListBanquetingRoomsService _hcsListBanquetingRoomsService;
         private readonly ISchedulerSetupService _schedulerSetupService;
         public readonly ISchedulerLogService _schedulerLogService;
 
@@ -44,6 +45,8 @@ namespace VDVI.Services.APMA
             IHcsGetDailyHistoryService hcsGetDailyHistoryService,
             IHcsGetDailyFutureService hcsGetDailyFutureService,
             IHcsGetFullReservationDetailsService hcsGetFullReservationDetailsService,
+            IHcsListMealPlansService hcsListMealPlans,
+            IHcsListBanquetingRoomsService hcsListBanquetingRoomsService,
 
             ISchedulerSetupService schedulerSetupService,
             ISchedulerLogService schedulerLogService
@@ -61,6 +64,8 @@ namespace VDVI.Services.APMA
             _hcsGetDailyHistoryService = hcsGetDailyHistoryService;
             _hcsGetDailyFutureService = hcsGetDailyFutureService;
             _hcsGetFullReservationDetailsService = hcsGetFullReservationDetailsService;
+            _hcsListMealPlans = hcsListMealPlans;
+            _hcsListBanquetingRoomsService = hcsListBanquetingRoomsService;
             _schedulerSetupService = schedulerSetupService;
             _schedulerLogService = schedulerLogService;
 
@@ -161,6 +166,15 @@ namespace VDVI.Services.APMA
                             break;
                         case "HcsGetFullReservationDetails":
                             response = await _hcsGetFullReservationDetailsService.HcsGetFullReservationDetailsAsync();
+                            flag = response.IsSuccess;
+                            break;
+                        case "HcsListMealPlans":
+                            response = await _hcsListMealPlans.HcsListMealPlansAsync();
+                            flag = response.IsSuccess;
+                            break; 
+
+                        case "HcsListBanquetingRooms ":
+                            response = await _hcsListBanquetingRoomsService.HcsListBanquetingRoomsAsync();
                             flag = response.IsSuccess;
                             break;
 
