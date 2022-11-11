@@ -23,6 +23,5 @@ namespace VDVI.Client.Controllers.ApmaControllers
             var response = await _hcsBIReservationDashboardFutureService.HcsBIReservationDashboardRepositoryAsyc(lastExecutionDate, daydifference);
             return Ok(response);
         }
-
     }
 }
