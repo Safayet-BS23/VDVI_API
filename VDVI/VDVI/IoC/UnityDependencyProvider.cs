@@ -55,6 +55,11 @@ namespace VDVI.Client.IoC
             container.RegisterType<IHcsGetFullReservationDetailsService, HcsGetFullReservationDetailsService>(); 
             container.RegisterType<IHcsListMealPlansService, HcsListMealPlansService>(); 
             container.RegisterType<IHcsListBanquetingRoomsService, HcsListBanquetingRoomsService>(); 
+            container.RegisterType<IHcsListSubSourcesService, HcsListSubSourcesService>(); 
+            container.RegisterType<IHcsListSourcesService, HcsListSourcesService>(); 
+            container.RegisterType<IHcsListRoomsService, HcsListRoomsService>(); 
+            container.RegisterType<IHcsListPackagesService, HcsListPackagesService>();  
+            container.RegisterType<IHcsListBanquetingRoomsService, HcsListBanquetingRoomsService>(); 
 
 
             //Child-APMA
