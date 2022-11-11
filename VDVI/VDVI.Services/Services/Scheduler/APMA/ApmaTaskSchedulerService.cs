@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using VDVI.DB.Dtos;
 using VDVI.Services.Interfaces;
-using VDVI.Services.Interfaces.APMA; 
+using VDVI.Services.Interfaces.APMA;
 
 namespace VDVI.Services.APMA
 {
@@ -24,6 +24,11 @@ namespace VDVI.Services.APMA
         private readonly IHcsGetFullReservationDetailsService _hcsGetFullReservationDetailsService;
         private readonly IHcsListMealPlansService _hcsListMealPlans;
         private readonly IHcsListBanquetingRoomsService _hcsListBanquetingRoomsService;
+        private readonly IHcsListRoomsService _hcsListRoomsService;
+        private readonly IHcsListPackagesService _hcsListPackagesService;
+        private readonly IHcsListRateTypeService _hcsListRateTypeService;
+        private readonly IHcsListSubSourcesService _hcsListSubSourcesService;
+        private readonly IHcsListSourcesService _hcsListSourcesService;
         private readonly ISchedulerSetupService _schedulerSetupService;
         public readonly ISchedulerLogService _schedulerLogService;
 
@@ -47,6 +52,11 @@ namespace VDVI.Services.APMA
             IHcsGetFullReservationDetailsService hcsGetFullReservationDetailsService,
             IHcsListMealPlansService hcsListMealPlans,
             IHcsListBanquetingRoomsService hcsListBanquetingRoomsService,
+            IHcsListRoomsService hcsListRoomsService,
+            IHcsListPackagesService hcsListPackagesService,
+            IHcsListRateTypeService hcsListRateTypeService,
+            IHcsListSubSourcesService hcsListSubSourcesService,
+            IHcsListSourcesService hcsListSourcesService,
 
             ISchedulerSetupService schedulerSetupService,
             ISchedulerLogService schedulerLogService
@@ -66,9 +76,14 @@ namespace VDVI.Services.APMA
             _hcsGetFullReservationDetailsService = hcsGetFullReservationDetailsService;
             _hcsListMealPlans = hcsListMealPlans;
             _hcsListBanquetingRoomsService = hcsListBanquetingRoomsService;
+
+            _hcsListRoomsService = hcsListRoomsService;
+            _hcsListPackagesService = hcsListPackagesService;
+            _hcsListRateTypeService = hcsListRateTypeService;
+            _hcsListSubSourcesService = hcsListSubSourcesService;
+            _hcsListSourcesService = hcsListSourcesService;
             _schedulerSetupService = schedulerSetupService;
             _schedulerLogService = schedulerLogService;
-
             configurationBuilder.AddJsonFile("AppSettings.json");
             _config = configurationBuilder.Build();
         }
@@ -93,11 +108,11 @@ namespace VDVI.Services.APMA
                 if (
                      scheduler.NextExecutionDateTime <= currentDateTime
                      &&
-                     (   scheduler.LastBusinessDate == null // for Initial Load Data
+                     (scheduler.LastBusinessDate == null // for Initial Load Data
                          ||
                          (scheduler.isFuture == false && scheduler.LastBusinessDate.Value.Date < currentDateTime.Date) // for History Condition
                          ||
-                         (scheduler.isFuture == true &&  scheduler.LastBusinessDate.Value.Date <= currentDateTime.Date) // for Future Condition
+                         (scheduler.isFuture == true && scheduler.LastBusinessDate.Value.Date <= currentDateTime.Date) // for Future Condition
                      )
                   )
                 {
@@ -119,7 +134,7 @@ namespace VDVI.Services.APMA
                     else if (scheduler.isFuture && scheduler.LastBusinessDate == null)
                         _startDate = new DateTime(currentDateTime.Year, currentDateTime.Month, currentDateTime.Day, 0, 0, 0);
 
-                
+
                     if (_endDate >= currentDateTime) _endDate = currentDateTime.AddDays(-1); // if endDate cross the CurrentDate; then endDate would be change 
 
                     if (_endDate.Date < _startDate.Date) _endDate = _startDate;
@@ -130,22 +145,27 @@ namespace VDVI.Services.APMA
                             response = await _reportSummary.ReportManagementSummaryAsync(_startDate, _endDate);
                             flag = response.IsSuccess;
                             break;
+
                         case "HcsBIRatePlanStatisticsHistory":
                             response = await _hcsBIRatePlanStatisticsHistoryService.HcsBIRatePlanStatisticsRepositoryHistoryAsyc(_startDate, _endDate);
                             flag = response.IsSuccess;
                             break;
+
                         case "HcsBIRatePlanStatisticsFuture":
                             response = await _hcsBIRatePlanStatisticsFutureService.HcsBIRatePlanStatisticsRepositoryFutureAsyc(_startDate, scheduler.DaysLimit);
                             flag = response.IsSuccess;
                             break;
+
                         case "HcsBIReservationDashboardHistory":
                             response = await _hcsBIReservationDashboardHistoryService.HcsBIReservationDashboardRepositoryAsyc(_startDate, _endDate);
                             flag = response.IsSuccess;
                             break;
+
                         case "HcsBIReservationDashboardFuture":
                             response = await _hcsBIReservationDashboardFutureService.HcsBIReservationDashboardRepositoryAsyc(_startDate, scheduler.DaysLimit);
                             flag = response.IsSuccess;
                             break;
+
                         case "HcsBISourceStatisticsHistory":
                             response = await _hcsBISourceStatisticsHistoryService.HcsBIHcsBISourceStatisticsRepositoryHistoryAsyc(_startDate, _endDate);
                             flag = response.IsSuccess;
@@ -164,23 +184,50 @@ namespace VDVI.Services.APMA
                             response = await _hcsGetDailyFutureService.HcsGetDailyHistoryFutureAsyc(_startDate, scheduler.DaysLimit);
                             flag = response.IsSuccess;
                             break;
+
                         case "HcsGetFullReservationDetails":
                             response = await _hcsGetFullReservationDetailsService.HcsGetFullReservationDetailsAsync();
                             flag = response.IsSuccess;
                             break;
+
                         case "HcsListMealPlans":
                             response = await _hcsListMealPlans.HcsListMealPlansAsync();
                             flag = response.IsSuccess;
+                            break;
+
+                        case "HcsListBanquetingRooms":
+                            response = await _hcsListBanquetingRoomsService.HcsListBanquetingRoomsAsync();
+                            flag = response.IsSuccess;
+                            break;
+
+                        case "HcsListRooms":
+                            response = await _hcsListRoomsService.HcsListRoomsServiceAsync();
+                            flag = response.IsSuccess;
+                            break;
+
+                        case "HcsListPackages":
+                            response = await _hcsListPackagesService.HcsListPackagesServiceeAsync();
+                            flag = response.IsSuccess;
+                            break;
+
+                        case "HcsListRateType":
+                            response = await _hcsListRateTypeService.HcsListRateTypeAsync();
+                            flag = response.IsSuccess;
                             break; 
 
-                        case "HcsListBanquetingRooms ":
-                            response = await _hcsListBanquetingRoomsService.HcsListBanquetingRoomsAsync();
+                        case "HcsListSubSources":
+                            response = await _hcsListSubSourcesService.HcsListSubSourcesServiceAsync();
+                            flag = response.IsSuccess;
+                            break;
+
+                        case "HcsListSources":
+                            response = await _hcsListSourcesService.HcsListSourcesServiceAsync();
                             flag = response.IsSuccess;
                             break;
 
                         default:
                             break;
-                    
+
                     }
                     DateTime? dateTime = null;
                     dtos.LastExecutionDateTime = currentDateTime;
