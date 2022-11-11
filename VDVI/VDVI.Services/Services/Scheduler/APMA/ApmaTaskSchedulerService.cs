@@ -195,7 +195,7 @@ namespace VDVI.Services.APMA
                             flag = response.IsSuccess;
                             break;
 
-                        case "HcsListBanquetingRooms ":
+                        case "HcsListBanquetingRooms":
                             response = await _hcsListBanquetingRoomsService.HcsListBanquetingRoomsAsync();
                             flag = response.IsSuccess;
                             break;

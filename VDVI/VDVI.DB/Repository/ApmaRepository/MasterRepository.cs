@@ -43,12 +43,12 @@ namespace VDVI.ApmaRepository
         public IHcsDailyHistoryFutureRepository HcsDailyHistoryFutureRepository =>   new HcsDailyHistoryFutureRepository(_dbContext);
         public IHcsDailyFutureAuditRepository HcsDailyHistoryFutureAuditRepository =>  new HcsDailyHistoryFutureAuditRepository(_dbContext);
         public IHcsGetFullReservationDetailsRepository HcsGetFullReservationDetailsRepository => new HcsGetFullReservationDetailsRepository(_dbContext);
+        public IHcsBanquetingRoomsRepository HcsBanquetingRoomsRepository => new HcsBanquetingRoomsRepository(_dbContext);
 
 
         // SourceStatistics
         public IHcsBISourceStatisticsHistoryRepository HcsBISourceStatisticsHistoryRepository => new HcsBISourceStatisticsHistoryRepository(_dbContext);
         public IHcsBISourceStatisticsFutureRepository HcsBISourceStatisticsFutureRepository => new HcsBISourceStatisticsFutureRepository(_dbContext);
-        public IHcsBISourceStatisticsFutureAuditRepository HcsBISourceStatisticsFutureAuditRepository => new HcsBISourceStatisticsFutureAuditRepository(_dbContext);
-
+        public IHcsBISourceStatisticsFutureAuditRepository HcsBISourceStatisticsFutureAuditRepository => new HcsBISourceStatisticsFutureAuditRepository(_dbContext); 
     }
 }
