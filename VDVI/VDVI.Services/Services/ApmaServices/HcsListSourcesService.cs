@@ -50,7 +50,6 @@ namespace VDVI.Services
                   RethrowException = false
               });
         }
-
         private void FormatSummaryObject(List<ListSourcesItem> sourcelist, List<SourcesDto>  sourcedto,string propertyCode)
         {
             foreach (var item in sourcelist)
