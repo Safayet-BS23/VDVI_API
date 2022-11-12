@@ -26,7 +26,7 @@ namespace VDVI.Services.APMA
         private readonly IHcsListBanquetingRoomsService _hcsListBanquetingRoomsService;
         private readonly IHcsListRoomsService _hcsListRoomsService;
         private readonly IHcsListPackagesService _hcsListPackagesService;
-        private readonly IHcsListRateTypeService _hcsListRateTypeService;
+        private readonly IHcsListRateTypesService _hcsListRateTypeService;
         private readonly IHcsListSubSourcesService _hcsListSubSourcesService;
         private readonly IHcsListSourcesService _hcsListSourcesService;
         private readonly ISchedulerSetupService _schedulerSetupService;
@@ -54,7 +54,7 @@ namespace VDVI.Services.APMA
             IHcsListBanquetingRoomsService hcsListBanquetingRoomsService,
             IHcsListRoomsService hcsListRoomsService,
             IHcsListPackagesService hcsListPackagesService,
-            IHcsListRateTypeService hcsListRateTypeService,
+            IHcsListRateTypesService hcsListRateTypeService,
             IHcsListSubSourcesService hcsListSubSourcesService,
             IHcsListSourcesService hcsListSourcesService,
 

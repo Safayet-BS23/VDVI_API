@@ -14,6 +14,7 @@ using DutchGrit.Afas;
 using Framework.Core.Extensions;
 using VDVI.Repository.AfasDtos;
 using static Framework.Constants.Constants;
+using Framework.Core.AfasExtensions;
 
 namespace VDVI.Services.AfasServices
 {

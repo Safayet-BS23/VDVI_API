@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace Framework.Core.Extensions
+namespace Framework.Core.ApmaExtensions
 {
-    public static class FormatterExtensions
+    public static class ApmaFormatterExtensions
     {
-        public static List<T> FormatList<T, TValue>(this List<T> list, Expression<Func<T, TValue>> memberLamda, TValue value)
+        public static List<T> ApmaFormatList<T, TValue>(this List<T> list, Expression<Func<T, TValue>> memberLamda, TValue value)
         {
             list.ForEach(item => item.SetPropertyValue(memberLamda, value));
             return list;
