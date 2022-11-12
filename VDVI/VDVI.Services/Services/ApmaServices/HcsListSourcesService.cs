@@ -38,7 +38,7 @@ namespace VDVI.Services
                       List<ListSourcesItem> sourcelist=res.HcsListSourcesResult.Sources.ToList();
                       FormatSummaryObject(sourcelist, sourcesdto,propertyCode);
                   }
-                  var jsonresult=res.SerializeToJson();
+
                   //DB operation
                   await _hcsListSourceService.BulkInsertWithProcAsync(sourcesdto);
 
