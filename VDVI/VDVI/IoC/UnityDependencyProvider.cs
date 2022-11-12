@@ -78,7 +78,8 @@ namespace VDVI.Client.IoC
             container.RegisterType<IHcsRatePlanStatisticsFutureService, HcsRatePlanStatisticsFutureService>();
             container.RegisterType<IHcsDailyFutureService, HcsDailyHistoryFutureService>(); 
             container.RegisterType<IHcsGetFullReservationDetailService, HcsGetFullReservationDetailService>(); 
-            container.RegisterType<IHcsBanquetingRoomService, HcsBanquetingRoomService>(); 
+            container.RegisterType<IHcsBanquetingRoomService, HcsBanquetingRoomService>();  
+            container.RegisterType<IHcsListSourceService, HcsListSourceService>();  
           
             //AFAS-Master
             container.RegisterType<IAfasMasterRepositroy, AfasMasterRepository>();
