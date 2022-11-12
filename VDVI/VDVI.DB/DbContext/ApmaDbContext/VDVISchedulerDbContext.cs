@@ -40,6 +40,7 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
         private IDapperRepository<DbGetFullReservationDetails> _getFullReservationDetails;
         private IDapperRepository<DbBanquetingRooms> _banquetingRooms;
         private IDapperRepository<DbSources> _sources;
+        private IDapperRepository<DbSubSources> _subsources;
 
 
 
@@ -74,6 +75,7 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
             TinyMapper.Bind<GetFullReservationDetailsDto, DbGetFullReservationDetails>(); 
             TinyMapper.Bind<BanquetingRoomsDto, DbBanquetingRooms>(); 
             TinyMapper.Bind<SourcesDto, DbSources>(); 
+            TinyMapper.Bind<SubSourcesDto, DbSubSources>(); 
 
             // Dto to Db List
             TinyMapper.Bind<List<SchedulerLogDto>, List<DbSchedulerLog>>();
@@ -102,6 +104,7 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
             TinyMapper.Bind<List<GetFullReservationDetailsDto>, List<DbGetFullReservationDetails>>();
             TinyMapper.Bind<List<BanquetingRoomsDto>, List<DbBanquetingRooms>>();
             TinyMapper.Bind<List<SourcesDto>, List<DbSources>>();
+            TinyMapper.Bind<List<SubSourcesDto>, List<DbSubSources>>();
            
         }
         public IDapperRepository<DbSchedulerSetup> SchedulerSetup => _schedulerSetup ??= new DapperRepository<DbSchedulerSetup>(Connection);
@@ -130,5 +133,6 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
         public IDapperRepository<DbGetFullReservationDetails> GetFullReservationDetails => _getFullReservationDetails ??= new DapperRepository<DbGetFullReservationDetails>(Connection);
         public IDapperRepository<DbBanquetingRooms> BanquetingRooms => _banquetingRooms ??= new DapperRepository<DbBanquetingRooms>(Connection);
         public IDapperRepository<DbSources> Sources => _sources ??= new DapperRepository<DbSources>(Connection);
+        public IDapperRepository<DbSubSources> SubSources => _subsources ??= new DapperRepository<DbSubSources>(Connection);
     }
 }

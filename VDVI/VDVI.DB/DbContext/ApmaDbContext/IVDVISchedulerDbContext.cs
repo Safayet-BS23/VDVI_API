@@ -22,5 +22,7 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
         IDapperRepository<DbDailyHistory> DailyHistory { get; }
         IDapperRepository<DbGetFullReservationDetails> GetFullReservationDetails { get; }
         IDapperRepository<DbBanquetingRooms> BanquetingRooms { get; }
+        IDapperRepository<DbSubSources> SubSources { get; }
+        
     }
 }
