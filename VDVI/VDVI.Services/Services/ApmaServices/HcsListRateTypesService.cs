@@ -10,8 +10,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using VDVI.DB.Dtos;
-using VDVI.Services.Interfaces;
-using Framework.Core.ApmaExtensions;
+using VDVI.Services.Interfaces; 
 
 namespace VDVI.Services
 {
