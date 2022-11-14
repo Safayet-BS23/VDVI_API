@@ -25,8 +25,8 @@ namespace VDVI.Services.APMA
         private readonly IHcsListMealPlansService _hcsListMealPlans;
         private readonly IHcsListBanquetingRoomsService _hcsListBanquetingRoomsService;
         private readonly IHcsListRoomsService _hcsListRoomsService;
-        private readonly IHcsListPackagesService _hcsListPackagesService;
-        private readonly IHcsListRateTypesService _hcsListRateTypeService;
+        private readonly IHcsListPackageService _hcsListPackagesService;
+        private readonly IHcsListRateTypesService _hcsListRateTypesService;
         private readonly IHcsListSubSourcesService _hcsListSubSourcesService;
         private readonly IHcsListSourcesService _hcsListSourcesService;
         private readonly ISchedulerSetupService _schedulerSetupService;
@@ -53,8 +53,8 @@ namespace VDVI.Services.APMA
             IHcsListMealPlansService hcsListMealPlans,
             IHcsListBanquetingRoomsService hcsListBanquetingRoomsService,
             IHcsListRoomsService hcsListRoomsService,
-            IHcsListPackagesService hcsListPackagesService,
-            IHcsListRateTypesService hcsListRateTypeService,
+            IHcsListPackageService hcsListPackagesService,
+            IHcsListRateTypesService hcsListRateTypesService,
             IHcsListSubSourcesService hcsListSubSourcesService,
             IHcsListSourcesService hcsListSourcesService,
 
@@ -79,7 +79,7 @@ namespace VDVI.Services.APMA
 
             _hcsListRoomsService = hcsListRoomsService;
             _hcsListPackagesService = hcsListPackagesService;
-            _hcsListRateTypeService = hcsListRateTypeService;
+            _hcsListRateTypesService = hcsListRateTypesService;
             _hcsListSubSourcesService = hcsListSubSourcesService;
             _hcsListSourcesService = hcsListSourcesService;
             _schedulerSetupService = schedulerSetupService;
@@ -211,7 +211,7 @@ namespace VDVI.Services.APMA
                             break;
 
                         case "HcsListRateType":
-                            response = await _hcsListRateTypeService.HcsListRateTypeAsync();
+                            response = await _hcsListRateTypesService.HcsListRateTypeAsync();
                             flag = response.IsSuccess;
                             break; 
 

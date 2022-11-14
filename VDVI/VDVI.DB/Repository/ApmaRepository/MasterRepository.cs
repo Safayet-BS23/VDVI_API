@@ -53,5 +53,6 @@ namespace VDVI.ApmaRepository
         public IHcsBISourceStatisticsFutureAuditRepository HcsBISourceStatisticsFutureAuditRepository => new HcsBISourceStatisticsFutureAuditRepository(_dbContext); 
         public IHcsListSourcesRepository HcsListSourcesRepository => new HcsListSourcesRepository(_dbContext); 
         public IHcsListSubSourcesRepository HcsListSubSourcesRepository => new HcsListSubSourcesRepository(_dbContext); 
+        public IHcsListPackagesRepository HcsListPackagesRepository => new HcsListPackagesRepository(_dbContext); 
     }
 }

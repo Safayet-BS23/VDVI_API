@@ -15,7 +15,7 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
         IDapperRepository<DbSourceStatisticFuture> SourceStatisticFuture { get; }
         IDapperRepository<DbSourceStatisticFutureAudit> SourceStatisticFutureAudit { get; }
         IDapperRepository<DbRatePlanStatisticHistory> RatePlanStatisticHistory { get; }
-        IDapperRepository<DbReservationDashboardRoomsHistory> Rooms { get; }
+        IDapperRepository<DbReservationDashboardRoomsHistory> ReservationDashboardRooms { get; }
         IDapperRepository<DbReservationDashboardRevenueHistory> Revenue { get; }
         IDapperRepository<DbReservationDashboardOccupancyHistory> Occupancy { get; }
         IDapperRepository<DbReservationDashboardReservationHistory> Reservation { get; }
@@ -23,6 +23,7 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
         IDapperRepository<DbGetFullReservationDetails> GetFullReservationDetails { get; }
         IDapperRepository<DbBanquetingRooms> BanquetingRooms { get; }
         IDapperRepository<DbSubSources> SubSources { get; }
+        IDapperRepository<DbRooms> Rooms { get; }
         
     }
 }

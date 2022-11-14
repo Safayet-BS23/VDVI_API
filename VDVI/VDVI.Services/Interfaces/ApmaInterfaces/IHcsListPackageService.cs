@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace VDVI.Services.Interfaces
 {
-    public interface IHcsListPackagesService
+    public interface IHcsListPackageService
     { 
          Task<Result<PrometheusResponse>> HcsListPackagesServiceeAsync();
     }

@@ -22,7 +22,7 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
         private IDapperRepository<DbSourceStatisticHistory> _sourceStatistic;
         private IDapperRepository<DbReservationDashboardOccupancyHistory> _occupancy;
         private IDapperRepository<DbReservationDashboardReservationHistory> _reservation;
-        private IDapperRepository<DbReservationDashboardRoomsHistory> _rooms;
+        private IDapperRepository<DbReservationDashboardRoomsHistory> _reservationDashboardrooms;
         private IDapperRepository<DbReservationDashboardRevenueHistory> _revenue;
         private IDapperRepository<DbSourceStatisticFuture> _sourceStatisticFuture;
         private IDapperRepository<DbSourceStatisticFutureAudit> _sourceStatisticFutureAudit;
@@ -41,6 +41,8 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
         private IDapperRepository<DbBanquetingRooms> _banquetingRooms;
         private IDapperRepository<DbSources> _sources;
         private IDapperRepository<DbSubSources> _subsources;
+        private IDapperRepository<DbPackages> _packages;
+        private IDapperRepository<DbRooms> _rooms;
 
 
 
@@ -76,6 +78,8 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
             TinyMapper.Bind<BanquetingRoomsDto, DbBanquetingRooms>(); 
             TinyMapper.Bind<SourcesDto, DbSources>(); 
             TinyMapper.Bind<SubSourcesDto, DbSubSources>(); 
+            TinyMapper.Bind<PackagesDto, DbPackages>(); 
+            TinyMapper.Bind<RoomsDto, DbRooms>(); 
 
             // Dto to Db List
             TinyMapper.Bind<List<SchedulerLogDto>, List<DbSchedulerLog>>();
@@ -105,6 +109,8 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
             TinyMapper.Bind<List<BanquetingRoomsDto>, List<DbBanquetingRooms>>();
             TinyMapper.Bind<List<SourcesDto>, List<DbSources>>();
             TinyMapper.Bind<List<SubSourcesDto>, List<DbSubSources>>();
+            TinyMapper.Bind<List<PackagesDto>, List<DbPackages>>();
+            TinyMapper.Bind<List<RoomsDto>, List<DbRooms>>();
            
         }
         public IDapperRepository<DbSchedulerSetup> SchedulerSetup => _schedulerSetup ??= new DapperRepository<DbSchedulerSetup>(Connection);
@@ -116,7 +122,7 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
         public IDapperRepository<DbSourceStatisticHistory> SourceStatistic => _sourceStatistic ??= new DapperRepository<DbSourceStatisticHistory>(Connection);
         public IDapperRepository<DbReservationDashboardOccupancyHistory> Occupancy => _occupancy ??= new DapperRepository<DbReservationDashboardOccupancyHistory>(Connection);
         public IDapperRepository<DbReservationDashboardReservationHistory> Reservation => _reservation ??= new DapperRepository<DbReservationDashboardReservationHistory>(Connection);
-        public IDapperRepository<DbReservationDashboardRoomsHistory> Rooms => _rooms ??= new DapperRepository<DbReservationDashboardRoomsHistory>(Connection);
+        public IDapperRepository<DbReservationDashboardRoomsHistory> ReservationDashboardRooms => _reservationDashboardrooms ??= new DapperRepository<DbReservationDashboardRoomsHistory>(Connection);
         public IDapperRepository<DbReservationDashboardRevenueHistory> Revenue => _revenue ??= new DapperRepository<DbReservationDashboardRevenueHistory>(Connection);
         public IDapperRepository<DbSourceStatisticFuture> SourceStatisticFuture => _sourceStatisticFuture ??= new DapperRepository<DbSourceStatisticFuture>(Connection);
         public IDapperRepository<DbSourceStatisticFutureAudit> SourceStatisticFutureAudit => _sourceStatisticFutureAudit ??= new DapperRepository<DbSourceStatisticFutureAudit>(Connection);
@@ -134,5 +140,7 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
         public IDapperRepository<DbBanquetingRooms> BanquetingRooms => _banquetingRooms ??= new DapperRepository<DbBanquetingRooms>(Connection);
         public IDapperRepository<DbSources> Sources => _sources ??= new DapperRepository<DbSources>(Connection);
         public IDapperRepository<DbSubSources> SubSources => _subsources ??= new DapperRepository<DbSubSources>(Connection);
+        public IDapperRepository<DbPackages> Packages => _packages ??= new DapperRepository<DbPackages>(Connection);
+        public IDapperRepository<DbRooms> Rooms => _rooms ??= new DapperRepository<DbRooms>(Connection);
     }
 }

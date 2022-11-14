@@ -38,6 +38,7 @@ namespace VDVI.ApmaRepository
         IHcsBISourceStatisticsFutureAuditRepository HcsBISourceStatisticsFutureAuditRepository { get; }
         IHcsListSourcesRepository HcsListSourcesRepository { get; }
         IHcsListSubSourcesRepository HcsListSubSourcesRepository { get; }
+        IHcsListPackagesRepository HcsListPackagesRepository { get; }
 
     }
 }

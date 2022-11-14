@@ -22,7 +22,7 @@ namespace VDVI.Repository.ApmaRepository.Implementation
         public HcsBIRoomsHistoryRepository(VDVISchedulerDbContext dbContext) : base(dbContext.Connection)
         {
             _dbContext = dbContext;
-            _tblRepository = _dbContext.Rooms;
+            _tblRepository = _dbContext.ReservationDashboardRooms;
         }
 
 
@@ -60,7 +60,7 @@ namespace VDVI.Repository.ApmaRepository.Implementation
         public async Task<IEnumerable<ReservationDashboardRoomsHistoryDto>> GetAllByPropertyCodeAsync(string propertyCode)
         {
             IEnumerable<DbReservationDashboardRoomsHistory> dbEntities = await _dbContext
-                .Rooms
+                .ReservationDashboardRooms
                 .SetOrderBy(OrderInfo.SortDirection.DESC, x => x.PropertyCode)
                 .FindAllAsync(x => x.PropertyCode == propertyCode);
 
