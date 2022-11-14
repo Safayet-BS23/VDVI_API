@@ -45,7 +45,7 @@ namespace VDVI.ApmaRepository
         public IHcsDailyFutureAuditRepository HcsDailyHistoryFutureAuditRepository =>  new HcsDailyHistoryFutureAuditRepository(_dbContext);
         public IHcsGetFullReservationDetailsRepository HcsGetFullReservationDetailsRepository => new HcsGetFullReservationDetailsRepository(_dbContext);
         public IHcsBanquetingRoomsRepository HcsBanquetingRoomsRepository => new HcsBanquetingRoomsRepository(_dbContext);
-
+        public IHcsRoomsRepository HcsRoomsRepository => new HcsRoomsRepository(_dbContext);
 
         // Source
         public IHcsBISourceStatisticsHistoryRepository HcsBISourceStatisticsHistoryRepository => new HcsBISourceStatisticsHistoryRepository(_dbContext);
@@ -53,6 +53,11 @@ namespace VDVI.ApmaRepository
         public IHcsBISourceStatisticsFutureAuditRepository HcsBISourceStatisticsFutureAuditRepository => new HcsBISourceStatisticsFutureAuditRepository(_dbContext); 
         public IHcsListSourcesRepository HcsListSourcesRepository => new HcsListSourcesRepository(_dbContext); 
         public IHcsListSubSourcesRepository HcsListSubSourcesRepository => new HcsListSubSourcesRepository(_dbContext); 
-        public IHcsListPackagesRepository HcsListPackagesRepository => new HcsListMealPlansRepository(_dbContext);
+        public IHcsListPackagesRepository HcsListPackagesRepository => new HcsListPackagesRepository(_dbContext);
+
+        //Meals
+        public IHcsListMealPlansRepository HcsListMealPlansRepository => new HcsListMealPlansRepository(_dbContext);
+
+
     }
 }

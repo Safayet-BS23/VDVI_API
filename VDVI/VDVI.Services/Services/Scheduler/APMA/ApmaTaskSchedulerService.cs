@@ -24,7 +24,7 @@ namespace VDVI.Services.APMA
         private readonly IHcsGetFullReservationDetailsService _hcsGetFullReservationDetailsService;
         private readonly IHcsListMealPlansService _hcsListMealPlans;
         private readonly IHcsListBanquetingRoomsService _hcsListBanquetingRoomsService;
-        private readonly IHcsListRoomsService _hcsListRoomsService;
+        private readonly IHcsListRoomService _hcsRoomsService;
         private readonly IHcsListPackageService _hcsListPackagesService;
         private readonly IHcsListRateTypesService _hcsListRateTypesService;
         private readonly IHcsListSubSourcesService _hcsListSubSourcesService;
@@ -52,7 +52,7 @@ namespace VDVI.Services.APMA
             IHcsGetFullReservationDetailsService hcsGetFullReservationDetailsService,
             IHcsListMealPlansService hcsListMealPlans,
             IHcsListBanquetingRoomsService hcsListBanquetingRoomsService,
-            IHcsListRoomsService hcsListRoomsService,
+            IHcsListRoomService hcsRoomsService,
             IHcsListPackageService hcsListPackagesService,
             IHcsListRateTypesService hcsListRateTypesService,
             IHcsListSubSourcesService hcsListSubSourcesService,
@@ -77,7 +77,7 @@ namespace VDVI.Services.APMA
             _hcsListMealPlans = hcsListMealPlans;
             _hcsListBanquetingRoomsService = hcsListBanquetingRoomsService;
 
-            _hcsListRoomsService = hcsListRoomsService;
+            _hcsRoomsService = hcsRoomsService;
             _hcsListPackagesService = hcsListPackagesService;
             _hcsListRateTypesService = hcsListRateTypesService;
             _hcsListSubSourcesService = hcsListSubSourcesService;
@@ -201,7 +201,7 @@ namespace VDVI.Services.APMA
                             break;
 
                         case "HcsListRooms":
-                            response = await _hcsListRoomsService.HcsListRoomsServiceAsync();
+                            response = await _hcsRoomsService.HcsListRoomsServiceAsync();
                             flag = response.IsSuccess;
                             break;
 

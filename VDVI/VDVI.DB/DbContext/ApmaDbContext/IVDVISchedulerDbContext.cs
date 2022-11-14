@@ -24,6 +24,7 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
         IDapperRepository<DbBanquetingRooms> BanquetingRooms { get; }
         IDapperRepository<DbSubSources> SubSources { get; }
         IDapperRepository<DbRooms> Rooms { get; }
+        IDapperRepository<DbMealPlans> MealPlans { get; }
         
     }
 }

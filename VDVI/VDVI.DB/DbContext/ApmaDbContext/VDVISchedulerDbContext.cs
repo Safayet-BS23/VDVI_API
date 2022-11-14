@@ -5,7 +5,7 @@ using Nelibur.ObjectMapper;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using VDVI.DB.Dtos;
-using VDVI.Repository.DB; 
+using VDVI.Repository.DB;
 
 namespace VDVI.Repository.DbContext.ApmaDbContext
 {
@@ -43,6 +43,7 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
         private IDapperRepository<DbSubSources> _subsources;
         private IDapperRepository<DbPackages> _packages;
         private IDapperRepository<DbRooms> _rooms;
+        private IDapperRepository<DbMealPlans> _mealplans;
 
 
 
@@ -74,12 +75,13 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
             TinyMapper.Bind<ReservationDashboardReservationFutureAuditDto, DbReservationDashboardReservationFutureAudit>();
             TinyMapper.Bind<ReservationDashboardRevenueFutureAuditDto, DbReservationDashboardRevenueFutureAudit>();
             TinyMapper.Bind<DailyHistoryDto, DbDailyHistory>();
-            TinyMapper.Bind<GetFullReservationDetailsDto, DbGetFullReservationDetails>(); 
-            TinyMapper.Bind<BanquetingRoomsDto, DbBanquetingRooms>(); 
-            TinyMapper.Bind<SourcesDto, DbSources>(); 
-            TinyMapper.Bind<SubSourcesDto, DbSubSources>(); 
-            TinyMapper.Bind<PackagesDto, DbPackages>(); 
-            TinyMapper.Bind<RoomsDto, DbRooms>(); 
+            TinyMapper.Bind<GetFullReservationDetailsDto, DbGetFullReservationDetails>();
+            TinyMapper.Bind<BanquetingRoomsDto, DbBanquetingRooms>();
+            TinyMapper.Bind<SourcesDto, DbSources>();
+            TinyMapper.Bind<SubSourcesDto, DbSubSources>();
+            TinyMapper.Bind<PackagesDto, DbPackages>();
+            TinyMapper.Bind<RoomsDto, DbRooms>();
+            TinyMapper.Bind<MealPlansDto, DbMealPlans>();
 
             // Dto to Db List
             TinyMapper.Bind<List<SchedulerLogDto>, List<DbSchedulerLog>>();
@@ -111,7 +113,8 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
             TinyMapper.Bind<List<SubSourcesDto>, List<DbSubSources>>();
             TinyMapper.Bind<List<PackagesDto>, List<DbPackages>>();
             TinyMapper.Bind<List<RoomsDto>, List<DbRooms>>();
-           
+            TinyMapper.Bind<List<MealPlansDto>, List<DbMealPlans>>();
+
         }
         public IDapperRepository<DbSchedulerSetup> SchedulerSetup => _schedulerSetup ??= new DapperRepository<DbSchedulerSetup>(Connection);
         public IDapperRepository<DbSchedulerLog> SchedulerLog => _schedulerlog ??= new DapperRepository<DbSchedulerLog>(Connection);
@@ -142,5 +145,6 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
         public IDapperRepository<DbSubSources> SubSources => _subsources ??= new DapperRepository<DbSubSources>(Connection);
         public IDapperRepository<DbPackages> Packages => _packages ??= new DapperRepository<DbPackages>(Connection);
         public IDapperRepository<DbRooms> Rooms => _rooms ??= new DapperRepository<DbRooms>(Connection);
+        public IDapperRepository<DbMealPlans> MealPlans => _mealplans ??= new DapperRepository<DbMealPlans>(Connection);
     }
 }
