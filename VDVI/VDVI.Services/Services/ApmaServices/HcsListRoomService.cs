@@ -24,6 +24,7 @@ namespace VDVI.Services
          
         public async Task<Result<PrometheusResponse>> HcsListRoomsServiceAsync()
         {
+            var result = new Result<PrometheusResponse>();
             return await TryCatchExtension.ExecuteAndHandleErrorAsync(
               async () =>
               {
@@ -35,9 +36,10 @@ namespace VDVI.Services
                       var propertyCode = ApmaProperties[i];
                       res = await client.HcsListRoomsAsync(pmsAuthentication, propertyCode, "");
                       List<ListRoomRoom> rooms=res.HcsListRoomsResult.Rooms.ToList();
+                      FormatSummaryobject(roomsDtos, rooms, propertyCode);
                   }
-                  await _hcsRoomsService.BulkInsertWithProcAsync(roomsDtos);
-                  var jsonresult=res.SerializeToJson();
+                  if (roomsDtos.Count > 0)
+                      result=await _hcsRoomsService.BulkInsertWithProcAsync(roomsDtos);
 
                   return PrometheusResponse.Success("", "Data retrieval is successful");
               },
@@ -56,7 +58,7 @@ namespace VDVI.Services
                     PropertyCode = propertyCode,
                     ConnectingLeft = item.ConnectingLeft,
                     ConnectingRight = item.ConnectingRight,
-                    ExtrasNotAllowed = item.ExtrasNotAllowed,
+                    ExtrasNotAllowed =  item.ExtrasNotAllowed,
                     HousekeepingSections = item.HousekeepingSections,
                     RoomFeatures = string.Join(",", item.RoomFeatures),
                     RoomType = item.RoomType,

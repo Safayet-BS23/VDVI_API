@@ -17,9 +17,11 @@ namespace VDVI.Services
         public HcsListPackageService(IHcsListPackagesService hcsListPackagesService)
         {
             _hcsListPackagesService = hcsListPackagesService;
-        } 
+        }
         public async Task<Result<PrometheusResponse>> HcsListPackagesServiceeAsync()
         {
+            var result = new Result<PrometheusResponse>();
+
             return await TryCatchExtension.ExecuteAndHandleErrorAsync(
               async () =>
               {
@@ -33,7 +35,8 @@ namespace VDVI.Services
                       List<ListPackage> list = res.HcsListPackagesResult.Packages.ToList();
                       FormatSummaryObject(PackagesDto, list, propertyCode);
                   }
-                  var result =await _hcsListPackagesService.BulkInsertWithProcAsync(PackagesDto);               
+                  if (PackagesDto.Count > 0)
+                      result = await _hcsListPackagesService.BulkInsertWithProcAsync(PackagesDto);
 
                   return PrometheusResponse.Success(result, "Data retrieval is successful");
               },
@@ -43,14 +46,14 @@ namespace VDVI.Services
                   RethrowException = false
               });
         }
-        private void FormatSummaryObject(List<PackagesDto> PackagesDto, List<ListPackage> list,string propertyCode)
+        private void FormatSummaryObject(List<PackagesDto> PackagesDto, List<ListPackage> list, string propertyCode)
         {
-            foreach (var item in PackagesDto)
+            foreach (var item in list)
             {
                 PackagesDto dto = new PackagesDto()
                 {
                     PropertyCode = propertyCode,
-                    Code = item.PropertyCode,
+                    Code = item.Code,
                     Description = item.Description
                 };
                 PackagesDto.Add(dto);

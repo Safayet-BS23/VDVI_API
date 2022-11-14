@@ -19,30 +19,30 @@ namespace VDVI.Services
         public HcsListBanquetingRoomsService(IHcsBanquetingRoomService hcsBanquetingRoomService)
         {
             _hcsBanquetingRoomService = hcsBanquetingRoomService;
-        }  
+        }
 
         public async Task<Result<PrometheusResponse>> HcsListBanquetingRoomsAsync()
         {
+            var result = new Result<PrometheusResponse>();
             return await TryCatchExtension.ExecuteAndHandleErrorAsync(
               async () =>
               {
                   Authentication pmsAuthentication = GetApmaAuthCredential();
                   HcsListBanquetingRoomsResponse res = new HcsListBanquetingRoomsResponse();
 
-                  List<BanquetingRoomsDto> banquetingRoomsDtos = new List<BanquetingRoomsDto>(); 
+                  List<BanquetingRoomsDto> banquetingRoomsDtos = new List<BanquetingRoomsDto>();
 
                   for (int i = 0; i < ApmaProperties.Length; i++)
                   {
                       var propertyCode = ApmaProperties[i];
                       res = await client.HcsListBanquetingRoomsAsync(pmsAuthentication, propertyCode, "", "");
-                      List<ListBanquetingRoom> BanquetingRooms = res.HcsListBanquetingRoomsResult.BanquetingRooms.ToList(); 
-                      FormatSummaryObject(BanquetingRooms, banquetingRoomsDtos,  propertyCode);
+                      List<ListBanquetingRoom> BanquetingRooms = res.HcsListBanquetingRoomsResult.BanquetingRooms.ToList();
+                      FormatSummaryObject(BanquetingRooms, banquetingRoomsDtos, propertyCode);
                   }
-
-                  //DB operation
-                  await _hcsBanquetingRoomService.BulkInsertWithProcAsync(banquetingRoomsDtos);
-                  var jsonresult = res.SerializeToJson();
-
+                  if (banquetingRoomsDtos.Count > 0)
+                      //DB operation
+                      result = await _hcsBanquetingRoomService.BulkInsertWithProcAsync(banquetingRoomsDtos);
+                   
                   return PrometheusResponse.Success("", "Data retrieval is successful");
               },
               exception => new TryCatchExtensionResult<Result<PrometheusResponse>>
@@ -53,7 +53,7 @@ namespace VDVI.Services
         }
         private void FormatSummaryObject(List<ListBanquetingRoom> BanquetingRooms, List<BanquetingRoomsDto> banquetingRoomsDtos, string propertyCode)
         {
-            foreach(var room in BanquetingRooms)
+            foreach (var room in BanquetingRooms)
             {
                 var dto = new BanquetingRoomsDto()
                 {
@@ -62,12 +62,12 @@ namespace VDVI.Services
                     Description = room.Description,
                     BanquetingRoomType = room.BanquetingRoomType,
                     IsCombination = room.IsCombination,
-                    Combination= string.Join(",",room.Combination),
+                    Combination = string.Join(",", room.Combination),
                     ListOrder = room.ListOrder
                 };
                 banquetingRoomsDtos.Add(dto);
 
-                 
+
             }
         }
     }

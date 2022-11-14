@@ -55,11 +55,13 @@ namespace VDVI.Client.IoC
             container.RegisterType<IHcsGetFullReservationDetailsService, HcsGetFullReservationDetailsService>(); 
             container.RegisterType<IHcsListMealPlansService, HcsListMealPlansService>(); 
             container.RegisterType<IHcsListBanquetingRoomsService, HcsListBanquetingRoomsService>(); 
-            container.RegisterType<IHcsListSubSourcesService, HcsListSubSourcesService>(); 
-            container.RegisterType<IHcsListSourcesService, HcsListSourcesService>(); 
+            container.RegisterType<IHcsListSourceService, HcsListSourceService>(); 
+            container.RegisterType<IHcsListSubSourceService, HcsListSubSourceService>(); 
             container.RegisterType<IHcsListRoomService, HcsListRoomService>(); 
             container.RegisterType<IHcsListPackageService, HcsListPackageService>();  
             container.RegisterType<IHcsListRateTypeService, HcsListRateTypeService>();
+
+            
 
 
             //Child-APMA
@@ -78,7 +80,9 @@ namespace VDVI.Client.IoC
             container.RegisterType<IHcsRatePlanStatisticsFutureService, HcsRatePlanStatisticsFutureService>();
             container.RegisterType<IHcsDailyFutureService, HcsDailyHistoryFutureService>(); 
             container.RegisterType<IHcsGetFullReservationDetailService, HcsGetFullReservationDetailService>(); 
-            container.RegisterType<IHcsBanquetingRoomService, HcsBanquetingRoomService>(); 
+            container.RegisterType<IHcsBanquetingRoomService, HcsBanquetingRoomService>();
+            container.RegisterType<IHcsListSourcesService, HcsListSourcesService>();
+            container.RegisterType<IHcsListSubSourcesService, HcsListSubSourcesService>();
             container.RegisterType<IHcsRoomsService, HcsRoomsService>(); 
             container.RegisterType<IHcsListPackagesService, HcsListPackagesService>(); 
             container.RegisterType<IHcsListRateTypesService, HcsListRateTypesService>(); 

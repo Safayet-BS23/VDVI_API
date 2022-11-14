@@ -28,6 +28,7 @@ namespace VDVI.Services
             return await TryCatchExtension.ExecuteAndHandleErrorAsync(
               async () =>
               {
+                  var result=new Result<PrometheusResponse>();
                   Authentication pmsAuthentication = GetApmaAuthCredential();
                   HcsListMealPlansResponse res = new HcsListMealPlansResponse();
                   List<MealPlansDto> MealPlansDto=new List<MealPlansDto>();
@@ -38,9 +39,10 @@ namespace VDVI.Services
                       List<ListMealPlan> ListMealPlans=res.HcsListMealPlansResult.MealPlans.ToList();
                       FormatObjectSummary(ListMealPlans, MealPlansDto, propertyCode);
                   }
-                  var jsonresult=res.SerializeToJson();
-
-                  return PrometheusResponse.Success("", "Data retrieval is successful");
+                  if (MealPlansDto.Count>0) 
+                      result = await _hcsListMealsPlansService.BulkInsertWithProcAsync(MealPlansDto);
+                  
+                  return PrometheusResponse.Success(result, "Data retrieval is successful");
               },
               exception => new TryCatchExtensionResult<Result<PrometheusResponse>>
               {

@@ -24,6 +24,7 @@ namespace VDVI.Services
 
         public async Task<Result<PrometheusResponse>> HcsListSubSourcesServiceAsync()
         {
+            var result = new Result<PrometheusResponse>();
             return await TryCatchExtension.ExecuteAndHandleErrorAsync(
               async () =>
               {
@@ -37,7 +38,8 @@ namespace VDVI.Services
                       List<ListSubSourcesItem> listSubSources = res.HcsListSubSourcesResult.SubSources.ToList();
                       FormatSummaryObject(listSubSources, subsourcedto, propertyCode);
                   }
-                  var result =await _hcsListSubSourceService.BulkInsertWithProcAsync(subsourcedto);
+                  if(subsourcedto.Count>0)
+                      result=await _hcsListSubSourceService.BulkInsertWithProcAsync(subsourcedto);
 
                   return PrometheusResponse.Success(result, "Data retrieval is successful");
               },

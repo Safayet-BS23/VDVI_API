@@ -26,6 +26,8 @@ namespace VDVI.Services
 
         public async Task<Result<PrometheusResponse>> HcsListRateTypeAsync()
         {
+            var result = new Result<PrometheusResponse>();
+
             return await TryCatchExtension.ExecuteAndHandleErrorAsync(
               async () =>
               {
@@ -40,8 +42,9 @@ namespace VDVI.Services
                       List<ListRateType> listRateType = res.HcsListRateTypesResult.RateTypes.ToList();
                       FormatSummaryObject(listRateType, ratetypedto, propertyCode); 
                   } 
-                  //Db operation
-                  var result = await _hcsListRateTypeService.BulkInsertWithProcAsync(ratetypedto); 
+                  if(ratetypedto.Count>0)
+                      //Db operation
+                      result=await _hcsListRateTypeService.BulkInsertWithProcAsync(ratetypedto); 
 
                   return PrometheusResponse.Success(result, "Data retrieval is successful");
               },
