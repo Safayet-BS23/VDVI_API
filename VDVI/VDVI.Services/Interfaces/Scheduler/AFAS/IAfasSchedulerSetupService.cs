@@ -11,7 +11,7 @@ namespace VDVI.Services.Interfaces.AFAS
     public interface IAfasSchedulerSetupService
     {
         Task<Result<PrometheusResponse>> InsertAsync(AfasSchedulerSetupDto dto);
-        Task<Result<PrometheusResponse>> UpdateAsync(AfasSchedulerSetupDto dto);
+        Task<Result<PrometheusResponse>> UpdateAsync(AfasSchedulerSetupDto dto, string schedulerName);
         Task<Result<PrometheusResponse>> SaveWithProcAsync(AfasSchedulerSetupDto dto);
         Task<IEnumerable<AfasSchedulerSetupDto>> FindByAllScheduleAsync();
         Task<Result<PrometheusResponse>> FindByMethodNameAsync(string methodName);

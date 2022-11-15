@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Framework.Core.Base.ModelEntity;
+using Framework.Core.Enums;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
@@ -71,11 +72,18 @@ namespace VDVI.Services.AFAS
             {
                 var afasscheduler = new1[i];
 
+                if (afasscheduler.SchedulerStatus == SchedulerStatus.Processing.ToString())
+                    continue;
+
                 if (
                         afasscheduler.NextExecutionDateTime != null
                         && afasscheduler.NextExecutionDateTime <= currentDateTime
                     )
                 {
+                    //Update SchedulerSetUp Status;
+                    afasscheduler.SchedulerStatus= SchedulerStatus.Processing.ToString();
+                    await _afasSchedulerSetupService.UpdateAsync( afasscheduler , afasscheduler.SchedulerName);
+
                     switch (afasscheduler.SchedulerName)
                     {
                         case "DMFAdministraties":
@@ -109,9 +117,10 @@ namespace VDVI.Services.AFAS
 
                     if (flag)
                     {
+                        dtos.SchedulerStatus = SchedulerStatus.Succeed.ToString();
                         await _afasSchedulerSetupService.SaveWithProcAsync(dtos);
                         await _afasSchedulerLogService.SaveWithProcAsync(afasscheduler.SchedulerName, logDayLimits);
-                    }
+                    } 
                 }
             }
         }

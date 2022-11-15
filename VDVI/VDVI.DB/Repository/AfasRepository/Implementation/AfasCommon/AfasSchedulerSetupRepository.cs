@@ -14,6 +14,7 @@ using VDVI.Repository.DbContext.AfasDbContext;
 using VDVI.Repository.Models.AfasModel;
 using VDVI.Repository.Models.AfasModels.Dto;
 using VDVI.AfasRepository.Interfaces;
+using Framework.Core.Enums;
 
 namespace VDVI.Repository.Implementation
 {
@@ -34,11 +35,11 @@ namespace VDVI.Repository.Implementation
 
             return TinyMapper.Map<AfasSchedulerSetupDto>(dbEntity);
         }
-         public async Task<AfasSchedulerSetupDto> UpdateAsync(AfasSchedulerSetupDto dto)
+         public async Task<AfasSchedulerSetupDto> UpdateAsync(AfasSchedulerSetupDto dto,string schedulerName)
         {
             var entities = TinyMapper.Map<DbAfasSchedulerSetup>(dto);
 
-            var res=await _tblRepository.UpdateAsync(entities);
+            var res=await _tblRepository.UpdateAsync(p => p.SchedulerName == schedulerName,  entities);
 
             return dto;
         }
@@ -49,8 +50,8 @@ namespace VDVI.Repository.Implementation
                 {
                     SchedulerName = dto.SchedulerName,
                     NextExecutionDateTime = dto.NextExecutionDateTime,
-                    LastExecutionDateTime = dto.LastExecutionDateTime
-
+                    LastExecutionDateTime = dto.LastExecutionDateTime,
+                    SchedulerStatus=dto.SchedulerStatus
                 },
                 commandType: CommandType.StoredProcedure);
 

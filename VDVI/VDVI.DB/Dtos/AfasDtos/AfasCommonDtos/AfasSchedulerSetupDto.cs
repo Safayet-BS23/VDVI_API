@@ -15,5 +15,6 @@ namespace VDVI.Repository.Models.AfasModels.Dto
         public int ExecutionIntervalMins { get; set; }
         public DateTime? BusinessStartDate { get; set; } 
         public bool isActive { get; set; } 
+        public string SchedulerStatus { get; set; } 
     }
 }

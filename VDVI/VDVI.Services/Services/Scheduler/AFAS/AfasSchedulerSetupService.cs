@@ -35,12 +35,12 @@ namespace VDVI.Services.AFAS
                     RethrowException = false
                 });
         }
-        public async Task<Result<PrometheusResponse>> UpdateAsync(AfasSchedulerSetupDto dto)
+        public async Task<Result<PrometheusResponse>> UpdateAsync(AfasSchedulerSetupDto dto, string schedulerName)
         {
             return await TryCatchExtension.ExecuteAndHandleErrorAsync(
                  async () =>
                  {
-                     await _masterRepository.AfasSchedulerSetupRepository.UpdateAsync(dto);
+                     await _masterRepository.AfasSchedulerSetupRepository.UpdateAsync(dto,schedulerName);
                      return PrometheusResponse.Success("", "Data Update is successful");
                  },
                  exception => new TryCatchExtensionResult<Result<PrometheusResponse>>
