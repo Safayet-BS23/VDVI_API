@@ -29,6 +29,9 @@ namespace VDVI.Services.APMA
         private readonly IHcsListRateTypesService _hcsListRateTypesService;
         private readonly IHcsListSubSourcesService _hcsListSubSourcesService;
         private readonly IHcsListSourcesService _hcsListSourcesService;
+        private readonly IHcsListRoomTypeService _hcsListRoomTypeService;
+        private readonly IHcsListBanquetingRoomTypesService _hcsListBanquetingRoomTypesService;
+        private readonly IHcsListStatisticsRevenueCodeService _hcsListStatisticsRevenueCodeService;
         private readonly ISchedulerSetupService _schedulerSetupService;
         public readonly ISchedulerLogService _schedulerLogService;
 
@@ -57,13 +60,16 @@ namespace VDVI.Services.APMA
             IHcsListRateTypesService hcsListRateTypesService,
             IHcsListSubSourcesService hcsListSubSourcesService,
             IHcsListSourcesService hcsListSourcesService,
+            IHcsListRoomTypeService hcsListRoomTypeService,
+            IHcsListBanquetingRoomTypesService hcsListBanquetingRoomTypesService,
+            IHcsListStatisticsRevenueCodeService hcsListStatisticsRevenueCodeService,
 
             ISchedulerSetupService schedulerSetupService,
             ISchedulerLogService schedulerLogService
 
 
             )
-        {
+        { 
             _reportSummary = reportSummary;
             _hcsBIReservationDashboardHistoryService = hcsBIReservationDashboardHistoryService;
             _hcsBIReservationDashboardFutureService = hcsBIReservationDashboardFutureService;
@@ -76,12 +82,14 @@ namespace VDVI.Services.APMA
             _hcsGetFullReservationDetailsService = hcsGetFullReservationDetailsService;
             _hcsListMealPlans = hcsListMealPlans;
             _hcsListBanquetingRoomsService = hcsListBanquetingRoomsService;
-
             _hcsRoomsService = hcsRoomsService;
             _hcsListPackagesService = hcsListPackagesService;
             _hcsListRateTypesService = hcsListRateTypesService;
             _hcsListSubSourcesService = hcsListSubSourcesService;
             _hcsListSourcesService = hcsListSourcesService;
+            _hcsListRoomTypeService = hcsListRoomTypeService;
+            _hcsListBanquetingRoomTypesService = hcsListBanquetingRoomTypesService;
+            _hcsListStatisticsRevenueCodeService = hcsListStatisticsRevenueCodeService;
             _schedulerSetupService = schedulerSetupService;
             _schedulerLogService = schedulerLogService;
             configurationBuilder.AddJsonFile("AppSettings.json");
@@ -213,7 +221,7 @@ namespace VDVI.Services.APMA
                         case "HcsListRateType":
                             response = await _hcsListRateTypesService.HcsListRateTypeAsync();
                             flag = response.IsSuccess;
-                            break; 
+                            break;
 
                         case "HcsListSubSources":
                             response = await _hcsListSubSourcesService.HcsListSubSourcesServiceAsync();
@@ -222,6 +230,18 @@ namespace VDVI.Services.APMA
 
                         case "HcsListSources":
                             response = await _hcsListSourcesService.HcsListSourcesServiceAsync();
+                            flag = response.IsSuccess;
+                            break;  
+                        case "HcsListStatisticsRevenueCodes":
+                            response = await _hcsListStatisticsRevenueCodeService.HcsListStatisticsRevenueCodeAsyc();
+                            flag = response.IsSuccess;
+                            break;
+                        case "HcsListRoomTypes":
+                            response = await _hcsListRoomTypeService.HcsListRoomTypeAsync();
+                            flag = response.IsSuccess;
+                            break;
+                        case "HcsListBanquetingRoomTypes":
+                            response = await _hcsListBanquetingRoomTypesService.HcsListBanquetingRoomTypesAsync();
                             flag = response.IsSuccess;
                             break;
 
