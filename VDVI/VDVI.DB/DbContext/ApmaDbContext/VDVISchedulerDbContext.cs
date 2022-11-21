@@ -39,10 +39,12 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
         private IDapperRepository<DbDailyHistory> _dailyHistory;
         private IDapperRepository<DbGetFullReservationDetails> _getFullReservationDetails;
         private IDapperRepository<DbBanquetingRooms> _banquetingRooms;
+        private IDapperRepository<DbBanquetingRoomTypes> _banquetingRoomTypes;
         private IDapperRepository<DbSources> _sources;
         private IDapperRepository<DbSubSources> _subsources;
         private IDapperRepository<DbPackages> _packages;
         private IDapperRepository<DbRooms> _rooms;
+        private IDapperRepository<DbRoomTypes> _roomTypes;
         private IDapperRepository<DbMealPlans> _mealplans;
 
 
@@ -77,6 +79,7 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
             TinyMapper.Bind<DailyHistoryDto, DbDailyHistory>();
             TinyMapper.Bind<GetFullReservationDetailsDto, DbGetFullReservationDetails>();
             TinyMapper.Bind<BanquetingRoomsDto, DbBanquetingRooms>();
+            TinyMapper.Bind<BanquetingRoomTypesDto, DbBanquetingRoomTypes>();
             TinyMapper.Bind<SourcesDto, DbSources>();
             TinyMapper.Bind<SubSourcesDto, DbSubSources>();
             TinyMapper.Bind<PackagesDto, DbPackages>();
@@ -109,6 +112,7 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
             TinyMapper.Bind<List<DailyHistoryDto>, List<DbDailyHistory>>();
             TinyMapper.Bind<List<GetFullReservationDetailsDto>, List<DbGetFullReservationDetails>>();
             TinyMapper.Bind<List<BanquetingRoomsDto>, List<DbBanquetingRooms>>();
+            TinyMapper.Bind<List<BanquetingRoomTypesDto>, List<DbBanquetingRoomTypes>>();
             TinyMapper.Bind<List<SourcesDto>, List<DbSources>>();
             TinyMapper.Bind<List<SubSourcesDto>, List<DbSubSources>>();
             TinyMapper.Bind<List<PackagesDto>, List<DbPackages>>();
@@ -141,10 +145,12 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
         public IDapperRepository<DbDailyHistory> DailyHistory => _dailyHistory ??= new DapperRepository<DbDailyHistory>(Connection);
         public IDapperRepository<DbGetFullReservationDetails> GetFullReservationDetails => _getFullReservationDetails ??= new DapperRepository<DbGetFullReservationDetails>(Connection);
         public IDapperRepository<DbBanquetingRooms> BanquetingRooms => _banquetingRooms ??= new DapperRepository<DbBanquetingRooms>(Connection);
+        public IDapperRepository<DbBanquetingRoomTypes> BanquetingRoomTypes => _banquetingRoomTypes ??= new DapperRepository<DbBanquetingRoomTypes>(Connection);
         public IDapperRepository<DbSources> Sources => _sources ??= new DapperRepository<DbSources>(Connection);
         public IDapperRepository<DbSubSources> SubSources => _subsources ??= new DapperRepository<DbSubSources>(Connection);
         public IDapperRepository<DbPackages> Packages => _packages ??= new DapperRepository<DbPackages>(Connection);
         public IDapperRepository<DbRooms> Rooms => _rooms ??= new DapperRepository<DbRooms>(Connection);
+        public IDapperRepository<DbRoomTypes> RoomTypes => _roomTypes ??= new DapperRepository<DbRoomTypes>(Connection);
         public IDapperRepository<DbMealPlans> MealPlans => _mealplans ??= new DapperRepository<DbMealPlans>(Connection);
     }
 }

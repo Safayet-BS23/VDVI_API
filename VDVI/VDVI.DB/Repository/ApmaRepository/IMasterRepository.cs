@@ -31,7 +31,9 @@ namespace VDVI.ApmaRepository
         IHcsDailyFutureAuditRepository HcsDailyHistoryFutureAuditRepository { get; }
         IHcsGetFullReservationDetailsRepository HcsGetFullReservationDetailsRepository { get; }
         IHcsBanquetingRoomsRepository HcsBanquetingRoomsRepository { get; }
+        IHcsListBanquetingRoomTypesRepository HcsListBanquetingRoomTypesRepository { get; }
         IHcsRoomsRepository HcsRoomsRepository { get; }
+        IHcsListRoomTypesRepository HcsListRoomTypesRepository { get; }
 
         // Sources
         IHcsBISourceStatisticsHistoryRepository HcsBISourceStatisticsHistoryRepository { get; }
