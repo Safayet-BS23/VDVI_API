@@ -28,6 +28,7 @@ namespace VDVI.ApmaRepository
         public IHcsBIRatePlanStatisticsFutureRepository HcsBIRatePlanStatisticsFutureRepository => new HcsBIRatePlanStatisticsFutureRepository(_dbContext);
         public IHcsBIRatePlanStatisticsFutureAuditRepository HcsBIRatePlanStatisticsFutureAuditRepository => new HcsBIRatePlanStatisticsFutureAuditRepository(_dbContext);
         public IHcsListRateTypeRepository HcsListRateTypeRepository => new HcsListRateTypeRepository(_dbContext);
+        public IHcsStatisticsRevenueCodesRepository HcsStatisticsRevenueCodesRepository => new HcsStatisticsRevenueCodesRepository(_dbContext);
 
         // RoomSummary
         public IHcsRoomSummaryHistoryRepository HcsRoomSummaryHistoryRepository => new HcsRoomSummaryHistoryRepository(_dbContext);

@@ -46,6 +46,7 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
         private IDapperRepository<DbRooms> _rooms;
         private IDapperRepository<DbRoomTypes> _roomTypes;
         private IDapperRepository<DbMealPlans> _mealplans;
+        private IDapperRepository<DbStatisticsRevenueCodes> _statisticsRevenueCodes;
 
 
 
@@ -85,6 +86,7 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
             TinyMapper.Bind<PackagesDto, DbPackages>();
             TinyMapper.Bind<RoomsDto, DbRooms>();
             TinyMapper.Bind<MealPlansDto, DbMealPlans>();
+            TinyMapper.Bind<StatisticsRevenueCodesDto, DbStatisticsRevenueCodes>();
 
             // Dto to Db List
             TinyMapper.Bind<List<SchedulerLogDto>, List<DbSchedulerLog>>();
@@ -118,6 +120,7 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
             TinyMapper.Bind<List<PackagesDto>, List<DbPackages>>();
             TinyMapper.Bind<List<RoomsDto>, List<DbRooms>>();
             TinyMapper.Bind<List<MealPlansDto>, List<DbMealPlans>>();
+            TinyMapper.Bind< List<StatisticsRevenueCodesDto>, List<DbStatisticsRevenueCodes>>();
 
         }
         public IDapperRepository<DbSchedulerSetup> SchedulerSetup => _schedulerSetup ??= new DapperRepository<DbSchedulerSetup>(Connection);
@@ -152,5 +155,6 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
         public IDapperRepository<DbRooms> Rooms => _rooms ??= new DapperRepository<DbRooms>(Connection);
         public IDapperRepository<DbRoomTypes> RoomTypes => _roomTypes ??= new DapperRepository<DbRoomTypes>(Connection);
         public IDapperRepository<DbMealPlans> MealPlans => _mealplans ??= new DapperRepository<DbMealPlans>(Connection);
+        public IDapperRepository<DbStatisticsRevenueCodes> StatisticsRevenueCode => _statisticsRevenueCodes ??= new DapperRepository<DbStatisticsRevenueCodes>(Connection);
     }
 }

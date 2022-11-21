@@ -17,6 +17,7 @@ namespace VDVI.ApmaRepository
         IHcsBIRevenueHistoryRepository HcsBIRevenueHistoryRepository { get; }
         IHcsBIRevenueFutureRepository HcsBIRevenueFutureRepository { get; }
         IHcsListRateTypeRepository HcsListRateTypeRepository { get; }
+        IHcsStatisticsRevenueCodesRepository HcsStatisticsRevenueCodesRepository { get; }
 
         // RoomSummary
         IHcsRoomSummaryHistoryRepository HcsRoomSummaryHistoryRepository { get; }
