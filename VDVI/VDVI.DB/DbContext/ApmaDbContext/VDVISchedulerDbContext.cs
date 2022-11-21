@@ -85,6 +85,7 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
             TinyMapper.Bind<SubSourcesDto, DbSubSources>();
             TinyMapper.Bind<PackagesDto, DbPackages>();
             TinyMapper.Bind<RoomsDto, DbRooms>();
+            TinyMapper.Bind<RoomTypesDto, DbRoomTypes>();
             TinyMapper.Bind<MealPlansDto, DbMealPlans>();
             TinyMapper.Bind<StatisticsRevenueCodesDto, DbStatisticsRevenueCodes>();
 
@@ -119,6 +120,7 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
             TinyMapper.Bind<List<SubSourcesDto>, List<DbSubSources>>();
             TinyMapper.Bind<List<PackagesDto>, List<DbPackages>>();
             TinyMapper.Bind<List<RoomsDto>, List<DbRooms>>();
+            TinyMapper.Bind<List<RoomTypesDto>, List<DbRoomTypes>>();
             TinyMapper.Bind<List<MealPlansDto>, List<DbMealPlans>>();
             TinyMapper.Bind< List<StatisticsRevenueCodesDto>, List<DbStatisticsRevenueCodes>>();
 

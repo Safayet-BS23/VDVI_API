@@ -4,9 +4,11 @@ using Framework.Core.Exceptions;
 using Framework.Core.Extensions;
 using Framework.Core.Utility;
 using SOAPService;
+using System;
 using System.Collections.Generic;
 using System.Drawing.Printing;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using VDVI.DB.Dtos;
 using VDVI.Services.Interfaces;
@@ -57,8 +59,8 @@ namespace VDVI.Services
                 {
                     PropertyCode = propertyCode,
                     RoomType = item.RoomType,
-                    Description = item.Description,
-                    InfoText = item.InfoText,
+                    //Description = string.Join(",", item.Description), 
+                    //InfoText = string.Join(",", item.InfoText), 
                     ListOrder = item.ListOrder,
                     Inventory = item.Inventory,
                     BedsInRoom = item.BedsInRoom,
