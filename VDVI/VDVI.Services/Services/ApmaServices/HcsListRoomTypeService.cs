@@ -59,8 +59,8 @@ namespace VDVI.Services
                 {
                     PropertyCode = propertyCode,
                     RoomType = item.RoomType,
-                    //Description = string.Join(",", item.Description), 
-                    //InfoText = string.Join(",", item.InfoText), 
+                    Description = string.Join(",", item.Description),
+                    InfoText = string.Join(",", item.InfoText),
                     ListOrder = item.ListOrder,
                     Inventory = item.Inventory,
                     BedsInRoom = item.BedsInRoom,
