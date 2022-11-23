@@ -47,6 +47,7 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
         private IDapperRepository<DbRoomTypes> _roomTypes;
         private IDapperRepository<DbMealPlans> _mealplans;
         private IDapperRepository<DbStatisticsRevenueCodes> _statisticsRevenueCodes;
+        private IDapperRepository<DbFolioDetail> _folioDetails;
 
 
 
@@ -88,6 +89,7 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
             TinyMapper.Bind<RoomTypesDto, DbRoomTypes>();
             TinyMapper.Bind<MealPlansDto, DbMealPlans>();
             TinyMapper.Bind<StatisticsRevenueCodesDto, DbStatisticsRevenueCodes>();
+            TinyMapper.Bind<FolioDetailDto, DbFolioDetail>();
 
             // Dto to Db List
             TinyMapper.Bind<List<SchedulerLogDto>, List<DbSchedulerLog>>();
@@ -123,6 +125,7 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
             TinyMapper.Bind<List<RoomTypesDto>, List<DbRoomTypes>>();
             TinyMapper.Bind<List<MealPlansDto>, List<DbMealPlans>>();
             TinyMapper.Bind< List<StatisticsRevenueCodesDto>, List<DbStatisticsRevenueCodes>>();
+            TinyMapper.Bind<DbFolioDetail, FolioDetailDto>();
 
         }
         public IDapperRepository<DbSchedulerSetup> SchedulerSetup => _schedulerSetup ??= new DapperRepository<DbSchedulerSetup>(Connection);
@@ -156,6 +159,7 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
         public IDapperRepository<DbPackages> Packages => _packages ??= new DapperRepository<DbPackages>(Connection);
         public IDapperRepository<DbRooms> Rooms => _rooms ??= new DapperRepository<DbRooms>(Connection);
         public IDapperRepository<DbRoomTypes> RoomTypes => _roomTypes ??= new DapperRepository<DbRoomTypes>(Connection);
+        public IDapperRepository<DbFolioDetail> FolioDetails => _folioDetails??= new DapperRepository<DbFolioDetail>(Connection);
         public IDapperRepository<DbMealPlans> MealPlans => _mealplans ??= new DapperRepository<DbMealPlans>(Connection);
         public IDapperRepository<DbStatisticsRevenueCodes> StatisticsRevenueCode => _statisticsRevenueCodes ??= new DapperRepository<DbStatisticsRevenueCodes>(Connection);
     }

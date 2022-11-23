@@ -64,7 +64,8 @@ namespace VDVI.Client.IoC
             container.RegisterType<IHcsListRoomTypeService, HcsListRoomTypeService>();
             container.RegisterType<IHcsListStatisticsRevenueCodeService, HcsListStatisticsRevenueCodeService>();
             container.RegisterType<IHcsListBanquetingRoomTypesService, HcsListBanquetingRoomTypesService>();
-              
+            container.RegisterType<IHcsListFolioDetailService, HcsListFolioDetailService>();
+
 
             //Child-APMA
             container.RegisterType<IHcsRatePlanStatisticsHistoryService, HcsRatePlanStatisticsHistoryService>();
@@ -92,6 +93,7 @@ namespace VDVI.Client.IoC
             container.RegisterType<IHcsListRoomTypesService, HcsListRoomTypesService>();  
             container.RegisterType<IHcsStatisticsRevenueCodeService, HcsStatisticsRevenueCodeService>();
             container.RegisterType<IHcsListBanquetingRoomTypeService, HcsBanquetingRoomTypeService>();
+            container.RegisterType<IHcsFolioDetailService, HcsFolioDetailService>();
 
 
             //AFAS-Master

@@ -30,6 +30,10 @@ namespace VDVI.ApmaRepository
         public IHcsListRateTypeRepository HcsListRateTypeRepository => new HcsListRateTypeRepository(_dbContext);
         public IHcsStatisticsRevenueCodesRepository HcsStatisticsRevenueCodesRepository => new HcsStatisticsRevenueCodesRepository(_dbContext);
 
+        // Financials
+        public IHcsFolioDetailsRepository HcsFolioDetailsRepository => new HcsFolioDetailsRepository(_dbContext);
+
+
         // RoomSummary
         public IHcsRoomSummaryHistoryRepository HcsRoomSummaryHistoryRepository => new HcsRoomSummaryHistoryRepository(_dbContext);
         public IHcsBIOccupancyHistoryRepository HcsBIOccupancyHistoryRepository => new HcsBIOccupancyHistoryRepository(_dbContext);
