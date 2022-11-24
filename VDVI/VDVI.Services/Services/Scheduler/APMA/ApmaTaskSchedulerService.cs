@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Framework.Core.Base.ModelEntity;
+using Framework.Core.Enums;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Linq;
@@ -109,9 +110,9 @@ namespace VDVI.Services.APMA
             {
                 var scheduler = new1[i];
 
-                // LastBusinessDate marked to NextExecutionDate 
-                //if (scheduler.LastBusinessDate != null)
-                //    scheduler.LastBusinessDate = ((DateTime)scheduler.LastBusinessDate).AddDays(1);
+
+                if (scheduler.SchedulerStatus == SchedulerStatus.Processing.ToString())
+                    continue;
 
                 if (
                      scheduler.NextExecutionDateTime <= currentDateTime
@@ -146,6 +147,11 @@ namespace VDVI.Services.APMA
                     if (_endDate >= currentDateTime) _endDate = currentDateTime.AddDays(-1); // if endDate cross the CurrentDate; then endDate would be change 
 
                     if (_endDate.Date < _startDate.Date) _endDate = _startDate;
+
+                    //Update SchedulerSetUp Status;
+                    scheduler.SchedulerStatus = SchedulerStatus.Processing.ToString();
+                    await _schedulerSetupService.UpdateAsync(scheduler);
+
 
                     switch (scheduler.SchedulerName)
                     {
@@ -257,6 +263,7 @@ namespace VDVI.Services.APMA
 
                     if (flag)
                     {
+                        dtos.SchedulerStatus = SchedulerStatus.Succeed.ToString();
                         await _schedulerSetupService.SaveWithProcAsync(dtos);
                         await _schedulerLogService.SaveWithProcAsync(scheduler.SchedulerName, logDayLimits);
                     }

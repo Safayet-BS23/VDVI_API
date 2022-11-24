@@ -13,6 +13,7 @@ namespace VDVI.DB.Dtos
         public bool isFuture { get; set; }
         public bool isActive { get; set; }
         public int DaysLimit { get; set; }
-        public DateTime? LastBusinessDate { get; set; }  
+        public DateTime? LastBusinessDate { get; set; }
+        public string SchedulerStatus { get; set; }
     }
 }

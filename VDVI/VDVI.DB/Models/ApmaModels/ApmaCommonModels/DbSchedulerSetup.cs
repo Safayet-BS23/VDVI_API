@@ -19,5 +19,7 @@ namespace VDVI.Repository.DB
         public bool isActive { get; set; }
         public int DaysLimit { get; set; }
         public DateTime? LastBusinessDate { get; set; }
+        public string SchedulerStatus { get; set; }
+
     }
 }

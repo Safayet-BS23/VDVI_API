@@ -10,6 +10,7 @@ using VDVI.Repository.DB;
 using VDVI.DB.Dtos;
 using CSharpFunctionalExtensions;
 using Framework.Core.Base.ModelEntity;
+using Framework.Core.Enums;
 
 namespace VDVI.Repository.ApmaRepository.Implementation
 {
@@ -39,7 +40,7 @@ namespace VDVI.Repository.ApmaRepository.Implementation
         {
             var entities = TinyMapper.Map<DbSchedulerSetup>(dto);
 
-            var res=await _tblRepository.UpdateAsync(entities);
+            var res=await _tblRepository.UpdateAsync(p=>p.SchedulerName==entities.SchedulerName,entities);
 
             return dto;
         }
@@ -52,6 +53,7 @@ namespace VDVI.Repository.ApmaRepository.Implementation
                     NextExecutionDateTime = dto.NextExecutionDateTime,
                     LastExecutionDateTime = dto.LastExecutionDateTime,
                     LastBusinessDate = dto.LastBusinessDate,
+                    SchedulerStatus=dto.SchedulerStatus
 
                 },
                 commandType: CommandType.StoredProcedure);
