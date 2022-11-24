@@ -8,7 +8,7 @@ using VDVI.DB.Dtos;
 
 namespace VDVI.Services.Interfaces
 {
-    public interface IHcsDailyHistoryService
+    public interface IHcsDailyHistoryHistoryService
     {
         Task<Result<PrometheusResponse>> InsertAsync(DailyHistoryDto dto);
         Task<Result<PrometheusResponse>> BulkInsertAsync(List<DailyHistoryDto> dtos);

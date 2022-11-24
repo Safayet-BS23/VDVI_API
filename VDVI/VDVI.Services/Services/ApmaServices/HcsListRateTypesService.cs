@@ -1,16 +1,13 @@
 ﻿using CSharpFunctionalExtensions;
-using Framework.Core.ApmaExtensions;
 using Framework.Core.Base.ModelEntity;
 using Framework.Core.Exceptions;
-using Framework.Core.Extensions;
 using Framework.Core.Utility;
 using SOAPService;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using VDVI.DB.Dtos;
-using VDVI.Services.Interfaces; 
+using VDVI.Services.Interfaces;
 
 namespace VDVI.Services
 {
@@ -24,7 +21,7 @@ namespace VDVI.Services
         }
 
 
-        public async Task<Result<PrometheusResponse>> HcsListRateTypeAsync()
+        public async Task<Result<PrometheusResponse>> HcsListRateTypesAsync()
         {
             var result = new Result<PrometheusResponse>();
 
@@ -33,7 +30,7 @@ namespace VDVI.Services
               {
                   Authentication pmsAuthentication = GetApmaAuthCredential();
                   HcsListRateTypesResponse res = new HcsListRateTypesResponse();
-                  List<RateTypeDto> ratetypedto = new List<RateTypeDto>();
+                  List<RateTypesDto> ratetypedto = new List<RateTypesDto>();
 
                   for (int i = 0; i < ApmaProperties.Length; i++)
                   {
@@ -54,12 +51,12 @@ namespace VDVI.Services
                   RethrowException = false
               });
         }
-        private void FormatSummaryObject(List<ListRateType> listRateType, List<RateTypeDto> ratetypedto, string propertyCode)
+        private void FormatSummaryObject(List<ListRateType> listRateType, List<RateTypesDto> ratetypedto, string propertyCode)
         {
 
             foreach (var item in listRateType)
             {
-                RateTypeDto dto = new RateTypeDto()
+                RateTypesDto dto = new RateTypesDto()
                 {
                     PropertyCode = propertyCode,
                     Code = item.Code,

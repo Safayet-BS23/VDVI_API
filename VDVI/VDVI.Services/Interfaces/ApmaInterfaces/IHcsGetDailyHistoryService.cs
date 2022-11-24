@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace VDVI.Services.Interfaces
 {
-    public interface IHcsGetDailyHistoryService
+    public interface IHcsGetDailyHistoryHistoryService
     {
-        Task<Result<PrometheusResponse>> HcsGetDailyHistoryAsyc(DateTime StartDate, DateTime EndDate);
+        Task<Result<PrometheusResponse>> HcsGetDailyHistoryHistoryAsyc(DateTime StartDate, DateTime EndDate);
         Task<Result<PrometheusResponse>> GetListHcsDailyHistoryAsync(DateTime StartDate, DateTime EndDate, string propertyCode);
     }
 }

@@ -12,15 +12,15 @@ using VDVI.Services.Interfaces;
 
 namespace VDVI.Services
 {
-    public class HcsGetDailyHistoryService : ApmaBaseService, IHcsGetDailyHistoryService
+    public class HcsGetDailyHistoryHistoryService : ApmaBaseService, IHcsGetDailyHistoryHistoryService
     {
-        private readonly IHcsDailyHistoryService _hcsDailyHistoryService;
+        private readonly IHcsDailyHistoryHistoryService _hcsDailyHistoryHistoryService;
 
-        public HcsGetDailyHistoryService(IHcsDailyHistoryService hcsDailyHistoryService)
+        public HcsGetDailyHistoryHistoryService(IHcsDailyHistoryHistoryService hcsDailyHistoryService)
         {
-            _hcsDailyHistoryService = hcsDailyHistoryService;
+            _hcsDailyHistoryHistoryService = hcsDailyHistoryService;
         }
-        public async Task<Result<PrometheusResponse>> HcsGetDailyHistoryAsyc(DateTime StartDate, DateTime EndDate)
+        public async Task<Result<PrometheusResponse>> HcsGetDailyHistoryHistoryAsyc(DateTime StartDate, DateTime EndDate)
         {            
             return await TryCatchExtension.ExecuteAndHandleErrorAsync(
                  async () =>
@@ -29,7 +29,7 @@ namespace VDVI.Services
 
                      if (response.IsSuccess)
                      {
-                         return await _hcsDailyHistoryService.BulkInsertWithProcAsync((List<DailyHistoryDto>)response.Value.Data);
+                         return await _hcsDailyHistoryHistoryService.BulkInsertWithProcAsync((List<DailyHistoryDto>)response.Value.Data);
                      }
 
                      return PrometheusResponse.Failure(response.Value.Message);

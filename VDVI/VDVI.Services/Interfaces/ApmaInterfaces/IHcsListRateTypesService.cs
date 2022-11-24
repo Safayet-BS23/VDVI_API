@@ -6,6 +6,6 @@ namespace VDVI.Services.Interfaces
 {
     public interface IHcsListRateTypesService
     {
-         Task<Result<PrometheusResponse>> HcsListRateTypeAsync();
+         Task<Result<PrometheusResponse>> HcsListRateTypesAsync();
     }
 }

@@ -11,7 +11,7 @@ using VDVI.Services.Interfaces;
 
 namespace VDVI.Services
 {
-    public class HcsDailyHistoryService : IHcsDailyHistoryService
+    public class HcsDailyHistoryService : IHcsDailyHistoryHistoryService
     {
         private readonly IMasterRepository _managementRepository;
 

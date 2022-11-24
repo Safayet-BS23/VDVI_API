@@ -15,12 +15,12 @@ namespace VDVI.Services
     public class HcsListFolioDetailService : ApmaBaseService, IHcsListFolioDetailService
     {
         private readonly IHcsFolioDetailService _hcsFolioDetailService;
-        private readonly IHcsGetDailyHistoryService _hcsGetDailyHistoryService;
+        private readonly IHcsGetDailyHistoryHistoryService _hcsGetDailyHistoryService;
 
         public HcsListFolioDetailService
             (
                 IHcsFolioDetailService hcsFolioDetailService,
-                IHcsGetDailyHistoryService hcsGetDailyHistoryService
+                IHcsGetDailyHistoryHistoryService hcsGetDailyHistoryService
             )
         {
             _hcsFolioDetailService = hcsFolioDetailService;

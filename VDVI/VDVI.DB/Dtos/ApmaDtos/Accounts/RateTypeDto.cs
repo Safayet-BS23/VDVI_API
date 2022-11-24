@@ -3,7 +3,7 @@ using VDVI.Repository.Models;
 
 namespace VDVI.DB.Dtos
 {
-    public class RateTypeDto : Audit
+    public class RateTypesDto : Audit
     {
         public string PropertyCode { get; set; } 
         public string Code { get; set; } 
