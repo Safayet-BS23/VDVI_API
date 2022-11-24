@@ -1,16 +1,15 @@
 ﻿using Dapper;
-using MicroOrm.Dapper.Repositories; 
-using Nelibur.ObjectMapper;  
+using MicroOrm.Dapper.Repositories;
+using Nelibur.ObjectMapper;
 using System.Collections.Generic;
-using System.Data; 
+using System.Data;
 using System.Threading.Tasks;
 using VDVI.ApmaRepository.Interfaces;
-using VDVI.Repository.DbContext.ApmaDbContext;  
-using VDVI.Repository.DB; 
+using VDVI.Repository.DbContext.ApmaDbContext;
+using VDVI.Repository.DB;
 using VDVI.DB.Dtos;
 using CSharpFunctionalExtensions;
 using Framework.Core.Base.ModelEntity;
-using Framework.Core.Enums;
 
 namespace VDVI.Repository.ApmaRepository.Implementation
 {
@@ -69,6 +68,13 @@ namespace VDVI.Repository.ApmaRepository.Implementation
 
 
         }
+
+        public async Task ResetScheduleStatusAsync()
+        {
+            var result = await _dbContext.Connection.QueryAsync<SchedulerSetupDto>("[dbo].[sp_hce_ResetSchedulerStatus]",
+                 commandType: CommandType.StoredProcedure);
+        }
+
         public async Task<SchedulerSetupDto> FindByIdAsync(string schedulerName)
         {
             var dbEntity = await _tblRepository.FindAsync(x => x.SchedulerName == schedulerName);

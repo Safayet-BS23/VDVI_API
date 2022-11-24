@@ -66,6 +66,12 @@ namespace VDVI.Repository.Implementation
 
 
         }
+
+        public async Task ResetScheduleStatusAsync()
+        {
+            var result = await _dbContext.Connection.QueryAsync<SchedulerSetupDto>("[dbo].[sp_dmf_ResetSchedulerStatus]",
+                 commandType: CommandType.StoredProcedure);
+        }
         public async Task<AfasSchedulerSetupDto> FindByIdAsync(string schedulerName)
         {
             var dbEntity = await _tblRepository.FindAsync(x => x.SchedulerName == schedulerName);

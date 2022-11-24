@@ -15,6 +15,7 @@ namespace VDVI.Services.Interfaces.APMA
         Task<IEnumerable<SchedulerSetupDto>> FindByAllScheduleAsync();
         Task<Result<PrometheusResponse>> FindByMethodNameAsync(string methodName);
         Task<Result<PrometheusResponse>> FindByIdAsync(string schedulerName);
+        Task<Result<PrometheusResponse>> ResetStatusAsync();
         Task<bool> DeleteByPropertyCodeAsync(string schedulerName);
     }
 }

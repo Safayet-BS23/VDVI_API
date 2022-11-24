@@ -70,6 +70,21 @@ namespace VDVI.Services.AFAS
 
             return result;
         }
+
+        public async Task<Result<PrometheusResponse>> ResetStatusAsync()
+        {
+            return await TryCatchExtension.ExecuteAndHandleErrorAsync(
+                async () =>
+                {
+                    await _masterRepository.AfasSchedulerSetupRepository.ResetScheduleStatusAsync();
+                    return PrometheusResponse.Success("", "AFAS Scheduler Status reset successfully.");
+                },
+                exception => new TryCatchExtensionResult<Result<PrometheusResponse>>
+                {
+                    DefaultResult = PrometheusResponse.Failure($"Error message: {exception.Message}. Details: {exception.GetExceptionDetailMessage()}"),
+                    RethrowException = false
+                });
+        }
         public async Task<Result<PrometheusResponse>> FindByMethodNameAsync(string methodName)
         {
             throw new NotImplementedException();

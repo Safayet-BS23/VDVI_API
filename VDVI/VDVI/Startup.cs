@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using System;
 using Unity;
+using VDVI.Client.Configurations;
 using VDVI.Client.IoC;
 using VDVI.Services.Configurations;
 using VDVI.Services.Interfaces.AFAS;
@@ -60,6 +61,9 @@ namespace VDVI
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            // Startup Query Execution
+            app.UseStartupQuery();
 
 
             app.UseDefaultFiles()

@@ -17,5 +17,6 @@ namespace VDVI.ApmaRepository.Interfaces
         Task<IEnumerable<SchedulerSetupDto>> FindByAllScheduleAsync();
         Task<SchedulerSetupDto> FindByIdAsync(string schedulerName);
         Task<bool> DeleteByPropertyCodeAsync(string schedulerName);
+        Task ResetScheduleStatusAsync();
     }
 }

@@ -272,5 +272,10 @@ namespace VDVI.Services.APMA
 
             }
         }
+
+        public async Task ResetStatusAsync()
+        {
+           await _schedulerSetupService.ResetStatusAsync();
+        }
     }
 }

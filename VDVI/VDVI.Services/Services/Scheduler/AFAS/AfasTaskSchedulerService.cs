@@ -124,5 +124,10 @@ namespace VDVI.Services.AFAS
                 }
             }
         }
+
+        public async Task ResetStatusAsync()
+        {
+            await _afasschedulerSetupService.ResetStatusAsync();
+        }
     }
 }
