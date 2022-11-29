@@ -6,12 +6,12 @@ namespace VDVI.ApmaRepository.Interfaces
 {
     public interface IHcsListRateTypeRepository
     {
-        Task<RateTypeDto> InsertAsync(RateTypeDto dto);
-        Task<IEnumerable<RateTypeDto>> BulkInsertAsync(IEnumerable<RateTypeDto> dto);
-        Task<string> BulkInsertWithProcAsync(IEnumerable<RateTypeDto> dto);
-        Task<RateTypeDto> UpdateAsync(RateTypeDto dto);
-        Task<IEnumerable<RateTypeDto>> GetAllByPropertyCodeAsync(string propertyCode);
-        Task<RateTypeDto> FindByIdAsync(int id);
+        Task<RateTypesDto> InsertAsync(RateTypesDto dto);
+        Task<IEnumerable<RateTypesDto>> BulkInsertAsync(IEnumerable<RateTypesDto> dto);
+        Task<string> BulkInsertWithProcAsync(IEnumerable<RateTypesDto> dto);
+        Task<RateTypesDto> UpdateAsync(RateTypesDto dto);
+        Task<IEnumerable<RateTypesDto>> GetAllByPropertyCodeAsync(string propertyCode);
+        Task<RateTypesDto> FindByIdAsync(int id);
         Task<bool> DeleteByPropertyCodeAsync(string propertyCode); 
     }
 }

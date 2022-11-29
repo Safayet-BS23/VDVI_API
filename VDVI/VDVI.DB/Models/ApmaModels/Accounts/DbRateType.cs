@@ -4,8 +4,8 @@ using VDVI.Repository.Models;
 
 namespace VDVI.Repository.DB
 {
-    [Table("[hce].[RateType]")]
-    public class DbRateType : Audit
+    [Table("[hce].[RateTypes]")]
+    public class DbRateTypes : Audit
     {
         public string PropertyCode { get; set; } 
         public string Code { get; set; } 

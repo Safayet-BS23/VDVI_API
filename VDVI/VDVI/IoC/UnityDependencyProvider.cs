@@ -48,7 +48,7 @@ namespace VDVI.Client.IoC
             container.RegisterType<IHcsBIRatePlanStatisticsFutureService, HcsBIRatePlanStatisticsFutureService>();            
             container.RegisterType<IHcsBISourceStatisticsHistoryService, HcsBISourceStatisticsHistoryService>();
             container.RegisterType<IHcsBISourceStatisticsFutureService, HcsBISourceStatisticsFutureService>();
-            container.RegisterType<IHcsGetDailyHistoryService, HcsGetDailyHistoryService>();
+            container.RegisterType<IHcsGetDailyHistoryHistoryService, HcsGetDailyHistoryHistoryService>();
             container.RegisterType<IHcsRoomSummaryService, HcsRoomSummaryService>();
             container.RegisterType<IHcsLedgerBalanceService, HcsLedgerBalanceService>();
             container.RegisterType<IHcsGetDailyFutureService, HcsGetDailyHistoryFutureService>(); 
@@ -79,7 +79,7 @@ namespace VDVI.Client.IoC
             container.RegisterType<IHcsBIRoomsFutureService, HcsBIRoomsFutureService>();
             container.RegisterType<IHcsBIRevenueHistoryService, HcsBIRevenueHistoryService>();
             container.RegisterType<IHcsBIRevenueFutureService, HcsBIRevenueFutureService>();
-            container.RegisterType<IHcsDailyHistoryService, HcsDailyHistoryService>();   
+            container.RegisterType<IHcsDailyHistoryHistoryService, HcsDailyHistoryService>();   
             container.RegisterType<IHcsSourceStasticsFutureService, HcsSourceStasticsFutureService>();
             container.RegisterType<IHcsRatePlanStatisticsFutureService, HcsRatePlanStatisticsFutureService>();
             container.RegisterType<IHcsDailyFutureService, HcsDailyHistoryFutureService>(); 

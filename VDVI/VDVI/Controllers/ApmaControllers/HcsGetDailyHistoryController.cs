@@ -11,16 +11,16 @@ namespace VDVI.Client.Controllers.ApmaControllers
     [ApiController]
     public class HcsGetDailyHistoryController : ControllerBase
     {
-        public readonly IHcsGetDailyHistoryService _hcsGetDailyHistoryService;
+        public readonly IHcsGetDailyHistoryHistoryService _hcsGetDailyHistoryService;
 
-        public HcsGetDailyHistoryController(IHcsGetDailyHistoryService hcsGetDailyHistoryService)
+        public HcsGetDailyHistoryController(IHcsGetDailyHistoryHistoryService hcsGetDailyHistoryService)
         {
             _hcsGetDailyHistoryService = hcsGetDailyHistoryService;
         }
-        [HttpPost("HcsGetDailyHistory")]
-        public async Task<IActionResult> HcsGetDailyHistory(DateTime startDate, DateTime endDate)
+        [HttpPost("HcsGetDailyHistoryHistory")]
+        public async Task<IActionResult> HcsGetDailyHistoryHistory(DateTime startDate, DateTime endDate)
         {
-            var response = await _hcsGetDailyHistoryService.HcsGetDailyHistoryAsyc(startDate, endDate);
+            var response = await _hcsGetDailyHistoryService.HcsGetDailyHistoryHistoryAsyc(startDate, endDate);
             return Ok(response);
         }
     }

@@ -25,42 +25,42 @@ namespace VDVI.Repository.ApmaRepository.Implementation
             _ledgerBalance = _dbContext.LedgerBalance;
         }
 
-        public async Task<IEnumerable<RateTypeDto>> BulkInsertAsync(IEnumerable<RateTypeDto> dto)
+        public async Task<IEnumerable<RateTypesDto>> BulkInsertAsync(IEnumerable<RateTypesDto> dto)
         {
             await _ledgerBalance.BulkInsertAsync(TinyMapper.Map<List<DbLedgerBalanceHistory>>(dto));
             return dto;
         }
 
-        public async Task<string> BulkInsertWithProcAsync(IEnumerable<RateTypeDto> dto)
+        public async Task<string> BulkInsertWithProcAsync(IEnumerable<RateTypesDto> dto)
         {
             DataTable dt = JsonConvert.DeserializeObject<DataTable>(JsonConvert.SerializeObject(dto));
-            var queryResult = await _dbContext.Connection.QueryAsync<string>("spINSERT_hce_RateType", new { RateType_UDT = dt }, commandType: CommandType.StoredProcedure);
+            var queryResult = await _dbContext.Connection.QueryAsync<string>("spINSERT_hce_RateTypes", new { RateTypes = dt }, commandType: CommandType.StoredProcedure);
 
             return queryResult.ToString();
         }
 
-        public async Task<RateTypeDto> FindByIdAsync(int id)
+        public async Task<RateTypesDto> FindByIdAsync(int id)
         {
             var dbEntity = await _ledgerBalance.FindAsync(x => x.PropertyCode == "");
-            return TinyMapper.Map<RateTypeDto>(dbEntity);
+            return TinyMapper.Map<RateTypesDto>(dbEntity);
         }
 
-        public async Task<IEnumerable<RateTypeDto>> GetAllByPropertyCodeAsync(string propertyCode)
+        public async Task<IEnumerable<RateTypesDto>> GetAllByPropertyCodeAsync(string propertyCode)
         {
             IEnumerable<DbLedgerBalanceHistory> dbEntities = await _ledgerBalance.SetOrderBy(OrderInfo.SortDirection.DESC, x => x.PropertyCode).FindAllAsync(x => x.PropertyCode == propertyCode);
 
-            var entities = TinyMapper.Map<List<RateTypeDto>>(dbEntities);
+            var entities = TinyMapper.Map<List<RateTypesDto>>(dbEntities);
 
             return entities;
         }
 
-        public async Task<RateTypeDto> InsertAsync(RateTypeDto dto)
+        public async Task<RateTypesDto> InsertAsync(RateTypesDto dto)
         {
             await _ledgerBalance.InsertAsync(TinyMapper.Map<DbLedgerBalanceHistory>(dto));
             return dto;
         }
 
-        public async Task<RateTypeDto> UpdateAsync(RateTypeDto dto)
+        public async Task<RateTypesDto> UpdateAsync(RateTypesDto dto)
         {
             await _ledgerBalance.UpdateAsync(TinyMapper.Map<DbLedgerBalanceHistory>(dto));
             return dto;
