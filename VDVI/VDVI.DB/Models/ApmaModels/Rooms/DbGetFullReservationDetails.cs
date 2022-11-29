@@ -1,11 +1,7 @@
-﻿using OfficeOpenXml.Style;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 using VDVI.Repository.Models;
 
-namespace VDVI.DB.Dtos
+namespace VDVI.Repository.DB
 {
     [Table("[hce].[GetFullReservationDetails]")]
     public class DbGetFullReservationDetails : Audit

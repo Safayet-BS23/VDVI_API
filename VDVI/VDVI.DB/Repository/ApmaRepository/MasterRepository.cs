@@ -53,6 +53,7 @@ namespace VDVI.ApmaRepository
         public IHcsListBanquetingRoomTypesRepository HcsListBanquetingRoomTypesRepository => new HcsListBanquetingRoomTypesRepository(_dbContext);
         public IHcsRoomsRepository HcsRoomsRepository => new HcsRoomsRepository(_dbContext);
         public IHcsListRoomTypesRepository HcsListRoomTypesRepository => new HcsListRoomTypesRepository(_dbContext);
+        public IHcsGroupReservationRepository HcsGroupReservationRepository => new HcsGroupReservationRepository(_dbContext);
 
         // Source
         public IHcsBISourceStatisticsHistoryRepository HcsBISourceStatisticsHistoryRepository => new HcsBISourceStatisticsHistoryRepository(_dbContext);

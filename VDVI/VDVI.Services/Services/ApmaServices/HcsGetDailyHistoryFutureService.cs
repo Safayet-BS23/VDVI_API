@@ -2,16 +2,12 @@
 using Framework.Core.Base.ModelEntity;
 using Framework.Core.Exceptions;
 using Framework.Core.Utility;
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
-using Microsoft.Extensions.Configuration;
-using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using SOAPService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Xml;
-using VDVI.DB.Dtos; 
+using VDVI.DB.Dtos;
 using VDVI.Services.Interfaces;
 
 namespace VDVI.Services
@@ -41,22 +37,15 @@ namespace VDVI.Services
                          var endDate = tempDate.AddDays(dayDifference);
                          endDate = endDate > nextExecutionDate ? nextExecutionDate : endDate;
 
-                         for (int i = 0; i < ApmaProperties.Length; i++)
+                         var response = await GetListHcsDailyHistoryFutureAsync(tempDate, endDate);
+
+                         if (response.IsSuccess)
                          {
-                             var propertyCode = ApmaProperties[i];
-                             int x = 0;
-                             res = await client.HcsGetDailyHistoryAsync(pmsAuthentication, PropertyCode: propertyCode, StartDate: tempDate, EndDate: endDate, "", 100, 1, "");
-                             do
-                             {
-                                 var dailyHistoryList = res.HcsGetDailyHistoryResult.DailyHistories.ToList();
-                                 FormatSummaryObject(dto, dailyHistoryList, propertyCode);
-                                 x++;
-                             } while (x < res.HcsGetDailyHistoryResult.TotalPages);
+                             return await _hcsDailyFutureService.BulkInsertWithProcAsync((List<DailyHistoryFutureDto>)response.Value.Data);
                          }
+
                          tempDate = tempDate.AddDays(dayDifference).AddSeconds(1);
                      }
-
-                     var result = _hcsDailyFutureService.BulkInsertWithProcAsync(dto);
 
                      return PrometheusResponse.Success("", "Data retrieval is successful");
                  },
@@ -66,6 +55,81 @@ namespace VDVI.Services
                      RethrowException = false
                  });
         }
+
+
+        public async Task<Result<PrometheusResponse>> GetListHcsDailyHistoryFutureAsync(DateTime StartDate, DateTime EndDate, string propertyCode, string pmsSegmentType)
+        {
+            return await TryCatchExtension.ExecuteAndHandleErrorAsync(
+                 async () =>
+                 {
+                     Authentication pmsAuthentication = GetApmaAuthCredential();
+                     List<DailyHistoryFutureDto> listOfDailyHistory = new List<DailyHistoryFutureDto>();
+
+                     HcsGetDailyHistoryResponse res = new HcsGetDailyHistoryResponse();
+
+                     List<DailyHistoryFutureDto> dto = new List<DailyHistoryFutureDto>();
+
+                     res = await client.HcsGetDailyHistoryAsync(pmsAuthentication, PropertyCode: propertyCode, StartDate: StartDate, EndDate: EndDate, "", 100, 1, "");
+
+                     for (int j = 1; j <= res.HcsGetDailyHistoryResult.TotalPages; j++)
+                     {
+                         var dailyHistoryList = client.HcsGetDailyHistoryAsync(pmsAuthentication, PropertyCode: propertyCode, StartDate: StartDate, EndDate: EndDate, "", 100, j, "").Result.HcsGetDailyHistoryResult.DailyHistories.ToList();
+                         
+                         if (!string.IsNullOrEmpty(pmsSegmentType))
+                             dailyHistoryList = dailyHistoryList.Where(x => x.PmsSegmentType == pmsSegmentType).ToList();
+
+                         if (dailyHistoryList.Count > 0) FormatSummaryObject(dto, dailyHistoryList, propertyCode);
+                     }
+
+                     listOfDailyHistory.AddRange(dto);
+                     dto.Clear();
+
+
+                     return PrometheusResponse.Success(listOfDailyHistory, "Data retrieval is successful");
+                 },
+                 exception => new TryCatchExtensionResult<Result<PrometheusResponse>>
+                 {
+                     DefaultResult = PrometheusResponse.Failure($"Error message: {exception.Message}. Details: {ExceptionExtension.GetExceptionDetailMessage(exception)}"),
+                     RethrowException = false
+                 });
+        }
+
+        private async Task<Result<PrometheusResponse>> GetListHcsDailyHistoryFutureAsync(DateTime StartDate, DateTime EndDate)
+        {
+            return await TryCatchExtension.ExecuteAndHandleErrorAsync(
+                 async () =>
+                 {
+                     Authentication pmsAuthentication = GetApmaAuthCredential();
+                     List<DailyHistoryFutureDto> listOfDailyHistory = new List<DailyHistoryFutureDto>();
+
+                     HcsGetDailyHistoryResponse res = new HcsGetDailyHistoryResponse();
+
+                     for (int i = 0; i < ApmaProperties.Length; i++)
+                     {
+                         List<DailyHistoryFutureDto> dto = new List<DailyHistoryFutureDto>();
+
+                         var propertyCode = ApmaProperties[i];
+                         res = await client.HcsGetDailyHistoryAsync(pmsAuthentication, PropertyCode: propertyCode, StartDate: StartDate, EndDate: EndDate, "", 100, 1, "");
+
+                         for (int j = 1; j <= res.HcsGetDailyHistoryResult.TotalPages; j++)
+                         {
+                             var dailyHistoryList = client.HcsGetDailyHistoryAsync(pmsAuthentication, PropertyCode: propertyCode, StartDate: StartDate, EndDate: EndDate, "", 100, j, "").Result.HcsGetDailyHistoryResult.DailyHistories.ToList();
+                             if (dailyHistoryList.Count > 0) FormatSummaryObject(dto, dailyHistoryList, propertyCode);
+                         }
+
+                         listOfDailyHistory.AddRange(dto);
+                         dto.Clear();
+                     }
+                     return PrometheusResponse.Success(listOfDailyHistory, "Data retrieval is successful");
+                 },
+                 exception => new TryCatchExtensionResult<Result<PrometheusResponse>>
+                 {
+                     DefaultResult = PrometheusResponse.Failure($"Error message: {exception.Message}. Details: {ExceptionExtension.GetExceptionDetailMessage(exception)}"),
+                     RethrowException = false
+                 });
+        }
+
+
         private void FormatSummaryObject(List<DailyHistoryFutureDto> sourceStatDtos, List<DailyHistory> dailyHistoryList, string propertyCode)
         {
             List<DailyHistoryFutureDto> sourceStatz = dailyHistoryList.Select(x => new DailyHistoryFutureDto()

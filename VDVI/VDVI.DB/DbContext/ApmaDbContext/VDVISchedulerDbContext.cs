@@ -47,6 +47,7 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
         private IDapperRepository<DbRoomTypes> _roomTypes;
         private IDapperRepository<DbMealPlans> _mealplans;
         private IDapperRepository<DbStatisticsRevenueCodes> _statisticsRevenueCodes;
+        private IDapperRepository<DbGroupReservation> _groupReservations;
         private IDapperRepository<DbFolioDetail> _folioDetails;
 
 
@@ -90,6 +91,7 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
             TinyMapper.Bind<MealPlansDto, DbMealPlans>();
             TinyMapper.Bind<StatisticsRevenueCodesDto, DbStatisticsRevenueCodes>();
             TinyMapper.Bind<FolioDetailDto, DbFolioDetail>();
+            TinyMapper.Bind<GroupReservationDto, DbGroupReservation>();
 
             // Dto to Db List
             TinyMapper.Bind<List<SchedulerLogDto>, List<DbSchedulerLog>>();
@@ -126,6 +128,7 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
             TinyMapper.Bind<List<MealPlansDto>, List<DbMealPlans>>();
             TinyMapper.Bind< List<StatisticsRevenueCodesDto>, List<DbStatisticsRevenueCodes>>();
             TinyMapper.Bind<DbFolioDetail, FolioDetailDto>();
+            TinyMapper.Bind<DbGroupReservation, GroupReservationDto>();
 
         }
         public IDapperRepository<DbSchedulerSetup> SchedulerSetup => _schedulerSetup ??= new DapperRepository<DbSchedulerSetup>(Connection);
@@ -162,5 +165,6 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
         public IDapperRepository<DbFolioDetail> FolioDetails => _folioDetails??= new DapperRepository<DbFolioDetail>(Connection);
         public IDapperRepository<DbMealPlans> MealPlans => _mealplans ??= new DapperRepository<DbMealPlans>(Connection);
         public IDapperRepository<DbStatisticsRevenueCodes> StatisticsRevenueCode => _statisticsRevenueCodes ??= new DapperRepository<DbStatisticsRevenueCodes>(Connection);
+        public IDapperRepository<DbGroupReservation> GroupReservations => _groupReservations ??= new DapperRepository<DbGroupReservation>(Connection);
     }
 }
