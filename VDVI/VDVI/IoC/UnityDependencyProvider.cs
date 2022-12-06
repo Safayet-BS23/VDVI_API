@@ -96,6 +96,7 @@ namespace VDVI.Client.IoC
             container.RegisterType<IHcsListBanquetingRoomTypeService, HcsBanquetingRoomTypeService>();
             container.RegisterType<IHcsFolioDetailService, HcsFolioDetailService>();
             container.RegisterType<IHcsGroupReservationService, HcsGroupReservationService>();
+            container.RegisterType<IRecordsToSyncChangedService, RecordsToSyncChangedService>();
 
 
             //AFAS-Master

@@ -49,6 +49,7 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
         private IDapperRepository<DbStatisticsRevenueCodes> _statisticsRevenueCodes;
         private IDapperRepository<DbGroupReservation> _groupReservations;
         private IDapperRepository<DbFolioDetail> _folioDetails;
+        private IDapperRepository<DbRecordsToSyncChanged> _recordsToSyncChanged;
 
 
 
@@ -92,6 +93,7 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
             TinyMapper.Bind<StatisticsRevenueCodesDto, DbStatisticsRevenueCodes>();
             TinyMapper.Bind<FolioDetailDto, DbFolioDetail>();
             TinyMapper.Bind<GroupReservationDto, DbGroupReservation>();
+            TinyMapper.Bind<RecordsToSyncChangedDto, DbRecordsToSyncChanged>();
 
             // Dto to Db List
             TinyMapper.Bind<List<SchedulerLogDto>, List<DbSchedulerLog>>();
@@ -129,6 +131,7 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
             TinyMapper.Bind< List<StatisticsRevenueCodesDto>, List<DbStatisticsRevenueCodes>>();
             TinyMapper.Bind<DbFolioDetail, FolioDetailDto>();
             TinyMapper.Bind<DbGroupReservation, GroupReservationDto>();
+            TinyMapper.Bind<DbRecordsToSyncChanged, RecordsToSyncChangedDto>();
 
         }
         public IDapperRepository<DbSchedulerSetup> SchedulerSetup => _schedulerSetup ??= new DapperRepository<DbSchedulerSetup>(Connection);
@@ -166,5 +169,6 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
         public IDapperRepository<DbMealPlans> MealPlans => _mealplans ??= new DapperRepository<DbMealPlans>(Connection);
         public IDapperRepository<DbStatisticsRevenueCodes> StatisticsRevenueCode => _statisticsRevenueCodes ??= new DapperRepository<DbStatisticsRevenueCodes>(Connection);
         public IDapperRepository<DbGroupReservation> GroupReservations => _groupReservations ??= new DapperRepository<DbGroupReservation>(Connection);
+        public IDapperRepository<DbRecordsToSyncChanged> RecordsToSyncChanged => _recordsToSyncChanged ??= new DapperRepository<DbRecordsToSyncChanged>(Connection);
     }
 }

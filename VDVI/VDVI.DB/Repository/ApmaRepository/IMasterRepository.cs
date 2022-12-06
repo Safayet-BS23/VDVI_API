@@ -51,6 +51,9 @@ namespace VDVI.ApmaRepository
         //Meals
         IHcsListMealPlansRepository HcsListMealPlansRepository { get; }
 
+        //Others
+        IRecordsToSyncChangedRepository RecordsToSyncChangedRepository { get; }
+
 
     }
 }

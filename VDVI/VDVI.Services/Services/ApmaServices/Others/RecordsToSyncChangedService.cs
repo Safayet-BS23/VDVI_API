@@ -10,21 +10,21 @@ using VDVI.Services.Interfaces;
 
 namespace VDVI.Services
 {
-    public class HcsGroupReservationService : IHcsGroupReservationService
+    public class RecordsToSyncChangedService : IRecordsToSyncChangedService
     {
         private readonly IMasterRepository _managementRepository;
 
-        public HcsGroupReservationService(IMasterRepository managementRepository)
+        public RecordsToSyncChangedService(IMasterRepository managementRepository)
         {
             _managementRepository = managementRepository;
         }
 
-        public async Task<Result<PrometheusResponse>> InsertAsync(GroupReservationDto dto)
+        public async Task<Result<PrometheusResponse>> InsertAsync(RecordsToSyncChangedDto dto)
         {
             return await TryCatchExtension.ExecuteAndHandleErrorAsync(
                 async () =>
                 {
-                    dto = await _managementRepository.HcsGroupReservationRepository.InsertAsync(dto);
+                    dto = await _managementRepository.RecordsToSyncChangedRepository.InsertAsync(dto);
 
                     return PrometheusResponse.Success(dto, "Data saved successful");
                 },
@@ -35,29 +35,13 @@ namespace VDVI.Services
                 });
         }
 
-        public async Task<Result<PrometheusResponse>> UpsertAsync(GroupReservationDto dto)
-        {
-            return await TryCatchExtension.ExecuteAndHandleErrorAsync(
-                async () =>
-                {
-                    dto = await _managementRepository.HcsGroupReservationRepository.UpsertAsync(dto);
-
-                    return PrometheusResponse.Success(dto, "Data saved successful");
-                },
-                exception => new TryCatchExtensionResult<Result<PrometheusResponse>>
-                {
-                    DefaultResult = PrometheusResponse.Failure($"Error message: {exception.Message}. Details: {ExceptionExtension.GetExceptionDetailMessage(exception)}"),
-                    RethrowException = false
-                });
-        }
-
-        public async Task<Result<PrometheusResponse>> BulkInsertAsync(List<GroupReservationDto> dtos)
+        public async Task<Result<PrometheusResponse>> BulkInsertAsync(List<RecordsToSyncChangedDto> dtos)
         {
 
             return await TryCatchExtension.ExecuteAndHandleErrorAsync(
                 async () =>
                 {
-                    var resp = await _managementRepository.HcsGroupReservationRepository.BulkInsertAsync(dtos);
+                    var resp = await _managementRepository.RecordsToSyncChangedRepository.BulkInsertAsync(dtos);
 
                     return PrometheusResponse.Success(resp, "Data saved successful");
                 },
@@ -68,12 +52,12 @@ namespace VDVI.Services
                 });
         }
 
-        public async Task<Result<PrometheusResponse>> BulkInsertWithProcAsync(List<GroupReservationDto> dtos)
+        public async Task<Result<PrometheusResponse>> BulkInsertWithProcAsync(List<RecordsToSyncChangedDto> dtos)
         {
             return await TryCatchExtension.ExecuteAndHandleErrorAsync(
                 async () =>
                 {
-                    var resp = await _managementRepository.HcsGroupReservationRepository.BulkInsertWithProcAsync(dtos);
+                    var resp = await _managementRepository.RecordsToSyncChangedRepository.BulkInsertWithProcAsync(dtos);
 
                     return PrometheusResponse.Success(resp, "Data saved successful");
                 },
@@ -89,7 +73,7 @@ namespace VDVI.Services
             return await TryCatchExtension.ExecuteAndHandleErrorAsync(
                 async () =>
                 {
-                    var dtos = await _managementRepository.HcsGroupReservationRepository.GetAllByPropertyCodeAsync(propertyCode);
+                    var dtos = await _managementRepository.RecordsToSyncChangedRepository.GetAllByPropertyCodeAsync(propertyCode);
 
                     return PrometheusResponse.Success(dtos, "Data saved successful");
                 },
@@ -105,7 +89,7 @@ namespace VDVI.Services
             return await TryCatchExtension.ExecuteAndHandleErrorAsync(
                 async () =>
                 {
-                    var dbroomSummariesRes = await _managementRepository.HcsGroupReservationRepository.DeleteByPropertyCodeAsync(propertyCode);
+                    var dbroomSummariesRes = await _managementRepository.RecordsToSyncChangedRepository.DeleteByPropertyCodeAsync(propertyCode);
 
                     return PrometheusResponse.Success("", "Data removal is successful");
                 },

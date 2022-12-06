@@ -75,6 +75,22 @@ namespace VDVI.Repository.ApmaRepository.Implementation
             return TinyMapper.Map<GroupReservationDto>(dbEntity);
         }
 
+        public async Task<GroupReservationDto> UpsertAsync(GroupReservationDto dto)
+        {
+            var dbEntity = TinyMapper.Map<DbGroupReservation>(dto);
+
+            var existing = await _tblRepository.FindAsync(x => x.GroupReservationNumber == dto.GroupReservationNumber && x.PropertyCode == dto.PropertyCode);
+
+            if (existing != null)
+            {
+                await _tblRepository.DeleteAsync(x => x.GroupReservationNumber == dbEntity.GroupReservationNumber && x.PropertyCode == dto.PropertyCode);
+            }
+
+            await _tblRepository.InsertAsync(dbEntity);
+
+            return TinyMapper.Map<GroupReservationDto>(dbEntity);
+        }
+
         public async Task<GroupReservationDto> UpdateAsync(GroupReservationDto dto)
         {
             var dbCustomerEntity = TinyMapper.Map<DbGroupReservation>(dto);

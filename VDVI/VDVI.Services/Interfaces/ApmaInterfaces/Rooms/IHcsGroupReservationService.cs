@@ -9,6 +9,7 @@ namespace VDVI.Services.Interfaces
     public interface IHcsGroupReservationService
     {
         Task<Result<PrometheusResponse>> InsertAsync(GroupReservationDto dto);
+        Task<Result<PrometheusResponse>> UpsertAsync(GroupReservationDto dto);
         Task<Result<PrometheusResponse>> BulkInsertAsync(List<GroupReservationDto> dtos);
         Task<Result<PrometheusResponse>> BulkInsertWithProcAsync(List<GroupReservationDto> dtos);
         Task<Result<PrometheusResponse>> GetByPropertCodeAsync(string propertyCode);

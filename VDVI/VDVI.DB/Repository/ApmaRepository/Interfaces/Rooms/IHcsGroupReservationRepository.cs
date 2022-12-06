@@ -7,6 +7,7 @@ namespace VDVI.ApmaRepository.Interfaces
     public interface IHcsGroupReservationRepository
     {
         Task<GroupReservationDto> InsertAsync(GroupReservationDto dto);
+        Task<GroupReservationDto> UpsertAsync(GroupReservationDto dto);
         Task<IEnumerable<GroupReservationDto>> BulkInsertAsync(IEnumerable<GroupReservationDto> dto);
         Task<string> BulkInsertWithProcAsync(IEnumerable<GroupReservationDto> dto);
         Task<GroupReservationDto> UpdateAsync(GroupReservationDto dto);

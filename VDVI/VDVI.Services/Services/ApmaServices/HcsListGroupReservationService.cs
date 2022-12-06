@@ -72,6 +72,40 @@ namespace VDVI.Services.Services.ApmaServices
                 });
         }
 
+        public async Task<Result<PrometheusResponse>> HcsSyncGroupReservationAsync(List<RecordsToSyncChangedDto> changeRecords)
+        {
+            return await TryCatchExtension.ExecuteAndHandleErrorAsync(
+                async () =>
+                {
+                    Authentication pmsAuthentication = GetApmaAuthCredential();
+
+                    if (changeRecords.Count > 0)
+                    {
+                        foreach(var changeRecord in changeRecords)
+                        {
+                            var response = await client.HcsGetGroupReservationAsync(pmsAuthentication, changeRecord.PropertyCode, changeRecord.Reference, "", "");
+
+                            if (response.HcsGetGroupReservationResult.Success)
+                            {
+                                var result = await _hcsGroupReservationService.UpsertAsync(FormatGroupReservation(response.HcsGetGroupReservationResult, changeRecord.PropertyCode));
+                            }
+                        }
+
+                        return PrometheusResponse.Success("", "Data saved successfully");
+                    } else
+                    {
+                        return PrometheusResponse.Failure("Data is empty");
+                    }
+                                       
+                },
+                exception => new TryCatchExtensionResult<Result<PrometheusResponse>>
+                {
+                    DefaultResult = PrometheusResponse.Failure($"Error message: {exception.Message}. Details: {ExceptionExtension.GetExceptionDetailMessage(exception)}"),
+                    RethrowException = false
+                });
+        }
+
+        #region Private Methods 
 
         private async Task<Result<PrometheusResponse>> GetGroupReservationsAsync(DateTime startDate, DateTime endDate, string propertyCode, string pmsNumber)
         {
@@ -116,7 +150,7 @@ namespace VDVI.Services.Services.ApmaServices
                 });
         }
 
-        private  GroupReservationDto FormatGroupReservation(GetGroupReservation groupReservation, string propertyCode)
+        private GroupReservationDto FormatGroupReservation(GetGroupReservation groupReservation, string propertyCode)
         {
             return new GroupReservationDto
             {
@@ -152,8 +186,11 @@ namespace VDVI.Services.Services.ApmaServices
                 TotalInfants = groupReservation.TotalInfants,
                 TotalRoomsContracted = groupReservation.TotalRoomsContracted,
                 TotalRoomsPickedUp = groupReservation.TotalRoomsPickedUp,
-                TravelAgent = groupReservation.TravelAgent             
+                TravelAgent = groupReservation.TravelAgent
             };
         }
+
+
+        #endregion
     }
 }

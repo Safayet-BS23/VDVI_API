@@ -66,5 +66,9 @@ namespace VDVI.ApmaRepository
         //Meals
         public IHcsListMealPlansRepository HcsListMealPlansRepository => new HcsListMealPlansRepository(_dbContext);
 
+
+        // Others
+        public IRecordsToSyncChangedRepository RecordsToSyncChangedRepository => new RecordsToSyncChangedRepository(_dbContext);
+
     }
 }
