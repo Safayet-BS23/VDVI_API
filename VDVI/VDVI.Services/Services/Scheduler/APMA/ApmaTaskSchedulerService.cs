@@ -35,6 +35,8 @@ namespace VDVI.Services.APMA
         private readonly IHcsListStatisticsRevenueCodeService _hcsListStatisticsRevenueCodeService;
         private readonly ISchedulerSetupService _schedulerSetupService;
         public readonly ISchedulerLogService _schedulerLogService;
+        private readonly IHcsListGroupReservationService _hcsListGroupReservationService;
+        private readonly IHcsListFolioDetailService _hcsListFolioDetailService;
 
         IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
         public IConfiguration _config;
@@ -67,10 +69,12 @@ namespace VDVI.Services.APMA
 
             ISchedulerSetupService schedulerSetupService,
             ISchedulerLogService schedulerLogService
-
-
+,
+            IHcsListGroupReservationService hcsListGroupReservationService
+,
+            IHcsListFolioDetailService hcsListFolioDetailService
             )
-        { 
+        {
             _reportSummary = reportSummary;
             _hcsBIReservationDashboardHistoryService = hcsBIReservationDashboardHistoryService;
             _hcsBIReservationDashboardFutureService = hcsBIReservationDashboardFutureService;
@@ -95,6 +99,8 @@ namespace VDVI.Services.APMA
             _schedulerLogService = schedulerLogService;
             configurationBuilder.AddJsonFile("AppSettings.json");
             _config = configurationBuilder.Build();
+            _hcsListGroupReservationService = hcsListGroupReservationService;
+            _hcsListFolioDetailService = hcsListFolioDetailService;
         }
         public async Task SummaryScheduler()
         {
@@ -246,8 +252,19 @@ namespace VDVI.Services.APMA
                             response = await _hcsListRoomTypeService.HcsListRoomTypeAsync();
                             flag = response.IsSuccess;
                             break;
+
                         case "HcsListBanquetingRoomTypes":
                             response = await _hcsListBanquetingRoomTypesService.HcsListBanquetingRoomTypesAsync();
+                            flag = response.IsSuccess;
+                            break;
+
+                        case "HcsGroupReservation":
+                            response = await _hcsListGroupReservationService.HcsGetGroupReservationsAsync(_startDate, _endDate);
+                            flag = response.IsSuccess;
+                            break;
+
+                        case "HcsGetFolioDetails":
+                            response = await _hcsListFolioDetailService.HcsListFolioDetailAsync(_startDate, _endDate);
                             flag = response.IsSuccess;
                             break;
 

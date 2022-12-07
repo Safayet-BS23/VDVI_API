@@ -29,7 +29,7 @@ namespace VDVI.Repository.ApmaRepository.Implementation
             DataTable dt = JsonConvert.DeserializeObject<DataTable>(JsonConvert.SerializeObject(dto));
 
             var queryResult = await _dbContext.Connection.QueryAsync<string>("spINSERT_hce_GroupReservation",
-                            new { BanquetingRooms_UDT = dt }, commandType: CommandType.StoredProcedure);
+                            new { GroupReservation_UDT = dt }, commandType: CommandType.StoredProcedure);
 
             return queryResult.ToString();
         }
@@ -86,7 +86,7 @@ namespace VDVI.Repository.ApmaRepository.Implementation
                 await _tblRepository.DeleteAsync(x => x.GroupReservationNumber == dbEntity.GroupReservationNumber && x.PropertyCode == dto.PropertyCode);
             }
 
-            await _tblRepository.InsertAsync(dbEntity);
+            
 
             return TinyMapper.Map<GroupReservationDto>(dbEntity);
         }

@@ -53,12 +53,12 @@ namespace VDVI.Services.Services.ApmaServices
                             if (groupReservationResponse.IsFailure)
                                 continue;
 
-                            groupReservationDtoList.Add((GroupReservationDto)groupReservationResponse.Value.Data);
+                            groupReservationDtoList.Add(FormatGroupReservation((GetGroupReservation)groupReservationResponse.Value.Data, property));
                         }
 
                         if (groupReservationDtoList.Any())
                         {
-                            await _hcsGroupReservationService.BulkInsertWithProcAsync(groupReservationDtoList);
+                            await _hcsGroupReservationService.BulkInsertWithProcAsync(groupReservationDtoList.Where(x => x.GroupReservationNumber != null).ToList());
                         }
 
                         groupReservationDtoList.Clear();

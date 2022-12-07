@@ -39,7 +39,7 @@ namespace VDVI.Services
 
                      var result = await _recordsToSyncChangedService.BulkInsertWithProcAsync(recordsToSync);
 
-                     if (response.IsSuccess)
+                     if (result.IsSuccess)
                      {
                          result = await _hcsGroupReservationService.HcsSyncGroupReservationAsync(recordsToSync);
                      }
