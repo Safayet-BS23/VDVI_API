@@ -37,9 +37,15 @@ namespace VDVI.Repository.ApmaRepository.Implementation
         }
         public async Task<SchedulerSetupDto> UpdateAsync(SchedulerSetupDto dto)
         {
-            var entities = TinyMapper.Map<DbSchedulerSetup>(dto);
+            var entity = TinyMapper.Map<DbSchedulerSetup>(dto);
 
-            var res=await _tblRepository.UpdateAsync(p=>p.SchedulerName==entities.SchedulerName,entities);
+            var queryResult = await _dbContext.Connection.QueryAsync<string>("sp_hce_UpdateTaskSchedulerStatus",
+                new
+                {
+                    SchedulerName = dto.SchedulerName,
+                    SchedulerStatus = dto.SchedulerStatus
+                },
+                commandType: CommandType.StoredProcedure);
 
             return dto;
         }

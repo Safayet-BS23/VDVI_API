@@ -1,5 +1,4 @@
 using Hangfire;
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
@@ -15,6 +14,7 @@ using VDVI.Services.Configurations;
 using VDVI.Services.Interfaces.AFAS;
 using VDVI.Services.Interfaces.APMA;
 using StartupBase = Framework.Core.Base.Startup.StartupBase;
+using Rebus.ServiceProvider;
 
 namespace VDVI
 {
@@ -48,8 +48,8 @@ namespace VDVI
             services.AddMvc();
 
 
-            // MediatR Config
-            services.AddMediatR(typeof(Startup));
+            // Rebus
+            services.AddRebus(Configuration);
         }
 
         public void Configure(
@@ -102,6 +102,10 @@ namespace VDVI
             {
                 DashboardTitle = "Scheduled Jobs"
             });
+
+
+            // Use Rebus
+            app.UseRebus(r => r.AddSubscriptions());
 
 
             var apmaservice = container.Resolve<IApmaTaskSchedulerService>();

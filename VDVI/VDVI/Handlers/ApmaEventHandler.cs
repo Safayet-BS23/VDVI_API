@@ -1,23 +1,23 @@
-﻿using MediatR;
-using System.Threading;
+﻿using Rebus.Handlers;
 using System.Threading.Tasks;
 using VDVI.Services.MediatR.Models;
 using VDVI.Services.MediatR.Services.Apma;
 
 namespace VDVI.Client.Handlers
 {
-    public class ApmaEventHandler : IRequestHandler<ApmaSchedulerEvent>
+    public class ApmaRebusEventHandler : IHandleMessages<ApmaSchedulerEvent>
     {
         private readonly IApmaEventService apmaEventService;
-        public ApmaEventHandler(IApmaEventService apmaEventService)
+        public ApmaRebusEventHandler(IApmaEventService apmaEventService)
         {
             this.apmaEventService = apmaEventService;
         }
 
-        public async Task<Unit> Handle(ApmaSchedulerEvent request, CancellationToken cancellationToken)
+
+        public async Task Handle(ApmaSchedulerEvent message)
         {
-            await apmaEventService.ExecuteEventAsync(request);
-            return Unit.Value;
+            await apmaEventService.ExecuteEventAsync(message);
+            await Task.CompletedTask;
         }
     }
 }

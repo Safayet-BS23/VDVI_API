@@ -1,10 +1,9 @@
-﻿using MediatR;
-using System;
+﻿using System;
 using VDVI.DB.Dtos;
 
 namespace VDVI.Services.MediatR.Models
 {
-    public class ApmaSchedulerEvent : IRequest
+    public class ApmaSchedulerEvent
     {
         public SchedulerSetupDto Scheduler { get; set; }
         public DateTime? StartDate { get; set; }

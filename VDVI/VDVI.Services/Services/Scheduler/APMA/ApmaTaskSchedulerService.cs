@@ -1,8 +1,8 @@
 ﻿using CSharpFunctionalExtensions;
 using Framework.Core.Base.ModelEntity;
 using Framework.Core.Enums;
-using MediatR;
 using Microsoft.Extensions.Configuration;
+using Rebus.Bus;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,8 +15,7 @@ namespace VDVI.Services.APMA
     public class ApmaTaskSchedulerService : IApmaTaskSchedulerService
     {
         private readonly ISchedulerSetupService _schedulerSetupService;
-        private readonly IMediator _mediatREventService;
-
+        private readonly IBus _eventBus;
 
         IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
         public IConfiguration _config;
@@ -28,13 +27,13 @@ namespace VDVI.Services.APMA
         public ApmaTaskSchedulerService
             (
                 ISchedulerSetupService schedulerSetupService,
-                IMediator mediatREventService
+                IBus eventBus
             )
         {
             configurationBuilder.AddJsonFile("AppSettings.json");
             _config = configurationBuilder.Build();
             _schedulerSetupService = schedulerSetupService;
-            _mediatREventService = mediatREventService;
+            _eventBus = eventBus;
         }
 
         public async Task SummaryScheduler()
@@ -104,7 +103,7 @@ namespace VDVI.Services.APMA
                     };
 
                     // Send notification to apma handlers
-                    await _mediatREventService.Send(schedulerEvent);
+                    await _eventBus.SendLocal(schedulerEvent);
 
                 }
 
