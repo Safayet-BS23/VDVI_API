@@ -23,7 +23,7 @@
 
   <ItemGroup>
     <Folder Include="Interfaces\Scheduler\AFAS\" />
-    <Folder Include="MediatR\Services\Afas\" />
+    <Folder Include="Rebus\Services\Afas\" />
     <Folder Include="Services\Scheduler\AFAS\" />
   </ItemGroup>
 
