@@ -1,4 +1,5 @@
 using Hangfire;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
@@ -42,8 +43,13 @@ namespace VDVI
                        .UseSqlServerStorage(Configuration.GetConnectionString("HangfireDb")
                        )); 
 
+
             services.AddHangfireServer();
             services.AddMvc();
+
+
+            // MediatR Config
+            services.AddMediatR(typeof(Startup));
         }
 
         public void Configure(

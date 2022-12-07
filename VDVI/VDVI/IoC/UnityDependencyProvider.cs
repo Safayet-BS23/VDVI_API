@@ -15,7 +15,8 @@ using VDVI.Services.AfasInterfaces;
 using VDVI.Services.AfasServices;
 using VDVI.AfasRepository;
 using VDVI.Services.AFAS;
-using VDVI.Services.Interfaces.AFAS; 
+using VDVI.Services.Interfaces.AFAS;
+using VDVI.Services.MediatR.Services.Apma;
 
 namespace VDVI.Client.IoC
 {
@@ -123,6 +124,9 @@ namespace VDVI.Client.IoC
             container.RegisterType<IdmFBoekingsdagenMutationService, DMFBoekingsdagenMutationService>();
 
 
+
+            // EventBus Service
+            container.RegisterType<IApmaEventService, ApmaEventService>();
         }
     }
 }
