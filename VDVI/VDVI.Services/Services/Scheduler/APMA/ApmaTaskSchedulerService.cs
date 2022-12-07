@@ -20,10 +20,6 @@ namespace VDVI.Services.APMA
         IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
         public IConfiguration _config;
 
-        private DateTime _startDate = new DateTime();
-        private DateTime _endDate = new DateTime();
-
-        SchedulerSetupDto dtos = new SchedulerSetupDto();
         public ApmaTaskSchedulerService
             (
                 ISchedulerSetupService schedulerSetupService,
@@ -38,8 +34,9 @@ namespace VDVI.Services.APMA
 
         public async Task SummaryScheduler()
         {
-            bool flag = false;
-            Result<PrometheusResponse> response;
+            DateTime _startDate = new DateTime();
+            DateTime _endDate = new DateTime();
+
             DateTime currentDateTime = DateTime.UtcNow;
             var logDayLimits = Convert.ToInt32(_config.GetSection("SchedulerLog").GetSection("APMASchedulerLogLimitDays").Value);
 
