@@ -36,12 +36,21 @@ namespace VDVI.Repository.Implementation
             return TinyMapper.Map<AfasSchedulerSetupDto>(dbEntity);
         }
          public async Task<AfasSchedulerSetupDto> UpdateAsync(AfasSchedulerSetupDto dto,string schedulerName)
-        {
-            var entities = TinyMapper.Map<DbAfasSchedulerSetup>(dto);
+        {          
 
-            var res=await _tblRepository.UpdateAsync(p => p.SchedulerName == schedulerName,  entities);
+            var entity = TinyMapper.Map<DbAfasSchedulerSetup>(dto);
+
+            var queryResult = await _dbContext.Connection.QueryAsync<string>("sp_dmf_UpdateTaskSchedulerStatus",
+                new
+                {
+                    SchedulerName = dto.SchedulerName,
+                    SchedulerStatus = dto.SchedulerStatus
+                },
+                commandType: CommandType.StoredProcedure);
 
             return dto;
+
+
         }
         public async Task<Result<PrometheusResponse>> SaveWithProcAsync(AfasSchedulerSetupDto dto)
         {
