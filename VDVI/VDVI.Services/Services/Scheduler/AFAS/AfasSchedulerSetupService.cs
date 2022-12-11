@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using VDVI.AfasRepository; 
 using VDVI.Repository.Models.AfasModels.Dto;
 using VDVI.Services.Interfaces.AFAS;
-using VDVI.Services.Interfaces.APMA;
 using VDVI.Services.Services.BaseService;
 
 namespace VDVI.Services.AFAS
@@ -35,13 +34,13 @@ namespace VDVI.Services.AFAS
                     RethrowException = false
                 });
         }
-        public async Task<Result<PrometheusResponse>> UpdateAsync(AfasSchedulerSetupDto dto, string schedulerName)
+        public async Task<Result<PrometheusResponse>> UpdateAsync(AfasSchedulerSetupDto dto)
         {
             return await TryCatchExtension.ExecuteAndHandleErrorAsync(
                  async () =>
                  {
-                     await _masterRepository.AfasSchedulerSetupRepository.UpdateAsync(dto,schedulerName);
-                     return PrometheusResponse.Success("", "Data Update is successful");
+                     var resp= await _masterRepository.AfasSchedulerSetupRepository.UpdateAsync(dto);
+                     return PrometheusResponse.Success(resp, "Data Update is successful");
                  },
                  exception => new TryCatchExtensionResult<Result<PrometheusResponse>>
                  {

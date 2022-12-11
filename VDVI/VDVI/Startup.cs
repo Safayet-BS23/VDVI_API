@@ -15,6 +15,7 @@ using VDVI.Services.Interfaces.AFAS;
 using VDVI.Services.Interfaces.APMA;
 using StartupBase = Framework.Core.Base.Startup.StartupBase;
 using Rebus.ServiceProvider;
+using VDVI.Services.Interfaces.Scheduler.AFAS;
 
 namespace VDVI
 {

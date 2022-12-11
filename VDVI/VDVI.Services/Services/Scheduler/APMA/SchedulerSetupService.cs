@@ -75,7 +75,7 @@ namespace VDVI.Services.APMA
                 async () =>
                 {
                     await _masterRepository.SchedulerSetupRepository.ResetScheduleStatusAsync();
-                    return PrometheusResponse.Success("", "Scheduler Status reset successfully.");
+                    return PrometheusResponse.Success("", "APMA Scheduler Status reset successfully.");
                 },
                 exception => new TryCatchExtensionResult<Result<PrometheusResponse>>
                 {

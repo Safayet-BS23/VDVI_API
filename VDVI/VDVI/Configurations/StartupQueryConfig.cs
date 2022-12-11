@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using VDVI.Services.Interfaces.AFAS;
+using Microsoft.Extensions.DependencyInjection; 
 using VDVI.Services.Interfaces.APMA;
+using VDVI.Services.Interfaces.Scheduler.AFAS;
 
 namespace VDVI.Client.Configurations
 {
@@ -18,7 +18,7 @@ namespace VDVI.Client.Configurations
             }
 
             // Reset AFAS Scheduler Status when task is processing
-            var afasSchedulerSetupService = app.ApplicationServices.GetRequiredService<IAfasSchedulerSetupService>();
+           var afasSchedulerSetupService = app.ApplicationServices.GetRequiredService<IAfasTaskSchedulerService>();
 
             if (afasSchedulerSetupService != null)
             {

@@ -1,12 +1,10 @@
 ﻿using CSharpFunctionalExtensions;
-using Framework.Core.Base.ModelEntity;
 using Framework.Core.Enums;
 using Microsoft.Extensions.Configuration;
 using Rebus.Bus;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using VDVI.DB.Dtos;
 using VDVI.Services.Interfaces.APMA;
 using VDVI.Services.MediatR.Models;
 

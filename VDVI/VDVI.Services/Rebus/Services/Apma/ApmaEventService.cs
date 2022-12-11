@@ -62,10 +62,8 @@ namespace VDVI.Services.MediatR.Services.Apma
             IHcsListStatisticsRevenueCodeService hcsListStatisticsRevenueCodeService,
 
             ISchedulerSetupService schedulerSetupService,
-            ISchedulerLogService schedulerLogService
-,
-            IHcsListGroupReservationService hcsListGroupReservationService
-,
+            ISchedulerLogService schedulerLogService,
+            IHcsListGroupReservationService hcsListGroupReservationService,
             IHcsListFolioDetailService hcsListFolioDetailService
             )
         {

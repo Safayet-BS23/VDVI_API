@@ -11,6 +11,7 @@ using Rebus.Serialization.Json;
 using Rebus.Transport.InMem;
 using System;
 using VDVI.Services.MediatR.Models;
+using VDVI.Services.Rebus.Models;
 
 namespace VDVI.Client.Configurations
 {
@@ -58,8 +59,8 @@ namespace VDVI.Client.Configurations
         private static void AddRoutes(this StandardConfigurer<IRouter> router)
         {
             router.TypeBased()
-                .Map<ApmaSchedulerEvent>("VDVI");
-                //.Map<MultiNotification>("VDVI");
+                .Map<ApmaSchedulerEvent>("VDVI")
+                .Map<AfasSchedulerEvent>("VDVI");
         }
 
         

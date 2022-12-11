@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace VDVI.Services.Interfaces.AFAS
+namespace VDVI.Services.Interfaces.Scheduler.AFAS
 {
     public interface IAfasTaskSchedulerService
     {
