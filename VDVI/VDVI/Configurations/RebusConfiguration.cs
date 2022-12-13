@@ -68,6 +68,7 @@ namespace VDVI.Client.Configurations
         public static void AddSubscriptions(this IBus bus)
         {
             bus.Subscribe<ApmaSchedulerEvent>();
+            bus.Subscribe<AfasSchedulerEvent>();
         }
 
 
