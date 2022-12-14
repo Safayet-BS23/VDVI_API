@@ -98,7 +98,7 @@ namespace VDVI
             app.UseResponseCompression();
 
 
-
+            app.UseHangfireServer();
             app.UseHangfireDashboard("/hangfire", new DashboardOptions
             {
                 DashboardTitle = "Scheduled Jobs"
