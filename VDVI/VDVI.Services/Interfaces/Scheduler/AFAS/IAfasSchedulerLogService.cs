@@ -12,7 +12,7 @@ namespace VDVI.Services.Interfaces.AFAS
     {
         Task<Result<PrometheusResponse>> InsertAsync(AfasSchedulerLogDto dto);
         Task<Result<PrometheusResponse>> UpdateAsync(AfasSchedulerLogDto dto);
-        Task<Result<PrometheusResponse>> SaveWithProcAsync(string methodName,int  logDayLimits);
+        Task<Result<PrometheusResponse>> SaveWithProcAsync(string methodName,int  logDayLimits, DateTime currentDateTime);
         Task<Result<PrometheusResponse>> FindByMethodNameAsync(string methodName);
         Task<Result<PrometheusResponse>> FindByIdAsync(string schedulerName);
         Task<bool> DeleteByPropertyCodeAsync(string schedulerName);

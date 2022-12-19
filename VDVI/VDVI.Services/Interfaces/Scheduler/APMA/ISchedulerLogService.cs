@@ -11,7 +11,7 @@ namespace VDVI.Services.Interfaces.APMA
     {
         Task<Result<PrometheusResponse>> InsertAsync(SchedulerLogDto dto);
         Task<Result<PrometheusResponse>> UpdateAsync(SchedulerLogDto dto);
-        Task<Result<PrometheusResponse>> SaveWithProcAsync(string methodName, int logDayLimits);
+        Task<Result<PrometheusResponse>> SaveWithProcAsync(string methodName, int logDayLimits, DateTime currentDateTime);
         Task<Result<PrometheusResponse>> FindByMethodNameAsync(string methodName);
         Task<Result<PrometheusResponse>> FindByIdAsync(string schedulerName);
         Task<bool> DeleteByPropertyCodeAsync(string schedulerName);

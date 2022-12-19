@@ -38,14 +38,15 @@ namespace VDVI.Repository.ApmaRepository.Implementation
             return TinyMapper.Map<AfasSchedulerLogDto>(dbEntity);
         }
 
-        public async Task<Result<PrometheusResponse>> SaveWithProcAsync(string methodName,int logDayLimits)
+        public async Task<Result<PrometheusResponse>> SaveWithProcAsync(string methodName,int logDayLimits,DateTime currentDateTime)
         {
 
             var queryResult = await _dbContext.Connection.QueryAsync<string>("sp_dmf_InsertScheduleLog",
                 new
                 {
                     MethodName = methodName,
-                    LogDayLimits = logDayLimits
+                    LogDayLimits = logDayLimits,
+                    CurrentDateTime = currentDateTime
                 },
                 commandType: CommandType.StoredProcedure);
 

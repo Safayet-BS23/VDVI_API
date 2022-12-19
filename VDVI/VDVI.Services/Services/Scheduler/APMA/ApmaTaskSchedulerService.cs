@@ -49,7 +49,8 @@ namespace VDVI.Services.APMA
                 if (scheduler.SchedulerStatus == SchedulerStatus.Processing.ToString())
                     continue;
 
-                if (
+                if (scheduler.NextExecutionDateTime != null
+                    &&
                      scheduler.NextExecutionDateTime <= currentDateTime
                      &&
                      (scheduler.LastBusinessDate == null // for Initial Load Data

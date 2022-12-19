@@ -219,17 +219,19 @@ namespace VDVI.Services.MediatR.Services.Apma
                     break;
 
             }
-            DateTime? dateTime = null;
-            dtos.LastExecutionDateTime = schedulerEvent.CurrentDate;
-            dtos.NextExecutionDateTime = schedulerEvent.Scheduler.NextExecutionDateTime.Value.AddMinutes(schedulerEvent.Scheduler.ExecutionIntervalMins); //NextExecutionDateTime=NextExecutionDateTime+ExecutionIntervalMins
-            dtos.LastBusinessDate = schedulerEvent.Scheduler.isFuture == false ? _endDate.Date : dateTime; //_Future does not need LastBusinessDate, because tartingpoint is always To
-            dtos.SchedulerName = schedulerEvent.Scheduler.SchedulerName;
-
+           
             if (flag)
             {
+                DateTime? dateTime = null;
+                dtos.LastExecutionDateTime = DateTime.UtcNow;
+                dtos.NextExecutionDateTime = schedulerEvent.Scheduler.NextExecutionDateTime.Value.AddMinutes(schedulerEvent.Scheduler.ExecutionIntervalMins); //NextExecutionDateTime=NextExecutionDateTime+ExecutionIntervalMins
+                dtos.LastBusinessDate = schedulerEvent.Scheduler.isFuture == false ? _endDate.Date : dateTime; //_Future does not need LastBusinessDate, because tartingpoint is always To
+                dtos.SchedulerName = schedulerEvent.Scheduler.SchedulerName;
+
+
                 dtos.SchedulerStatus = SchedulerStatus.Succeed.ToString();
                 await _schedulerSetupService.SaveWithProcAsync(dtos);
-                await _schedulerLogService.SaveWithProcAsync(schedulerEvent.Scheduler.SchedulerName, schedulerEvent.LogDayLimits);
+                await _schedulerLogService.SaveWithProcAsync(schedulerEvent.Scheduler.SchedulerName, schedulerEvent.LogDayLimits, DateTime.UtcNow);
             }
         }
     }

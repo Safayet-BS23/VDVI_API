@@ -49,7 +49,7 @@ namespace VDVI.Services.Rebus.Services.Afas
             {
                 case "DMFAdministraties":
                     response = await _idmfAdministratiesService.DmfAdministratiesAsync();
-                    flag = response.IsSuccess;
+                    flag  = response.IsSuccess;
                     break;
                 case "DMFBeginbalans"://Opening Balance
                     response = await _idmfBeginbalaniesService.DmfBeginbalanieServiceAsync((DateTime)afasSchedulerEvent.BusinessStartDate);
@@ -71,15 +71,16 @@ namespace VDVI.Services.Rebus.Services.Afas
                     break;
             }
 
-            dtos.LastExecutionDateTime = afasSchedulerEvent.CurrentDate;
-            dtos.NextExecutionDateTime = afasSchedulerEvent.Scheduler.NextExecutionDateTime.Value.AddMinutes(afasSchedulerEvent.Scheduler.ExecutionIntervalMins);
-            dtos.SchedulerName = afasSchedulerEvent.Scheduler.SchedulerName;
-
+           
             if (flag)
             {
+                dtos.LastExecutionDateTime = DateTime.UtcNow;
+                dtos.NextExecutionDateTime = afasSchedulerEvent.Scheduler.NextExecutionDateTime.Value.AddMinutes(afasSchedulerEvent.Scheduler.ExecutionIntervalMins);
+                dtos.SchedulerName = afasSchedulerEvent.Scheduler.SchedulerName;
+
                 dtos.SchedulerStatus = SchedulerStatus.Succeed.ToString(); 
                 await _afasschedulerSetupService.SaveWithProcAsync(dtos);
-                await _afasSchedulerLogService.SaveWithProcAsync(afasSchedulerEvent.Scheduler.SchedulerName, logDayLimits);
+                await _afasSchedulerLogService.SaveWithProcAsync(afasSchedulerEvent.Scheduler.SchedulerName, logDayLimits, DateTime.UtcNow);
             }
         }
     }

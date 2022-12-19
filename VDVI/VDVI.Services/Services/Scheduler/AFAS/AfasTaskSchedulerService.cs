@@ -35,7 +35,7 @@ namespace VDVI.Services.AFAS
         {
             DateTime currentDateTime = DateTime.UtcNow;
 
-            var afasschedulers = await _afasschedulerSetupService.FindByAllScheduleAsync();
+             var afasschedulers = await _afasschedulerSetupService.FindByAllScheduleAsync();
             var logDayLimits = Convert.ToInt32(_config.GetSection("SchedulerLog").GetSection("AFASSchedulerLogLimitDays").Value);
 
             var new1 = afasschedulers.ToList();

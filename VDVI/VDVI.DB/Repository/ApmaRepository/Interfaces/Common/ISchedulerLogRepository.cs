@@ -10,7 +10,7 @@ namespace VDVI.ApmaRepository.Interfaces
     public interface ISchedulerLogRepository
     {
         Task<SchedulerLogDto> InsertAsync(SchedulerLogDto dto);
-        Task<Result<PrometheusResponse>> SaveWithProcAsync(string methodName, int logDayLimits);
+        Task<Result<PrometheusResponse>> SaveWithProcAsync(string methodName, int logDayLimits, DateTime currentDateTime);
         Task<IEnumerable<SchedulerLogDto>> BulkInsertAsync(IEnumerable<SchedulerLogDto> dto);
         Task<SchedulerLogDto> UpdateAsync(SchedulerLogDto dto); 
         Task<SchedulerLogDto> FindByMethodNameAsync(string methodName);

@@ -10,7 +10,7 @@ namespace VDVI.AfasRepository.Interfaces
     public interface IAfasSchedulerLogRepository
     {
         Task<AfasSchedulerLogDto> InsertAsync(AfasSchedulerLogDto dto);
-        Task<Result<PrometheusResponse>> SaveWithProcAsync(string methodName,int logDayLimits);
+        Task<Result<PrometheusResponse>> SaveWithProcAsync(string methodName,int logDayLimits, DateTime currentDateTime);
         Task<IEnumerable<AfasSchedulerLogDto>> BulkInsertAsync(IEnumerable<AfasSchedulerLogDto> dto);
         Task<AfasSchedulerLogDto> UpdateAsync(AfasSchedulerLogDto dto); 
         Task<AfasSchedulerLogDto> FindByMethodNameAsync(string methodName);

@@ -50,12 +50,12 @@ namespace VDVI.Services.APMA
                      RethrowException = false
                  });
         }
-        public async Task<Result<PrometheusResponse>> SaveWithProcAsync(string methodName, int logDayLimits)
+        public async Task<Result<PrometheusResponse>> SaveWithProcAsync(string methodName, int logDayLimits, DateTime currentDateTime)
         {
             return await TryCatchExtension.ExecuteAndHandleErrorAsync(
                 async () =>
                 {
-                    var resp = await _masterRepository.SchedulerLogRepository.SaveWithProcAsync(methodName, logDayLimits);
+                    var resp = await _masterRepository.SchedulerLogRepository.SaveWithProcAsync(methodName, logDayLimits ,  currentDateTime);
 
                     return PrometheusResponse.Success(resp, "Data saved successful");
                 },
