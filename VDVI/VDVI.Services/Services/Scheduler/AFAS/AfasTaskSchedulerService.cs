@@ -32,8 +32,7 @@ namespace VDVI.Services.AFAS
 
 
         public async Task SummaryScheduler()
-        {
-            DateTime currentDateTime = DateTime.UtcNow;
+        { 
 
              var afasschedulers = await _afasschedulerSetupService.FindByAllScheduleAsync();
             var logDayLimits = Convert.ToInt32(_config.GetSection("SchedulerLog").GetSection("AFASSchedulerLogLimitDays").Value);
@@ -49,7 +48,7 @@ namespace VDVI.Services.AFAS
 
                 if (
                         afasscheduler.NextExecutionDateTime != null
-                        && afasscheduler.NextExecutionDateTime <= currentDateTime
+                        && afasscheduler.NextExecutionDateTime <= DateTime.UtcNow
                     )
                 {
                     //Update SchedulerSetUp Status;
@@ -60,8 +59,7 @@ namespace VDVI.Services.AFAS
                     AfasSchedulerEvent afasSchedulerEvent = new AfasSchedulerEvent
                     {
                         Scheduler = afasscheduler,
-                        BusinessStartDate = afasscheduler.BusinessStartDate,
-                        CurrentDate = currentDateTime
+                        BusinessStartDate = afasscheduler.BusinessStartDate
                     };
 
                     // Send notification to apma handlers
