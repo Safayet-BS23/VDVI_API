@@ -9,6 +9,7 @@ using VDVI.DB.Dtos;
 using VDVI.Services.Interfaces;
 using VDVI.Services.Interfaces.APMA;
 using VDVI.Services.MediatR.Models;
+using VDVI.Services.Rebus.Models;
 
 namespace VDVI.Services.MediatR.Services.Apma
 {
@@ -227,11 +228,11 @@ namespace VDVI.Services.MediatR.Services.Apma
                 dtos.NextExecutionDateTime = schedulerEvent.Scheduler.NextExecutionDateTime.Value.AddMinutes(schedulerEvent.Scheduler.ExecutionIntervalMins); //NextExecutionDateTime=NextExecutionDateTime+ExecutionIntervalMins
                 dtos.LastBusinessDate = schedulerEvent.Scheduler.isFuture == false ? _endDate.Date : dateTime; //_Future does not need LastBusinessDate, because tartingpoint is always To
                 dtos.SchedulerName = schedulerEvent.Scheduler.SchedulerName;
-
-
                 dtos.SchedulerStatus = SchedulerStatus.Succeed.ToString();
+
                 await _schedulerSetupService.SaveWithProcAsync(dtos);
                 await _schedulerLogService.SaveWithProcAsync(schedulerEvent.Scheduler.SchedulerName, schedulerEvent.LogDayLimits, DateTime.UtcNow);
+                schedulerEvent.Scheduler.NextExecutionDateTime = dtos.NextExecutionDateTime;
             }
         }
     }
