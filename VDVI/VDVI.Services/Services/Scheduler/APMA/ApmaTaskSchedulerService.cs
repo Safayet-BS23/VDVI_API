@@ -1,10 +1,12 @@
 ﻿using CSharpFunctionalExtensions;
+using Framework.Core.Base.ModelEntity;
 using Framework.Core.Enums;
 using Microsoft.Extensions.Configuration;
 using Rebus.Bus;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using VDVI.Services.Interfaces;
 using VDVI.Services.Interfaces.APMA;
 using VDVI.Services.MediatR.Models;
 
@@ -13,28 +15,89 @@ namespace VDVI.Services.APMA
     public class ApmaTaskSchedulerService : IApmaTaskSchedulerService
     {
         private readonly ISchedulerSetupService _schedulerSetupService;
-        private readonly IBus _eventBus;
+        //private readonly IBus _eventBus;
+
+        private readonly IHcsReportManagementSummaryService _reportSummary;
+        private readonly IHcsBIReservationDashboardHistoryService _hcsBIReservationDashboardHistoryService;
+        private readonly IHcsBIReservationDashboardFutureService _hcsBIReservationDashboardFutureService;
+        private readonly IHcsBIRatePlanStatisticsHistoryService _hcsBIRatePlanStatisticsHistoryService;
+        private readonly IHcsBIRatePlanStatisticsFutureService _hcsBIRatePlanStatisticsFutureService;
+        private readonly IHcsBISourceStatisticsHistoryService _hcsBISourceStatisticsHistoryService;
+        private readonly IHcsBISourceStatisticsFutureService _hcsBISourceStatisticsFutureService;
+        private readonly IHcsGetDailyHistoryService _hcsGetDailyHistoryService;
+        private readonly IHcsGetDailyFutureService _hcsGetDailyFutureService;
+        private readonly IHcsGetFullReservationDetailsService _hcsGetFullReservationDetailsService;
+        private readonly IHcsListMealPlansService _hcsListMealPlans;
+        private readonly IHcsListBanquetingRoomsService _hcsListBanquetingRoomsService;
+        private readonly IHcsListRoomService _hcsRoomsService;
+        private readonly IHcsListPackageService _hcsListPackagesService;
+        private readonly IHcsListRateTypesService _hcsListRateTypesService;
+        private readonly IHcsListSubSourcesService _hcsListSubSourcesService;
+        private readonly IHcsListSourcesService _hcsListSourcesService; 
+        public readonly ISchedulerLogService _schedulerLogService;
+
 
         IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
         public IConfiguration _config;
 
+
+        private DateTime _startDate = new DateTime();
+        private DateTime _endDate = new DateTime();
+
         public ApmaTaskSchedulerService
             (
-                ISchedulerSetupService schedulerSetupService,
-                IBus eventBus
+            ISchedulerSetupService schedulerSetupService,
+            IHcsReportManagementSummaryService reportSummary,
+            IHcsBIReservationDashboardHistoryService hcsBIReservationDashboardHistoryService,
+            IHcsBIReservationDashboardFutureService hcsBIReservationDashboardFutureService,
+            IHcsBIRatePlanStatisticsHistoryService hcsBIRatePlanStatisticsHistoryService,
+            IHcsBIRatePlanStatisticsFutureService hcsBIRatePlanStatisticsFutureService,
+            IHcsBISourceStatisticsHistoryService hcsBISourceStatisticsHistoryService,
+            IHcsBISourceStatisticsFutureService hcsBISourceStatisticsFutureService,
+            IHcsGetDailyHistoryService hcsGetDailyHistoryService,
+            IHcsGetDailyFutureService hcsGetDailyFutureService,
+            IHcsGetFullReservationDetailsService hcsGetFullReservationDetailsService,
+            IHcsListMealPlansService hcsListMealPlans,
+            IHcsListBanquetingRoomsService hcsListBanquetingRoomsService,
+            IHcsListRoomService hcsRoomsService,
+            IHcsListPackageService hcsListPackagesService,
+            IHcsListRateTypesService hcsListRateTypesService,
+            IHcsListSubSourcesService hcsListSubSourcesService,
+            IHcsListSourcesService hcsListSourcesService,
+             
+            ISchedulerLogService schedulerLogService
+
+            //IBus eventBus
             )
         {
+            _reportSummary = reportSummary;
+            _hcsBIReservationDashboardHistoryService = hcsBIReservationDashboardHistoryService;
+            _hcsBIReservationDashboardFutureService = hcsBIReservationDashboardFutureService;
+            _hcsBIRatePlanStatisticsHistoryService = hcsBIRatePlanStatisticsHistoryService;
+            _hcsBIRatePlanStatisticsFutureService = hcsBIRatePlanStatisticsFutureService;
+            _hcsBISourceStatisticsHistoryService = hcsBISourceStatisticsHistoryService;
+            _hcsBISourceStatisticsFutureService = hcsBISourceStatisticsFutureService;
+            _hcsGetDailyHistoryService = hcsGetDailyHistoryService;
+            _hcsGetDailyFutureService = hcsGetDailyFutureService;
+            _hcsGetFullReservationDetailsService = hcsGetFullReservationDetailsService;
+            _hcsListMealPlans = hcsListMealPlans;
+            _hcsListBanquetingRoomsService = hcsListBanquetingRoomsService;
+
+            _hcsRoomsService = hcsRoomsService;
+            _hcsListPackagesService = hcsListPackagesService;
+            _hcsListRateTypesService = hcsListRateTypesService;
+            _hcsListSubSourcesService = hcsListSubSourcesService;
+            _hcsListSourcesService = hcsListSourcesService;
+            _schedulerSetupService = schedulerSetupService;
+            _schedulerLogService = schedulerLogService;
             configurationBuilder.AddJsonFile("AppSettings.json");
             _config = configurationBuilder.Build();
-            _schedulerSetupService = schedulerSetupService;
-            _eventBus = eventBus;
         }
 
         public async Task SummaryScheduler()
         {
-            DateTime _startDate = new DateTime();
-            DateTime _endDate = new DateTime();
-
+            bool flag = false;
+            Result<PrometheusResponse> response;
             DateTime currentDateTime = DateTime.UtcNow;
             var logDayLimits = Convert.ToInt32(_config.GetSection("SchedulerLog").GetSection("APMASchedulerLogLimitDays").Value);
 
@@ -87,19 +150,110 @@ namespace VDVI.Services.APMA
                     //Update SchedulerSetUp Status;
                     scheduler.SchedulerStatus = SchedulerStatus.Processing.ToString();
                     await _schedulerSetupService.UpdateAsync(scheduler);
-
-                    ApmaSchedulerEvent schedulerEvent = new ApmaSchedulerEvent
+                    switch (scheduler.SchedulerName)
                     {
-                        Scheduler = scheduler,
-                        CurrentDate = currentDateTime,
-                        DaysLimit = scheduler.DaysLimit,
-                        EndDate = _endDate,
-                        StartDate = _startDate,
-                        LogDayLimits = logDayLimits
-                    };
+                        case "HcsReportManagementSummary":
+                            response = await _reportSummary.ReportManagementSummaryAsync(_startDate, _endDate);
+                            flag = response.IsSuccess;
+                            break;
 
-                    // Send notification to apma handlers
-                    await _eventBus.SendLocal(schedulerEvent);
+                        case "HcsBIRatePlanStatisticsHistory":
+                            response = await _hcsBIRatePlanStatisticsHistoryService.HcsBIRatePlanStatisticsRepositoryHistoryAsyc(_startDate, _endDate);
+                            flag = response.IsSuccess;
+                            break;
+
+                        case "HcsBIRatePlanStatisticsFuture":
+                            response = await _hcsBIRatePlanStatisticsFutureService.HcsBIRatePlanStatisticsRepositoryFutureAsyc(_startDate, scheduler.DaysLimit);
+                            flag = response.IsSuccess;
+                            break;
+
+                        case "HcsBIReservationDashboardHistory":
+                            response = await _hcsBIReservationDashboardHistoryService.HcsBIReservationDashboardRepositoryAsyc(_startDate, _endDate);
+                            flag = response.IsSuccess;
+                            break;
+
+                        case "HcsBIReservationDashboardFuture":
+                            response = await _hcsBIReservationDashboardFutureService.HcsBIReservationDashboardRepositoryAsyc(_startDate, scheduler.DaysLimit);
+                            flag = response.IsSuccess;
+                            break;
+
+                        case "HcsBISourceStatisticsHistory":
+                            response = await _hcsBISourceStatisticsHistoryService.HcsBIHcsBISourceStatisticsRepositoryHistoryAsyc(_startDate, _endDate);
+                            flag = response.IsSuccess;
+                            break;
+
+                        case "HcsBISourceStatisticsFuture":
+                            response = await _hcsBISourceStatisticsFutureService.HcsBIHcsBISourceStatisticsRepositoryFutureAsyc(_startDate, scheduler.DaysLimit);
+                            flag = response.IsSuccess;
+                            break;
+                        case "HcsGetDailyHistory":
+                            response = await _hcsGetDailyHistoryService.HcsGetDailyHistoryAsyc(_startDate, _endDate);
+                            flag = response.IsSuccess;
+                            break;
+
+                        case "HcsGetDailyHistoryFuture":
+                            response = await _hcsGetDailyFutureService.HcsGetDailyHistoryFutureAsyc(_startDate, scheduler.DaysLimit);
+                            flag = response.IsSuccess;
+                            break;
+
+                        case "HcsGetFullReservationDetails":
+                            response = await _hcsGetFullReservationDetailsService.HcsGetFullReservationDetailsAsync();
+                            flag = response.IsSuccess;
+                            break;
+
+                        case "HcsListMealPlans":
+                            response = await _hcsListMealPlans.HcsListMealPlansAsync();
+                            flag = response.IsSuccess;
+                            break;
+
+                        case "HcsListBanquetingRooms":
+                            response = await _hcsListBanquetingRoomsService.HcsListBanquetingRoomsAsync();
+                            flag = response.IsSuccess;
+                            break;
+
+                        case "HcsListRooms":
+                            response = await _hcsRoomsService.HcsListRoomsServiceAsync();
+                            flag = response.IsSuccess;
+                            break;
+
+                        case "HcsListPackages":
+                            response = await _hcsListPackagesService.HcsListPackagesServiceeAsync();
+                            flag = response.IsSuccess;
+                            break;
+
+                        case "HcsListRateType":
+                            response = await _hcsListRateTypesService.HcsListRateTypeAsync();
+                            flag = response.IsSuccess;
+                            break;
+
+                        case "HcsListSubSources":
+                            response = await _hcsListSubSourcesService.HcsListSubSourcesServiceAsync();
+                            flag = response.IsSuccess;
+                            break;
+
+                        case "HcsListSources":
+                            response = await _hcsListSourcesService.HcsListSourcesServiceAsync();
+                            flag = response.IsSuccess;
+                            break;
+
+                        default:
+                            break;
+
+                    }
+                    DateTime? dateTime = null;
+                    dtos.LastExecutionDateTime = currentDateTime;
+                    dtos.NextExecutionDateTime = scheduler.NextExecutionDateTime.Value.AddMinutes(scheduler.ExecutionIntervalMins); //NextExecutionDateTime=NextExecutionDateTime+ExecutionIntervalMins
+                    dtos.LastBusinessDate = scheduler.isFuture == false ? _endDate.Date : dateTime; //_Future does not need LastBusinessDate, because tartingpoint is always To
+                    dtos.SchedulerName = scheduler.SchedulerName;
+
+                    if (flag)
+                    {
+                        await _schedulerSetupService.SaveWithProcAsync(dtos);
+                        await _schedulerLogService.SaveWithProcAsync(scheduler.SchedulerName, logDayLimits);
+                    }
+
+
+
 
                 }
 
