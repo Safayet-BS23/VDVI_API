@@ -50,39 +50,46 @@ namespace VDVI.Services.Rebus.Services.Afas
                 case "DMFAdministraties":
                     response = await _idmfAdministratiesService.DmfAdministratiesAsync();
                     flag  = response.IsSuccess;
+                    dtos.SchedulerName = "DMFAdministraties";
                     break;
                 case "DMFBeginbalans"://Opening Balance
                     response = await _idmfBeginbalaniesService.DmfBeginbalanieServiceAsync((DateTime)afasSchedulerEvent.BusinessStartDate);
                     flag = response.IsSuccess;
+                    dtos.SchedulerName = "DMFBeginbalans";
                     break;
                 case "DMFGrootboekrekeningen": //Ledger of Accounts
                     response = await _idmfGrootboekrekeningen.DmfGrootboekrekeningenServiceAsync();
                     flag = response.IsSuccess;
+                    dtos.SchedulerName = "DMFGrootboekrekeningen";
                     break;
                 case "DMFFinancieleMutaties"://Financial Mutations
                     response = await _idmfFinancieleMutatiesService.DmfFinancieleMutatiesServiceAsync((DateTime)afasSchedulerEvent.BusinessStartDate);
                     flag = response.IsSuccess;
+                    dtos.SchedulerName = "DMFFinancieleMutaties";
                     break;
                 case "DMFBoekingsdagenMutaties"://Booking Dates Mutations
                     response = await _idmfBoekingsdagenMutatiesService.DmfBoekingsdagenMutatiesServiceAsync();
                     flag = response.IsSuccess;
+                    dtos.SchedulerName = "DMFBoekingsdagenMutaties";
                     break;
                 default:
                     break;
             }
 
            
-            if (flag)
+            if (afasSchedulerEvent.Scheduler.SchedulerName == dtos.SchedulerName && flag)
             {
                 dtos.LastExecutionDateTime = DateTime.UtcNow;
                 dtos.NextExecutionDateTime = afasSchedulerEvent.Scheduler.NextExecutionDateTime.Value.AddMinutes(afasSchedulerEvent.Scheduler.ExecutionIntervalMins);
-                dtos.SchedulerName = afasSchedulerEvent.Scheduler.SchedulerName;
 
                 dtos.SchedulerStatus = SchedulerStatus.Succeed.ToString(); 
+
                 await _afasschedulerSetupService.SaveWithProcAsync(dtos);
-                await _afasSchedulerLogService.SaveWithProcAsync(afasSchedulerEvent.Scheduler.SchedulerName, logDayLimits, DateTime.UtcNow);
+                await _afasSchedulerLogService.SaveWithProcAsync(dtos.SchedulerName, logDayLimits, DateTime.UtcNow);
+
                 afasSchedulerEvent.Scheduler.NextExecutionDateTime = dtos.NextExecutionDateTime;
                 afasSchedulerEvent.Scheduler.SchedulerStatus = dtos.SchedulerStatus;
+                flag = false;
             }
         }
     }
