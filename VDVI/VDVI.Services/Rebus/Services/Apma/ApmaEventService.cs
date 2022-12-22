@@ -17,7 +17,7 @@ namespace VDVI.Services.MediatR.Services.Apma
     {
         private readonly IHcsReportManagementSummaryService _reportSummary;
         private readonly IHcsBIReservationDashboardHistoryService _hcsBIReservationDashboardHistoryService;
-        private readonly IHcsBIReservationDashboardFutureService _hcsBIReservationDashboardFutureService;
+        private readonly IHcsBIReservationDashboardFutureService _hcsBIReservationDashboardFutureService; 
         private readonly IHcsBIRatePlanStatisticsHistoryService _hcsBIRatePlanStatisticsHistoryService;
         private readonly IHcsBIRatePlanStatisticsFutureService _hcsBIRatePlanStatisticsFutureService;
         private readonly IHcsBISourceStatisticsHistoryService _hcsBISourceStatisticsHistoryService;
@@ -233,6 +233,7 @@ namespace VDVI.Services.MediatR.Services.Apma
                 await _schedulerSetupService.SaveWithProcAsync(dtos);
                 await _schedulerLogService.SaveWithProcAsync(schedulerEvent.Scheduler.SchedulerName, schedulerEvent.LogDayLimits, DateTime.UtcNow);
                 schedulerEvent.Scheduler.NextExecutionDateTime = dtos.NextExecutionDateTime;
+                schedulerEvent.Scheduler.SchedulerStatus = dtos.SchedulerStatus;
             }
         }
     }
