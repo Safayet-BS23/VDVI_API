@@ -85,7 +85,7 @@ namespace VDVI.Services.Rebus.Services.Afas
                 dtos.SchedulerStatus = SchedulerStatus.Succeed.ToString(); 
 
                 await _afasschedulerSetupService.SaveWithProcAsync(dtos);
-                await _afasSchedulerLogService.SaveWithProcAsync(dtos.SchedulerName, logDayLimits, DateTime.UtcNow);
+                //await _afasSchedulerLogService.SaveWithProcAsync(dtos.SchedulerName, logDayLimits, DateTime.UtcNow);
 
                 afasSchedulerEvent.Scheduler.NextExecutionDateTime = dtos.NextExecutionDateTime;
                 afasSchedulerEvent.Scheduler.SchedulerStatus = dtos.SchedulerStatus;
