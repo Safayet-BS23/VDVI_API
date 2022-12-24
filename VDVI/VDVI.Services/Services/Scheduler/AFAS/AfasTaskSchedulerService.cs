@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using VDVI.Services.Rebus.Models;
 using VDVI.Services.Interfaces.Scheduler.AFAS;
-
+using Serilog;
 namespace VDVI.Services.AFAS
 {
     public class AfasTaskSchedulerService : IAfasTaskSchedulerService
@@ -51,6 +51,7 @@ namespace VDVI.Services.AFAS
                         && afasscheduler.NextExecutionDateTime <= DateTime.UtcNow
                     )
                 {
+                    Log.Information("Step-0 =>Afas Scheduler infos:" + afasscheduler.SchedulerName+ " NextExDateTime:" + afasscheduler.NextExecutionDateTime+" Current UtcDateTime:"+ DateTime.UtcNow );
                     //Update SchedulerSetUp Status;
                     afasscheduler.SchedulerStatus= SchedulerStatus.Processing.ToString();
                     await _afasschedulerSetupService.UpdateAsync(afasscheduler);
