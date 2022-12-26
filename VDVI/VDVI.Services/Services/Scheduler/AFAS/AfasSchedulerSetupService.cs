@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Framework.Core.Base.ModelEntity;
+using Framework.Core.Enums;
 using Framework.Core.Exceptions;
 using Framework.Core.Utility;
 using System;
@@ -53,6 +54,11 @@ namespace VDVI.Services.AFAS
             return await TryCatchExtension.ExecuteAndHandleErrorAsync(
                 async () =>
                 {
+                    var res=await FindByMethodNameAsync(dto.SchedulerName);
+                    dto.LastExecutionDateTime= DateTime.UtcNow;    
+                    dto.NextExecutionDateTime = res.NextExecutionDateTime.Value.AddMinutes(res.ExecutionIntervalMins);
+                    dto.SchedulerStatus= SchedulerStatus.Succeed.ToString(); 
+
                     var resp = await _masterRepository.AfasSchedulerSetupRepository.SaveWithProcAsync(dto);
 
                     return PrometheusResponse.Success(resp, "Data saved successful");
@@ -84,9 +90,10 @@ namespace VDVI.Services.AFAS
                     RethrowException = false
                 });
         }
-        public async Task<Result<PrometheusResponse>> FindByMethodNameAsync(string methodName)
+        public async Task<AfasSchedulerSetupDto> FindByMethodNameAsync(string methodName)
         {
-            throw new NotImplementedException();
+            var result = await _masterRepository.AfasSchedulerSetupRepository.FindByIdAsync(methodName);
+            return result;
         }
         public async Task<Result<PrometheusResponse>> FindByIdAsync(string schedulerName)
         {
