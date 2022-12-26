@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using VDVI.AfasRepository; 
 using VDVI.Repository.Models.AfasModels.Dto;
 using VDVI.Services.Interfaces.AFAS;
+using Serilog;
 using VDVI.Services.Services.BaseService;
 
 namespace VDVI.Services.AFAS
@@ -55,11 +56,14 @@ namespace VDVI.Services.AFAS
                 async () =>
                 {
                     var res=await FindByMethodNameAsync(dto.SchedulerName);
+                    Log.Information($"Step-5=>>Afas: Afas Scheduler Log Save Before: " + dto.SchedulerName + " NextExTime:-" + dto.NextExecutionDateTime + " Current UTC TIME:-" + DateTime.UtcNow);
+
                     dto.LastExecutionDateTime= DateTime.UtcNow;    
                     dto.NextExecutionDateTime = res.NextExecutionDateTime.Value.AddMinutes(res.ExecutionIntervalMins);
                     dto.SchedulerStatus= SchedulerStatus.Succeed.ToString(); 
 
                     var resp = await _masterRepository.AfasSchedulerSetupRepository.SaveWithProcAsync(dto);
+                    Log.Information($"Step-6=>>Afas: Afas Scheduler Log Save Afer: " + dto.SchedulerName + " NextExTime:-" + dto.NextExecutionDateTime + " Current UTC TIME:-" + DateTime.UtcNow);
 
                     return PrometheusResponse.Success(resp, "Data saved successful");
                 },
