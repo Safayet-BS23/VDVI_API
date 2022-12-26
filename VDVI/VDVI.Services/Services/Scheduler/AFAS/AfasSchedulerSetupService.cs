@@ -61,7 +61,11 @@ namespace VDVI.Services.AFAS
                     dto.LastExecutionDateTime= DateTime.UtcNow;    
                     dto.NextExecutionDateTime = res.NextExecutionDateTime.Value.AddMinutes(res.ExecutionIntervalMins);
                     dto.SchedulerStatus= SchedulerStatus.Succeed.ToString(); 
-                    if(res.NextExecutionDateTime <= DateTime.UtcNow)
+                    dto.SchedulerName= res.SchedulerName;   
+
+                    if(res.NextExecutionDateTime !=null ||
+                        res.NextExecutionDateTime <= DateTime.UtcNow)
+
                     {
                         var resp = await _masterRepository.AfasSchedulerSetupRepository.SaveWithProcAsync(dto);
                         Log.Information($"Step-6=>>Afas: Afas Scheduler Log Save Afer: " + dto.SchedulerName + " NextExTime:-" + res.NextExecutionDateTime + " Current UTC TIME:-" + DateTime.UtcNow);
