@@ -54,18 +54,19 @@ namespace VDVI.Services.AFAS
         {
             return await TryCatchExtension.ExecuteAndHandleErrorAsync(
                 async () =>
-                {
+                { 
                     var res=await FindByMethodNameAsync(dto.SchedulerName);
-                    Log.Information($"Step-5=>>Afas: Afas Scheduler Log Save Before: " + dto.SchedulerName + " NextExTime:-" + dto.NextExecutionDateTime + " Current UTC TIME:-" + DateTime.UtcNow);
+                    Log.Information($"Step-5=>>Afas: Afas Scheduler Log Save Before: " + dto.SchedulerName + " NextExTime:-" + res.NextExecutionDateTime + " Current UTC TIME:-" + DateTime.UtcNow);
 
                     dto.LastExecutionDateTime= DateTime.UtcNow;    
                     dto.NextExecutionDateTime = res.NextExecutionDateTime.Value.AddMinutes(res.ExecutionIntervalMins);
                     dto.SchedulerStatus= SchedulerStatus.Succeed.ToString(); 
-
-                    var resp = await _masterRepository.AfasSchedulerSetupRepository.SaveWithProcAsync(dto);
-                    Log.Information($"Step-6=>>Afas: Afas Scheduler Log Save Afer: " + dto.SchedulerName + " NextExTime:-" + dto.NextExecutionDateTime + " Current UTC TIME:-" + DateTime.UtcNow);
-
-                    return PrometheusResponse.Success(resp, "Data saved successful");
+                    if(res.NextExecutionDateTime <= DateTime.UtcNow)
+                    {
+                        var resp = await _masterRepository.AfasSchedulerSetupRepository.SaveWithProcAsync(dto);
+                        Log.Information($"Step-6=>>Afas: Afas Scheduler Log Save Afer: " + dto.SchedulerName + " NextExTime:-" + res.NextExecutionDateTime + " Current UTC TIME:-" + DateTime.UtcNow);
+                    }
+                    return PrometheusResponse.Success("", "Data saved successful");
                 },
                 exception => new TryCatchExtensionResult<Result<PrometheusResponse>>
                 {

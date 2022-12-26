@@ -23,7 +23,7 @@ namespace VDVI.Services.Rebus.Services.Afas
         private readonly IdmfGrootboekrekeningen _idmfGrootboekrekeningen;
         private readonly IdmfFinancieleMutatiesService _idmfFinancieleMutatiesService;
         private readonly IdmfBoekingsdagenMutatiesService _idmfBoekingsdagenMutatiesService;
-       
+
         public AfasEventService(IAfasSchedulerSetupService afasschedulerSetupService,
         IdmfAdministratiesService idmfAdministratiesService,
         IdmfBeginbalaniesService idmfBeginbalaniesService,
@@ -41,23 +41,23 @@ namespace VDVI.Services.Rebus.Services.Afas
             _idmfBoekingsdagenMutatiesService = idmfBoekingsdagenMutatiesService;
         }
         public async Task ExecuteEventAsync(AfasSchedulerEvent afasSchedulerEvent)
-        { 
+        {
 
 
-            Log.Information($"Step-1=>>Afas: Afas Scheduler object: " + afasSchedulerEvent.Scheduler.SchedulerName +" NextExTime:-" + afasSchedulerEvent.Scheduler.NextExecutionDateTime+ " Current Data Time:-" + DateTime.UtcNow);
+            Log.Information($"Step-1=>>Afas: Afas Scheduler object: " + afasSchedulerEvent.Scheduler.SchedulerName + " NextExTime:-" + afasSchedulerEvent.Scheduler.NextExecutionDateTime + " Current Data Time:-" + DateTime.UtcNow);
 
             bool flag = false;
             Result<PrometheusResponse> response;
             AfasSchedulerSetupDto dtos = new AfasSchedulerSetupDto();
 
-            var logDayLimits = afasSchedulerEvent.LogDayLimits; 
-           
-            
+            var logDayLimits = afasSchedulerEvent.LogDayLimits;
+
+
             switch (afasSchedulerEvent.Scheduler.SchedulerName)
             {
                 case "DMFAdministraties":
                     response = await _idmfAdministratiesService.DmfAdministratiesAsync();
-                    flag  = response.IsSuccess;
+                    flag = response.IsSuccess;
                     dtos.SchedulerName = "DMFAdministraties";
                     break;
                 case "DMFBeginbalans"://Opening Balance
@@ -85,33 +85,31 @@ namespace VDVI.Services.Rebus.Services.Afas
 
             }
 
-            Log.Information( $"Step-2=>>Afas: Afas Scheduler Name: " +afasSchedulerEvent.Scheduler.SchedulerName +" NextExTime:-"+ afasSchedulerEvent.Scheduler.NextExecutionDateTime+" Current UTC TIME:-"+ DateTime.UtcNow);
+            Log.Information($"Step-2=>>Afas: Afas Scheduler Name: " + afasSchedulerEvent.Scheduler.SchedulerName + " NextExTime:-" + afasSchedulerEvent.Scheduler.NextExecutionDateTime + " Current UTC TIME:-" + DateTime.UtcNow);
 
             if (afasSchedulerEvent.Scheduler.SchedulerName == dtos.SchedulerName && flag)
             {
-                Log.Information($"Step-3=> After finished business implementations: "+ dtos.SchedulerName + " Current UTC TIME:-" + DateTime.UtcNow);
+                Log.Information($"Step-3=> After finished business implementations: " + dtos.SchedulerName + " Current UTC TIME:-" + DateTime.UtcNow);
                 //dtos.LastExecutionDateTime = DateTime.UtcNow;
                 //dtos.NextExecutionDateTime = afasSchedulerEvent.Scheduler.NextExecutionDateTime.Value.AddMinutes(afasSchedulerEvent.Scheduler.ExecutionIntervalMins);
 
                 //dtos.SchedulerStatus = SchedulerStatus.Succeed.ToString();
 
                 var res = await _afasschedulerSetupService.FindByMethodNameAsync(afasSchedulerEvent.Scheduler.SchedulerName);
-                if (res.NextExecutionDateTime <= DateTime.UtcNow)
 
-                {
-                    Log.Information($"Step-4=>>Afas: Afas Scheduler Log Save Before: " + afasSchedulerEvent.Scheduler.SchedulerName + " NextExTime:-" + res.NextExecutionDateTime + " Current UTC TIME:-" + DateTime.UtcNow);
+                Log.Information($"Step-4=>>Afas: Afas Scheduler Log Save Before: " + afasSchedulerEvent.Scheduler.SchedulerName + " NextExTime:-" + res.NextExecutionDateTime + " Current UTC TIME:-" + DateTime.UtcNow);
 
-                    await _afasschedulerSetupService.SaveWithProcAsync(dtos);
+                await _afasschedulerSetupService.SaveWithProcAsync(dtos);
 
-                    //await _afasSchedulerLogService.SaveWithProcAsync(dtos.SchedulerName, logDayLimits, DateTime.UtcNow);
+                //await _afasSchedulerLogService.SaveWithProcAsync(dtos.SchedulerName, logDayLimits, DateTime.UtcNow);
 
 
-                    //afasSchedulerEvent.Scheduler.NextExecutionDateTime = dtos.NextExecutionDateTime;
-                    //afasSchedulerEvent.Scheduler.SchedulerStatus = dtos.SchedulerStatus;
-                    dtos = new AfasSchedulerSetupDto();
-                    flag = false;
-                    Log.Information($"Step-6=>>Refesh all object" + " Current UTC TIME:-" + DateTime.UtcNow);
-                }
+                //afasSchedulerEvent.Scheduler.NextExecutionDateTime = dtos.NextExecutionDateTime;
+                //afasSchedulerEvent.Scheduler.SchedulerStatus = dtos.SchedulerStatus;
+                dtos = new AfasSchedulerSetupDto();
+                flag = false;
+                Log.Information($"Step-7=>>Refesh all object" + " Current UTC TIME:-" + DateTime.UtcNow);
+
             }
         }
     }
