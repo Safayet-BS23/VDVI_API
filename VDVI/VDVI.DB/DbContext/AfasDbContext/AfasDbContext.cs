@@ -26,9 +26,8 @@ namespace VDVI.Repository.DbContext.AfasDbContext
         public AfasDbContext(IConfiguration configuration) : base(new SqlConnection(configuration["ConnectionStrings:AfasDb"]))
         {
             // Dto to Db - Single
-            TinyMapper.Bind<DMFAdministratiesDto, DbDMFAdministraties>();
-           
-            TinyMapper.Bind<AfasSchedulerSetupDto, DbAfasSchedulerSetup>();
+            TinyMapper.Bind<DMFAdministratiesDto, DbDMFAdministraties>();           
+            TinyMapper.Bind<AfasSchedulerSetupDto, DbAfasSchedulerSetup>(); 
             TinyMapper.Bind<AfasSchedulerLogDto, DbAfasSchedulerLog>();
             TinyMapper.Bind<DMFBeginbalansDto, DbDMFBeginbalans>();
             TinyMapper.Bind<DMFGrootboekrekeningenDto, DbDMFGrootboekrekeningen>();
@@ -42,6 +41,12 @@ namespace VDVI.Repository.DbContext.AfasDbContext
             TinyMapper.Bind<List<DMFFinancieleMutatiesDto>, List<DbDMFFinancieleMutaties>>();
             TinyMapper.Bind<List<DMFBoekingsdagenMutatiesDto>,List<DbDMFBoekingsdagenMutaties>>();
 
+            //Db to Dto -Single 
+            TinyMapper.Bind<DbAfasSchedulerSetup, AfasSchedulerSetupDto>();
+
+            //Db to Dto List
+
+            TinyMapper.Bind<List<DbAfasSchedulerSetup>, List<AfasSchedulerSetupDto>>();
 
 
         }
