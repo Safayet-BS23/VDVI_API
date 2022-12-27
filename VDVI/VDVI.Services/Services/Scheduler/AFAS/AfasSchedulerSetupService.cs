@@ -63,7 +63,7 @@ namespace VDVI.Services.AFAS
                     dto.SchedulerStatus= SchedulerStatus.Succeed.ToString(); 
                     dto.SchedulerName= res.SchedulerName;   
 
-                    if(res.NextExecutionDateTime !=null ||
+                    if(res.NextExecutionDateTime !=null &&
                         res.NextExecutionDateTime <= DateTime.UtcNow)
 
                     {
