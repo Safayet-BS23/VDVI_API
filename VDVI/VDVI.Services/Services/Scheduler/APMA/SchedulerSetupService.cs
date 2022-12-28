@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using Framework.Core.Base.ModelEntity;
+using Framework.Core.Enums;
 using Framework.Core.Exceptions;
 using Framework.Core.Utility;
 using System;
@@ -8,6 +9,8 @@ using System.Threading.Tasks;
 using VDVI.ApmaRepository;
 using VDVI.DB.Dtos;
 using VDVI.Services.Interfaces.APMA;
+using VDVI.Services.MediatR.Models;
+using Serilog;
 
 namespace VDVI.Services.APMA
 {
@@ -47,14 +50,27 @@ namespace VDVI.Services.APMA
                      RethrowException = false
                  });
         }
-        public async Task<Result<PrometheusResponse>> SaveWithProcAsync(SchedulerSetupDto dto)
+        public async Task<Result<PrometheusResponse>> SaveWithProcAsync(ApmaSchedulerEvent dto)
         {
             return await TryCatchExtension.ExecuteAndHandleErrorAsync(
                 async () =>
                 {
-                    var resp = await _masterRepository.SchedulerSetupRepository.SaveWithProcAsync(dto);
+                    DateTime? dateTime = null;
+                    dto.Scheduler.LastExecutionDateTime = DateTime.UtcNow;
+                    dto.Scheduler.NextExecutionDateTime = dto.Scheduler.NextExecutionDateTime.Value.AddMinutes(dto.Scheduler.ExecutionIntervalMins); //NextExecutionDateTime=NextExecutionDateTime+ExecutionIntervalMins
+                    dto.Scheduler.LastBusinessDate = dto.Scheduler.isFuture == false ?  dto.EndDate?.Date : dateTime; //_Future does not need LastBusinessDate, because tartingpoint is always To
 
-                    return PrometheusResponse.Success(resp, "Data saved successful");
+                    dto.Scheduler.SchedulerStatus = SchedulerStatus.Succeed.ToString();
+
+                    var res = await FindByMethodNameAsync(dto.Scheduler.SchedulerName);
+                    Log.Information($"Step-5=>>Apma: Apma Scheduler Log Save Before: " + dto.Scheduler.SchedulerName + " NextExTime:-" + res.NextExecutionDateTime + " Current UTC TIME:-" + DateTime.UtcNow);
+                    if(res.NextExecutionDateTime != null && res.NextExecutionDateTime <= DateTime.UtcNow)
+                    {
+                        var resp = await _masterRepository.SchedulerSetupRepository.SaveWithProcAsync(dto.Scheduler);
+                        Log.Information($"Step-6=>>Apma: Apma Scheduler Log Save Afer: " + dto.Scheduler.SchedulerName + " NextExTime:-" + res.NextExecutionDateTime + " Current UTC TIME:-" + DateTime.UtcNow);
+                    }
+
+                    return PrometheusResponse.Success("", "Data saved successful");
                 },
                 exception => new TryCatchExtensionResult<Result<PrometheusResponse>>
                 {
@@ -85,9 +101,10 @@ namespace VDVI.Services.APMA
         }
 
 
-        public async Task<Result<PrometheusResponse>> FindByMethodNameAsync(string methodName)
+        public async Task<SchedulerSetupDto> FindByMethodNameAsync(string methodName)
         {
-            throw new NotImplementedException();
+            var result = await _masterRepository.SchedulerSetupRepository.FindByIdAsync(methodName);
+            return result;
         }
         public async Task<Result<PrometheusResponse>> FindByIdAsync(string schedulerName)
         {

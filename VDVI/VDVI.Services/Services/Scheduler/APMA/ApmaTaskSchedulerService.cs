@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using VDVI.Services.Interfaces.APMA;
 using VDVI.Services.MediatR.Models;
+using Serilog;
 
 namespace VDVI.Services.APMA
 {
@@ -83,6 +84,9 @@ namespace VDVI.Services.APMA
                     if (_endDate >= currentDateTime) _endDate = currentDateTime.AddDays(-1); // if endDate cross the CurrentDate; then endDate would be change 
 
                     if (_endDate.Date < _startDate.Date) _endDate = _startDate;
+
+                    Log.Information("Step-0 =>Apma Scheduler infos:" + scheduler.SchedulerName + " NextExDateTime:" + scheduler.NextExecutionDateTime + " Current UtcDateTime:" + DateTime.UtcNow);
+
 
                     //Update SchedulerSetUp Status;
                     scheduler.SchedulerStatus = SchedulerStatus.Processing.ToString();

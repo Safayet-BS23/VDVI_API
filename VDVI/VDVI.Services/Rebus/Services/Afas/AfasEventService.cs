@@ -90,22 +90,13 @@ namespace VDVI.Services.Rebus.Services.Afas
             if (afasSchedulerEvent.Scheduler.SchedulerName == dtos.SchedulerName && flag)
             {
                 Log.Information($"Step-3=> After finished business implementations: " + dtos.SchedulerName + " Current UTC TIME:-" + DateTime.UtcNow);
-                //dtos.LastExecutionDateTime = DateTime.UtcNow;
-                //dtos.NextExecutionDateTime = afasSchedulerEvent.Scheduler.NextExecutionDateTime.Value.AddMinutes(afasSchedulerEvent.Scheduler.ExecutionIntervalMins);
-
-                //dtos.SchedulerStatus = SchedulerStatus.Succeed.ToString();
-
+               
                 var res = await _afasschedulerSetupService.FindByMethodNameAsync(afasSchedulerEvent.Scheduler.SchedulerName);
 
                 Log.Information($"Step-4=>>Afas: Afas Scheduler Log Save Before: " + afasSchedulerEvent.Scheduler.SchedulerName + " NextExTime:-" + res.NextExecutionDateTime + " Current UTC TIME:-" + DateTime.UtcNow);
 
                 await _afasschedulerSetupService.SaveWithProcAsync(dtos);
 
-                //await _afasSchedulerLogService.SaveWithProcAsync(dtos.SchedulerName, logDayLimits, DateTime.UtcNow);
-
-
-                //afasSchedulerEvent.Scheduler.NextExecutionDateTime = dtos.NextExecutionDateTime;
-                //afasSchedulerEvent.Scheduler.SchedulerStatus = dtos.SchedulerStatus;
                 dtos = new AfasSchedulerSetupDto();
                 flag = false;
                 Log.Information($"Step-7=>>Refesh all object" + " Current UTC TIME:-" + DateTime.UtcNow);

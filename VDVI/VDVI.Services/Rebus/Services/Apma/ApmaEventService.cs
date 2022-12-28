@@ -10,6 +10,7 @@ using VDVI.Services.Interfaces;
 using VDVI.Services.Interfaces.APMA;
 using VDVI.Services.MediatR.Models;
 using VDVI.Services.Rebus.Models;
+using Serilog;
 
 namespace VDVI.Services.MediatR.Services.Apma
 {
@@ -96,11 +97,13 @@ namespace VDVI.Services.MediatR.Services.Apma
 
         public async Task ExecuteEventAsync(ApmaSchedulerEvent schedulerEvent)
         {
+            Log.Information($"Step-1=>>APMA: APMA Scheduler object: " + schedulerEvent.Scheduler.SchedulerName + " NextExTime:-" + schedulerEvent.Scheduler.NextExecutionDateTime + " Current Data Time:-" + DateTime.UtcNow);
+
             Result<PrometheusResponse> response;
             bool flag = false;
 
-            DateTime _startDate = schedulerEvent.StartDate.HasValue ? schedulerEvent.StartDate.Value : DateTime.UtcNow;
-            DateTime _endDate = schedulerEvent.EndDate.HasValue ? schedulerEvent.EndDate.Value : DateTime.UtcNow;
+            schedulerEvent.StartDate = schedulerEvent.StartDate.HasValue ? schedulerEvent.StartDate.Value : DateTime.UtcNow;
+            schedulerEvent.EndDate = schedulerEvent.EndDate.HasValue ? schedulerEvent.EndDate.Value : DateTime.UtcNow;
 
             int daysLimit = schedulerEvent.DaysLimit.HasValue ? schedulerEvent.DaysLimit.Value : 0;
 
@@ -110,54 +113,54 @@ namespace VDVI.Services.MediatR.Services.Apma
             switch (schedulerEvent.Scheduler.SchedulerName)
             {
                 case "HcsReportManagementSummary":
-                    response = await _reportSummary.ReportManagementSummaryAsync(_startDate, _endDate);
+                    response = await _reportSummary.ReportManagementSummaryAsync((DateTime)schedulerEvent.StartDate, (DateTime)schedulerEvent.EndDate);
                     flag = response.IsSuccess;
                     dtos.SchedulerName = "HcsReportManagementSummary";
                     break;
 
                 case "HcsBIRatePlanStatisticsHistory":
-                    response = await _hcsBIRatePlanStatisticsHistoryService.HcsBIRatePlanStatisticsRepositoryHistoryAsyc(_startDate, _endDate);
+                    response = await _hcsBIRatePlanStatisticsHistoryService.HcsBIRatePlanStatisticsRepositoryHistoryAsyc((DateTime)schedulerEvent.StartDate, (DateTime)schedulerEvent.EndDate);
                     flag = response.IsSuccess;
                     dtos.SchedulerName = "HcsBIRatePlanStatisticsHistory";
                     break;
 
                 case "HcsBIRatePlanStatisticsFuture":
-                    response = await _hcsBIRatePlanStatisticsFutureService.HcsBIRatePlanStatisticsRepositoryFutureAsyc(_startDate, daysLimit);
+                    response = await _hcsBIRatePlanStatisticsFutureService.HcsBIRatePlanStatisticsRepositoryFutureAsyc((DateTime)schedulerEvent.StartDate, daysLimit);
                     flag = response.IsSuccess;                     
                     dtos.SchedulerName = "HcsBIRatePlanStatisticsFuture";
                     break;
 
                 case "HcsBIReservationDashboardHistory":
-                    response = await _hcsBIReservationDashboardHistoryService.HcsBIReservationDashboardRepositoryAsyc(_startDate, _endDate);
+                    response = await _hcsBIReservationDashboardHistoryService.HcsBIReservationDashboardRepositoryAsyc((DateTime)schedulerEvent.StartDate, (DateTime)schedulerEvent.EndDate);
                     flag = response.IsSuccess;
                     dtos.SchedulerName = "HcsBIReservationDashboardHistory";
                     break;
 
                 case "HcsBIReservationDashboardFuture":
-                    response = await _hcsBIReservationDashboardFutureService.HcsBIReservationDashboardRepositoryAsyc(_startDate, daysLimit);
+                    response = await _hcsBIReservationDashboardFutureService.HcsBIReservationDashboardRepositoryAsyc((DateTime)schedulerEvent.StartDate, daysLimit);
                     flag = response.IsSuccess;
                     dtos.SchedulerName = "HcsBIReservationDashboardFuture";
                     break;
 
                 case "HcsBISourceStatisticsHistory":
-                    response = await _hcsBISourceStatisticsHistoryService.HcsBIHcsBISourceStatisticsRepositoryHistoryAsyc(_startDate, _endDate);
+                    response = await _hcsBISourceStatisticsHistoryService.HcsBIHcsBISourceStatisticsRepositoryHistoryAsyc((DateTime)schedulerEvent.StartDate, (DateTime)schedulerEvent.EndDate);
                     flag = response.IsSuccess;
                     dtos.SchedulerName = "HcsBISourceStatisticsHistory";
                     break;
 
                 case "HcsBISourceStatisticsFuture":
-                    response = await _hcsBISourceStatisticsFutureService.HcsBIHcsBISourceStatisticsRepositoryFutureAsyc(_startDate, daysLimit);
+                    response = await _hcsBISourceStatisticsFutureService.HcsBIHcsBISourceStatisticsRepositoryFutureAsyc((DateTime)schedulerEvent.StartDate, daysLimit);
                     flag = response.IsSuccess;
                     dtos.SchedulerName = "HcsBISourceStatisticsFuture";
                     break;
                 case "HcsGetDailyHistoryHistory":
-                    response = await _hcsGetDailyHistoryHistoryService.HcsGetDailyHistoryHistoryAsyc(_startDate, _endDate);
+                    response = await _hcsGetDailyHistoryHistoryService.HcsGetDailyHistoryHistoryAsyc((DateTime)schedulerEvent.StartDate, (DateTime)schedulerEvent.EndDate);
                     flag = response.IsSuccess;
                     dtos.SchedulerName = "HcsGetDailyHistoryHistory";
                     break;
 
                 case "HcsGetDailyHistoryFuture":
-                    response = await _hcsGetDailyFutureService.HcsGetDailyHistoryFutureAsyc(_startDate, daysLimit);
+                    response = await _hcsGetDailyFutureService.HcsGetDailyHistoryFutureAsyc((DateTime)schedulerEvent.StartDate, daysLimit);
                     flag = response.IsSuccess;
                     dtos.SchedulerName = "HcsGetDailyHistoryFuture";
                     break;
@@ -227,13 +230,13 @@ namespace VDVI.Services.MediatR.Services.Apma
                     break;
 
                 case "HcsGroupReservation":
-                    response = await _hcsListGroupReservationService.HcsGetGroupReservationsAsync(_startDate, _endDate);
+                    response = await _hcsListGroupReservationService.HcsGetGroupReservationsAsync((DateTime)schedulerEvent.StartDate, (DateTime)schedulerEvent.EndDate);
                     flag = response.IsSuccess;
                     dtos.SchedulerName = "HcsGroupReservation";
                     break;
 
                 case "HcsGetFolioDetails":
-                    response = await _hcsListFolioDetailService.HcsListFolioDetailAsync(_startDate, _endDate);
+                    response = await _hcsListFolioDetailService.HcsListFolioDetailAsync((DateTime)schedulerEvent.StartDate, (DateTime)schedulerEvent.EndDate);
                     flag = response.IsSuccess;
                     dtos.SchedulerName = "HcsGetFolioDetails";
                     break;
@@ -242,22 +245,27 @@ namespace VDVI.Services.MediatR.Services.Apma
                     break;
 
             }
-           
+            Log.Information($"Step-2=>>Apma: Apma Scheduler Name: " + schedulerEvent.Scheduler.SchedulerName + " NextExTime:-" + schedulerEvent.Scheduler.NextExecutionDateTime + " Current UTC TIME:-" + DateTime.UtcNow);
+
             if (schedulerEvent.Scheduler.SchedulerName == dtos.SchedulerName && flag)
             {
-                DateTime? dateTime = null;
-                dtos.LastExecutionDateTime = DateTime.UtcNow;
-                dtos.NextExecutionDateTime = schedulerEvent.Scheduler.NextExecutionDateTime.Value.AddMinutes(schedulerEvent.Scheduler.ExecutionIntervalMins); //NextExecutionDateTime=NextExecutionDateTime+ExecutionIntervalMins
-                dtos.LastBusinessDate = schedulerEvent.Scheduler.isFuture == false ? _endDate.Date : dateTime; //_Future does not need LastBusinessDate, because tartingpoint is always To
-              
-                dtos.SchedulerStatus = SchedulerStatus.Succeed.ToString();
+                Log.Information($"Step-3=> After finished business implementations: " + dtos.SchedulerName + " Current UTC TIME:-" + DateTime.UtcNow);
 
-                await _schedulerSetupService.SaveWithProcAsync(dtos);
-                await _schedulerLogService.SaveWithProcAsync(schedulerEvent.Scheduler.SchedulerName, schedulerEvent.LogDayLimits, DateTime.UtcNow);
-               
-                schedulerEvent.Scheduler.NextExecutionDateTime = dtos.NextExecutionDateTime;
-                schedulerEvent.Scheduler.SchedulerStatus = dtos.SchedulerStatus;
+                //DateTime? dateTime = null;
+                //dtos.LastExecutionDateTime = DateTime.UtcNow;
+                //dtos.NextExecutionDateTime = schedulerEvent.Scheduler.NextExecutionDateTime.Value.AddMinutes(schedulerEvent.Scheduler.ExecutionIntervalMins); //NextExecutionDateTime=NextExecutionDateTime+ExecutionIntervalMins
+                //dtos.LastBusinessDate = schedulerEvent.Scheduler.isFuture == false ? (DateTime)schedulerEvent.EndDate.Date : dateTime; //_Future does not need LastBusinessDate, because tartingpoint is always To
+
+                //dtos.SchedulerStatus = SchedulerStatus.Succeed.ToString();
+                var res = await _schedulerSetupService.FindByMethodNameAsync(schedulerEvent.Scheduler.SchedulerName);
+
+                Log.Information($"Step-4=>>Apma: Apma Scheduler Log Save Before: " + schedulerEvent.Scheduler.SchedulerName + " NextExTime:-" + res.NextExecutionDateTime + " Current UTC TIME:-" + DateTime.UtcNow);
+                await _schedulerSetupService.SaveWithProcAsync(schedulerEvent);
+
+                dtos = new SchedulerSetupDto();
                 flag = false;
+                Log.Information($"Step-7=>>Apma-Refesh all object" + " Current UTC TIME:-" + DateTime.UtcNow);
+
             }
         }
     }

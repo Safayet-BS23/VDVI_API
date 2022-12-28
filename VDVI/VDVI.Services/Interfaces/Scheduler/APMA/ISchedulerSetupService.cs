@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using VDVI.DB.Dtos;
+using VDVI.Services.MediatR.Models;
 
 namespace VDVI.Services.Interfaces.APMA
 {
@@ -11,9 +12,9 @@ namespace VDVI.Services.Interfaces.APMA
     {
         Task<Result<PrometheusResponse>> InsertAsync(SchedulerSetupDto dto);
         Task<Result<PrometheusResponse>> UpdateAsync(SchedulerSetupDto dto);
-        Task<Result<PrometheusResponse>> SaveWithProcAsync(SchedulerSetupDto dto);
+        Task<Result<PrometheusResponse>> SaveWithProcAsync(ApmaSchedulerEvent dto);
         Task<IEnumerable<SchedulerSetupDto>> FindByAllScheduleAsync();
-        Task<Result<PrometheusResponse>> FindByMethodNameAsync(string methodName);
+        Task<SchedulerSetupDto> FindByMethodNameAsync(string methodName);
         Task<Result<PrometheusResponse>> FindByIdAsync(string schedulerName);
         Task<Result<PrometheusResponse>> ResetStatusAsync();
         Task<bool> DeleteByPropertyCodeAsync(string schedulerName);
