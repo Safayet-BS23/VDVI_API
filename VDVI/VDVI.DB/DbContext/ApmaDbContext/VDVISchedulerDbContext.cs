@@ -128,10 +128,20 @@ namespace VDVI.Repository.DbContext.ApmaDbContext
             TinyMapper.Bind<List<RoomsDto>, List<DbRooms>>();
             TinyMapper.Bind<List<RoomTypesDto>, List<DbRoomTypes>>();
             TinyMapper.Bind<List<MealPlansDto>, List<DbMealPlans>>();
-            TinyMapper.Bind< List<StatisticsRevenueCodesDto>, List<DbStatisticsRevenueCodes>>();
+            TinyMapper.Bind<List<StatisticsRevenueCodesDto>, List<DbStatisticsRevenueCodes>>();
+
+
+            //DB to Dto -Single 
+            TinyMapper.Bind<DbSchedulerSetup, SchedulerSetupDto>();
+
             TinyMapper.Bind<DbFolioDetail, FolioDetailDto>();
             TinyMapper.Bind<DbGroupReservation, GroupReservationDto>();
             TinyMapper.Bind<DbRecordsToSyncChanged, RecordsToSyncChangedDto>();
+
+            //DB to Dto -List
+            TinyMapper.Bind<List<DbSchedulerSetup>, List<SchedulerSetupDto>>();
+
+
 
         }
         public IDapperRepository<DbSchedulerSetup> SchedulerSetup => _schedulerSetup ??= new DapperRepository<DbSchedulerSetup>(Connection);
