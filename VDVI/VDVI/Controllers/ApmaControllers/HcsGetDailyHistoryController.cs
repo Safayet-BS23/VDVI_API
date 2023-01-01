@@ -18,9 +18,9 @@ namespace VDVI.Client.Controllers.ApmaControllers
             _hcsGetDailyHistoryService = hcsGetDailyHistoryService;
         }
         [HttpPost("HcsGetDailyHistoryHistory")]
-        public async Task<IActionResult> HcsGetDailyHistoryHistory(DateTime startDate, DateTime endDate)
+        public async Task<IActionResult> HcsGetDailyHistoryHistory(DateTime BusinessStartDate)
         {
-            var response = await _hcsGetDailyHistoryService.HcsGetDailyHistoryHistoryAsyc(startDate, endDate);
+            var response = await _hcsGetDailyHistoryService.HcsGetDailyHistoryHistoryAsyc(BusinessStartDate);
             return Ok(response);
         }
     }

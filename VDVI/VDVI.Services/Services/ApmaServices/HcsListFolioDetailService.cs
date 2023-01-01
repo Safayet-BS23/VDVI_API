@@ -2,11 +2,13 @@
 using Framework.Core.Base.ModelEntity;
 using Framework.Core.Exceptions;
 using Framework.Core.Utility;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using SOAPService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml;
 using VDVI.DB.Dtos;
 using VDVI.Services.Interfaces;
 
@@ -27,38 +29,48 @@ namespace VDVI.Services
             _hcsGetDailyHistoryService = hcsGetDailyHistoryService;
         }
 
-        public async Task<Result<PrometheusResponse>> HcsListFolioDetailAsync(DateTime startDate, DateTime endDate)
+        public async Task<Result<PrometheusResponse>> HcsListFolioDetailAsync(DateTime BusinesStartDate)
         {
             return await TryCatchExtension.ExecuteAndHandleErrorAsync(
                  async () =>
                  {
                      Authentication pmsAuthentication = GetApmaAuthCredential();
+                   
+                     int currentYear = DateTime.UtcNow.Year;
+                     DateTime currentYearStartDate = new DateTime(currentYear, 01, 01);
+                     int index = 1;
 
-
-                     foreach (var propertyCode in ApmaProperties)
+                     while (BusinesStartDate< currentYearStartDate)
                      {
-                         var dailyHistoryListResponse = await _hcsGetDailyHistoryService.GetListHcsDailyHistoryAsync(startDate, endDate, propertyCode);
-
-                         if (dailyHistoryListResponse.IsSuccess)
+                         foreach (var propertyCode in ApmaProperties)
                          {
-                             var uniquePMSNumberList = ((List<DailyHistoryDto>)dailyHistoryListResponse.Value.Data).Select(x => x.PmsSegmentNumber).Distinct();
+                             var dailyHistoryListResponse = await _hcsGetDailyHistoryService.GetListHcsDailyHistoryAsync(BusinesStartDate, BusinesStartDate.AddDays(6), propertyCode);
 
-                             foreach (var uniquePMS in uniquePMSNumberList)
+                             if (dailyHistoryListResponse.IsSuccess)
                              {
-                                 var folioDetails = await GetFolioDetailsAsync(propertyCode, uniquePMS, pmsAuthentication);
+                                 var uniquePMSNumberList = ((List<DailyHistoryDto>)dailyHistoryListResponse.Value.Data).Select(x => x.PmsSegmentNumber).Distinct();
 
-                                 if (folioDetails.Count > 0)
+                                 foreach (var uniquePMS in uniquePMSNumberList)
                                  {
-                                     await _hcsFolioDetailService.BulkInsertWithProcAsync(folioDetails);
+                                     var folioDetails = await GetFolioDetailsAsync(propertyCode, uniquePMS, pmsAuthentication);
+
+                                     if (folioDetails.Count > 0)
+                                     {
+                                         await _hcsFolioDetailService.BulkInsertWithProcAsync(folioDetails);
+                                     }
                                  }
                              }
+                             else
+                             {
+                                 continue;
+                             }
                          }
-                         else
-                         {
-                             continue;
-                         }
+
+                         BusinesStartDate = BusinesStartDate.AddDays(7);
+                         index++;
                      }
 
+               
                      return PrometheusResponse.Success("", "Data saved successful");
                  },
                  exception => new TryCatchExtensionResult<Result<PrometheusResponse>>

@@ -2,6 +2,7 @@
 using Framework.Core.Base.ModelEntity;
 using Framework.Core.Exceptions;
 using Framework.Core.Utility;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using SOAPService;
 using System;
 using System.Collections.Generic;
@@ -20,19 +21,27 @@ namespace VDVI.Services
         {
             _hcsDailyHistoryHistoryService = hcsDailyHistoryService;
         }
-        public async Task<Result<PrometheusResponse>> HcsGetDailyHistoryHistoryAsyc(DateTime StartDate, DateTime EndDate)
+        public async Task<Result<PrometheusResponse>> HcsGetDailyHistoryHistoryAsyc(DateTime BusinessStartDate)
         {            
             return await TryCatchExtension.ExecuteAndHandleErrorAsync(
                  async () =>
                  {
-                     var response = await GetListHcsDailyHistoryAsync(StartDate, EndDate);
+                     int currentYear = DateTime.UtcNow.Year;
+                     DateTime currentYearStartDate = new DateTime(currentYear, 01, 01);
+                     int index = 1;
 
-                     if (response.IsSuccess)
+                     while (BusinessStartDate < currentYearStartDate)
                      {
-                         return await _hcsDailyHistoryHistoryService.BulkInsertWithProcAsync((List<DailyHistoryDto>)response.Value.Data);
+                         var response = await GetListHcsDailyHistoryAsync(BusinessStartDate, BusinessStartDate.AddDays(6));
+                         BusinessStartDate = BusinessStartDate.AddDays(7);
+                         index++;
+                         if (response.IsSuccess)
+                         {
+                             var result= await _hcsDailyHistoryHistoryService.BulkInsertWithProcAsync((List<DailyHistoryDto>)response.Value.Data);
+                         }  
                      }
+                     return PrometheusResponse.Success("", "Date retrived Successfully");
 
-                     return PrometheusResponse.Failure(response.Value.Message);
                  },
                  exception => new TryCatchExtensionResult<Result<PrometheusResponse>>
                  {

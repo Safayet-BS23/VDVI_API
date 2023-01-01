@@ -154,7 +154,8 @@ namespace VDVI.Services.MediatR.Services.Apma
                     dtos.SchedulerName = "HcsBISourceStatisticsFuture";
                     break;
                 case "HcsGetDailyHistoryHistory":
-                    response = await _hcsGetDailyHistoryHistoryService.HcsGetDailyHistoryHistoryAsyc((DateTime)schedulerEvent.StartDate, (DateTime)schedulerEvent.EndDate);
+                    //response = await _hcsGetDailyHistoryHistoryService.HcsGetDailyHistoryHistoryAsyc((DateTime)schedulerEvent.StartDate, (DateTime)schedulerEvent.EndDate);
+                    response = await _hcsGetDailyHistoryHistoryService.HcsGetDailyHistoryHistoryAsyc((DateTime)schedulerEvent.Scheduler.BusinessStartDate);
                     flag = response.IsSuccess;
                     dtos.SchedulerName = "HcsGetDailyHistoryHistory";
                     break;
@@ -236,7 +237,7 @@ namespace VDVI.Services.MediatR.Services.Apma
                     break;
 
                 case "HcsGetFolioDetails":
-                    response = await _hcsListFolioDetailService.HcsListFolioDetailAsync((DateTime)schedulerEvent.StartDate, (DateTime)schedulerEvent.EndDate);
+                    response = await _hcsListFolioDetailService.HcsListFolioDetailAsync((DateTime) schedulerEvent.Scheduler.BusinessStartDate);
                     flag = response.IsSuccess;
                     dtos.SchedulerName = "HcsGetFolioDetails";
                     break;

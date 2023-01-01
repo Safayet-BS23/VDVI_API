@@ -7,6 +7,6 @@ namespace VDVI.Services.Interfaces
 {
     public interface IHcsListFolioDetailService
     {
-        Task<Result<PrometheusResponse>> HcsListFolioDetailAsync(DateTime startDate, DateTime endDate);
+        Task<Result<PrometheusResponse>> HcsListFolioDetailAsync(DateTime BusinesStartDate);
     }
 }
