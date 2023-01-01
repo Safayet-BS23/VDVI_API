@@ -9,7 +9,7 @@ namespace VDVI.Services.Interfaces
 {
     public interface IHcsListGroupReservationService
     {
-        Task<Result<PrometheusResponse>> HcsGetGroupReservationsAsync(DateTime startDate, DateTime endDate);
+        Task<Result<PrometheusResponse>> HcsGetGroupReservationsAsync(DateTime BusinesStartDate);
         Task<Result<PrometheusResponse>> HcsSyncGroupReservationAsync(List<RecordsToSyncChangedDto> changeRecords);
     }
 }

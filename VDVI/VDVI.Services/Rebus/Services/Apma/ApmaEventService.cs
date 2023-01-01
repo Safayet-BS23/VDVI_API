@@ -231,7 +231,7 @@ namespace VDVI.Services.MediatR.Services.Apma
                     break;
 
                 case "HcsGroupReservation":
-                    response = await _hcsListGroupReservationService.HcsGetGroupReservationsAsync((DateTime)schedulerEvent.StartDate, (DateTime)schedulerEvent.EndDate);
+                    response = await _hcsListGroupReservationService.HcsGetGroupReservationsAsync((DateTime)schedulerEvent.Scheduler.BusinessStartDate);
                     flag = response.IsSuccess;
                     dtos.SchedulerName = "HcsGroupReservation";
                     break;

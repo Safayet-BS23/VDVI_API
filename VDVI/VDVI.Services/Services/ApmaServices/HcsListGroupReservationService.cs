@@ -2,6 +2,7 @@
 using Framework.Core.Base.ModelEntity;
 using Framework.Core.Exceptions;
 using Framework.Core.Utility;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
 using SOAPService;
 using System;
 using System.Collections.Generic;
@@ -28,42 +29,54 @@ namespace VDVI.Services.Services.ApmaServices
             _hcsGetDailyFutureService = hcsGetDailyFutureService;
         }
 
-        public async Task<Result<PrometheusResponse>> HcsGetGroupReservationsAsync(DateTime startDate, DateTime endDate)
+        public async Task<Result<PrometheusResponse>> HcsGetGroupReservationsAsync(DateTime BusinesStartDate)
         {
             return await TryCatchExtension.ExecuteAndHandleErrorAsync(
                 async () =>
                 {
                     Authentication pmsAuthentication = GetApmaAuthCredential();
 
-                    foreach (string property in ApmaProperties)
+                    int currentYear = DateTime.UtcNow.Year;
+                    DateTime currentYearStartDate = new DateTime(currentYear, 01, 01);
+                    int index = 1;
+
+                    while (BusinesStartDate < currentYearStartDate)
                     {
-                        var dailyHistoryFutureUniquePmsNumbers = await GetUniquePmsSegmentNumbers(startDate, endDate, property);
-
-                        if (dailyHistoryFutureUniquePmsNumbers.IsFailure)
-                            continue;
-
-                        var dailyHistoryFuturePMSNumberList = ((List<string>)dailyHistoryFutureUniquePmsNumbers.Value.Data);
-
-                        List<GroupReservationDto> groupReservationDtoList = new List<GroupReservationDto>();
-
-                        foreach(var pmsGroupReservationNumber in dailyHistoryFuturePMSNumberList)
+                        foreach (string property in ApmaProperties)
                         {
-                            var groupReservationResponse = await GetGroupReservationsAsync(startDate, endDate, property, pmsGroupReservationNumber);
+                            var dailyHistoryFutureUniquePmsNumbers = await GetUniquePmsSegmentNumbers(BusinesStartDate, BusinesStartDate.AddDays(6), property);
 
-                            if (groupReservationResponse.IsFailure)
+                            if (dailyHistoryFutureUniquePmsNumbers.IsFailure)
                                 continue;
 
-                            groupReservationDtoList.Add(FormatGroupReservation((GetGroupReservation)groupReservationResponse.Value.Data, property));
-                        }
+                            var dailyHistoryFuturePMSNumberList = ((List<string>)dailyHistoryFutureUniquePmsNumbers.Value.Data);
 
-                        if (groupReservationDtoList.Any())
-                        {
-                            await _hcsGroupReservationService.BulkInsertWithProcAsync(groupReservationDtoList.Where(x => x.GroupReservationNumber != null).ToList());
-                        }
+                            List<GroupReservationDto> groupReservationDtoList = new List<GroupReservationDto>();
 
-                        groupReservationDtoList.Clear();
+                            foreach (var pmsGroupReservationNumber in dailyHistoryFuturePMSNumberList)
+                            {
+                                var groupReservationResponse = await GetGroupReservationsAsync(BusinesStartDate, BusinesStartDate.AddDays(6), property, pmsGroupReservationNumber);
+
+                                if (groupReservationResponse.IsFailure)
+                                    continue;
+
+                                groupReservationDtoList.Add(FormatGroupReservation((GetGroupReservation)groupReservationResponse.Value.Data, property));
+                            }
+
+                            if (groupReservationDtoList.Any())
+                            {
+                                await _hcsGroupReservationService.BulkInsertWithProcAsync(groupReservationDtoList.Where(x => x.GroupReservationNumber != null).ToList());
+                            }
+
+                            groupReservationDtoList.Clear();
+                        }
+                        BusinesStartDate = BusinesStartDate.AddDays(7);
+                        index++;
+
                     }
+
                     return PrometheusResponse.Success("", "Data saved successfully");
+
                 },
                 exception => new TryCatchExtensionResult<Result<PrometheusResponse>>
                 {
@@ -81,7 +94,7 @@ namespace VDVI.Services.Services.ApmaServices
 
                     if (changeRecords.Count > 0)
                     {
-                        foreach(var changeRecord in changeRecords)
+                        foreach (var changeRecord in changeRecords)
                         {
                             var response = await client.HcsGetGroupReservationAsync(pmsAuthentication, changeRecord.PropertyCode, changeRecord.Reference, "", "");
 
@@ -92,11 +105,12 @@ namespace VDVI.Services.Services.ApmaServices
                         }
 
                         return PrometheusResponse.Success("", "Data saved successfully");
-                    } else
+                    }
+                    else
                     {
                         return PrometheusResponse.Failure("Data is empty");
                     }
-                                       
+
                 },
                 exception => new TryCatchExtensionResult<Result<PrometheusResponse>>
                 {
