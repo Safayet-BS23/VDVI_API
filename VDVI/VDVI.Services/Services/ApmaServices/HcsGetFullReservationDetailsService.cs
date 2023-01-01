@@ -52,11 +52,11 @@ namespace VDVI.Services
                                 {
                                     var list = await GetFullReservationDetailsAsync(property, uniquePMS, pmsAuthentication);
 
-                                    if(list.Count>0)
-                                    {
-                                        //Save into DB
-                                        var result = _hcsGetFullReservationDetailService.BulkInsertWithProcAsync(list);
-                                    } 
+                                    //if(list.Count>0)
+                                    //{
+                                    //    //Save into DB
+                                    //    var result = _hcsGetFullReservationDetailService.BulkInsertWithProcAsync(list);
+                                    //} 
 
                                 }
                             }
@@ -65,9 +65,6 @@ namespace VDVI.Services
                         BusinessStartDate = BusinessStartDate.AddDays(7);
                         index++;
                     }
-
-                 
-
                     return PrometheusResponse.Success("", "Data retrived Successfuly");
                 },
                 exception => new TryCatchExtensionResult<Result<PrometheusResponse>>
@@ -82,24 +79,17 @@ namespace VDVI.Services
         private async Task<List<GetFullReservationDetailsDto>> GetFullReservationDetailsAsync(string propertyCode, string pmsNumber, Authentication pmsAuthentication)
         {
           
-            var  res = await client.HcsGetFullReservationDetailsAsync(pmsAuthentication, PropertyCode: propertyCode, "", pmsNumber, "", "", "");
-            List<GetFullReservationDetailsDto> listOfFullReservationDetail = new List<GetFullReservationDetailsDto>();
+            //var  res = await client.HcsGetFullReservationDetailsAsync(pmsAuthentication, PropertyCode: propertyCode, "NUL-FC193726", pmsNumber, "", "", "");
+            //List<GetFullReservationDetailsDto> listOfFullReservationDetail = new List<GetFullReservationDetailsDto>();
 
 
-            if(res.HcsGetFullReservationDetailsResult.Success)
-            {
-                //foreach (var item in res.HcsGetFullReservationDetailsResult.Reservation)
-                //{
-                //    listOfFullReservationDetail.Add(GetFullReservationDetailsDto{ 
+            //if(res.HcsGetFullReservationDetailsResult.Success)
+            //{
+            //    foreach (var item in res.HcsGetFullReservationDetailsResult.Reservation.RoomStays.)
+            //    {
                     
-                //        propertyCode= propertyCode,
-                        
-                            
-
-
-                //    });
-                //}
-            }
+            //    }
+            //}
 
             return listOfFullReservationDetail;
         }

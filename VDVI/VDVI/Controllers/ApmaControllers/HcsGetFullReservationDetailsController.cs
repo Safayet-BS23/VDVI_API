@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks; 
 using VDVI.Services.Interfaces;
 
@@ -15,9 +16,9 @@ namespace VDVI.Client.Controllers.ApmaControllers
             _hcsGetFullReservationDetailsService = hcsGetFullReservationDetailsService;
         }
         [HttpPost("HcsGetFullReservationDetails")]
-        public async Task<IActionResult> HcsGetFullReservationDetails()
+        public async Task<IActionResult> HcsGetFullReservationDetails(DateTime BusinessDate)
         {
-            var response = await _hcsGetFullReservationDetailsService.HcsGetFullReservationDetailsAsync();
+            var response = await _hcsGetFullReservationDetailsService.HcsGetFullReservationDetailsAsync(BusinessDate);
             return Ok(response);
         }
     }
