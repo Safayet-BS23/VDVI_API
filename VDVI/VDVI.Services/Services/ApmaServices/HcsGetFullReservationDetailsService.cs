@@ -1,14 +1,14 @@
 ﻿using CSharpFunctionalExtensions;
 using Framework.Core.Base.ModelEntity;
 using Framework.Core.Exceptions;
-using Framework.Core.Utility; 
+using Framework.Core.Utility;
 using SOAPService;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using VDVI.DB.Dtos;
-using VDVI.Services.Interfaces; 
+using VDVI.Services.Interfaces;
 
 namespace VDVI.Services
 {
@@ -16,14 +16,16 @@ namespace VDVI.Services
     {
 
         private readonly IHcsGetFullReservationDetailService _hcsGetFullReservationDetailService;
+        private readonly IHcsGetDailyHistoryHistoryService _hcsGetDailyHistoryService;
         List<GetFullReservationDetailsDto> ReservationDetailsdto = new List<GetFullReservationDetailsDto>();
         public HcsGetFullReservationDetailsService(
-            IHcsGetFullReservationDetailService hcsGetFullReservationDetailService)
+            IHcsGetFullReservationDetailService hcsGetFullReservationDetailService, IHcsGetDailyHistoryHistoryService hcsGetDailyHistoryService)
         {
-            _hcsGetFullReservationDetailService = hcsGetFullReservationDetailService; 
+            _hcsGetFullReservationDetailService = hcsGetFullReservationDetailService;
+            _hcsGetDailyHistoryService = hcsGetDailyHistoryService;
         }
 
-        public async Task<Result<PrometheusResponse>> HcsGetFullReservationDetailsAsync()
+        public async Task<Result<PrometheusResponse>> HcsGetFullReservationDetailsAsync(DateTime BusinessStartDate)
         {
 
             return await TryCatchExtension.ExecuteAndHandleErrorAsync(
@@ -31,16 +33,42 @@ namespace VDVI.Services
                 {
                     Authentication pmsAuthentication = GetApmaAuthCredential();
 
-                    GetFullReservationDetailsDto dto = new GetFullReservationDetailsDto(); 
+                    int currentYear = DateTime.UtcNow.Year;
+                    DateTime currentYearStartDate = new DateTime(currentYear, 01, 01);
+                    int index = 1;
 
-                    foreach (string property in ApmaProperties)
+
+                    GetFullReservationDetailsDto dto = new GetFullReservationDetailsDto();
+                    while (BusinessStartDate < currentYearStartDate)
                     {
-                        var res = await  client.HcsGetFullReservationDetailsAsync(pmsAuthentication, PropertyCode: property,"", "TIE-FX127097", "","","");                         
-                        //FormatSummaryObject(dto, property);
-                    } 
-                    var result = _hcsGetFullReservationDetailService.BulkInsertWithProcAsync(ReservationDetailsdto); 
+                        foreach (string property in ApmaProperties)
+                        {
+                            var dailyHistoryListResponse = await _hcsGetDailyHistoryService.GetListHcsDailyHistoryAsync(BusinessStartDate, BusinessStartDate.AddDays(6), property);
 
-                    return PrometheusResponse.Success("", result.ToString());
+                            if (dailyHistoryListResponse.IsSuccess)
+                            {
+                                var uniquePMSNumberList = ((List<DailyHistoryDto>)dailyHistoryListResponse.Value.Data).Select(x => x.PmsSegmentNumber).Distinct();
+                                foreach (var uniquePMS in uniquePMSNumberList)
+                                {
+                                    var list = await GetFullReservationDetailsAsync(property, uniquePMS, pmsAuthentication);
+
+                                    if(list.Count>0)
+                                    {
+                                        //Save into DB
+                                        var result = _hcsGetFullReservationDetailService.BulkInsertWithProcAsync(list);
+                                    } 
+
+                                }
+                            }
+                           
+                        }
+                        BusinessStartDate = BusinessStartDate.AddDays(7);
+                        index++;
+                    }
+
+                 
+
+                    return PrometheusResponse.Success("", "Data retrived Successfuly");
                 },
                 exception => new TryCatchExtensionResult<Result<PrometheusResponse>>
                 {
@@ -49,10 +77,31 @@ namespace VDVI.Services
                 });
         }
 
-        private void FormatSummaryObject(GetFullReservationDetailsDto dto, string propertyCode)
+
+
+        private async Task<List<GetFullReservationDetailsDto>> GetFullReservationDetailsAsync(string propertyCode, string pmsNumber, Authentication pmsAuthentication)
         {
-            //dto.PropertyCode = propertyCode;
-            //ReservationDetailsdto.AddRange(dto); 
+          
+            var  res = await client.HcsGetFullReservationDetailsAsync(pmsAuthentication, PropertyCode: propertyCode, "", pmsNumber, "", "", "");
+            List<GetFullReservationDetailsDto> listOfFullReservationDetail = new List<GetFullReservationDetailsDto>();
+
+
+            if(res.HcsGetFullReservationDetailsResult.Success)
+            {
+                //foreach (var item in res.HcsGetFullReservationDetailsResult.Reservation)
+                //{
+                //    listOfFullReservationDetail.Add(GetFullReservationDetailsDto{ 
+                    
+                //        propertyCode= propertyCode,
+                        
+                            
+
+
+                //    });
+                //}
+            }
+
+            return listOfFullReservationDetail;
         }
     }
 }

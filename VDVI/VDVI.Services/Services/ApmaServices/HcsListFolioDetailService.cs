@@ -29,7 +29,7 @@ namespace VDVI.Services
             _hcsGetDailyHistoryService = hcsGetDailyHistoryService;
         }
 
-        public async Task<Result<PrometheusResponse>> HcsListFolioDetailAsync(DateTime BusinesStartDate)
+        public async Task<Result<PrometheusResponse>> HcsListFolioDetailAsync(DateTime BusinessStartDate)
         {
             return await TryCatchExtension.ExecuteAndHandleErrorAsync(
                  async () =>
@@ -40,11 +40,11 @@ namespace VDVI.Services
                      DateTime currentYearStartDate = new DateTime(currentYear, 01, 01);
                      int index = 1;
 
-                     while (BusinesStartDate< currentYearStartDate)
+                     while (BusinessStartDate < currentYearStartDate)
                      {
                          foreach (var propertyCode in ApmaProperties)
                          {
-                             var dailyHistoryListResponse = await _hcsGetDailyHistoryService.GetListHcsDailyHistoryAsync(BusinesStartDate, BusinesStartDate.AddDays(6), propertyCode);
+                             var dailyHistoryListResponse = await _hcsGetDailyHistoryService.GetListHcsDailyHistoryAsync(BusinessStartDate, BusinessStartDate.AddDays(6), propertyCode);
 
                              if (dailyHistoryListResponse.IsSuccess)
                              {
@@ -66,7 +66,7 @@ namespace VDVI.Services
                              }
                          }
 
-                         BusinesStartDate = BusinesStartDate.AddDays(7);
+                         BusinessStartDate = BusinessStartDate.AddDays(7);
                          index++;
                      }
 

@@ -167,7 +167,7 @@ namespace VDVI.Services.MediatR.Services.Apma
                     break;
 
                 case "HcsGetFullReservationDetails":
-                    response = await _hcsGetFullReservationDetailsService.HcsGetFullReservationDetailsAsync();
+                    response = await _hcsGetFullReservationDetailsService.HcsGetFullReservationDetailsAsync((DateTime)schedulerEvent.Scheduler.BusinessStartDate);
                     flag = response.IsSuccess;
                     dtos.SchedulerName = "HcsGetFullReservationDetails";
                     break;
