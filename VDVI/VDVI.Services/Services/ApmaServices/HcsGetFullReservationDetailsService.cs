@@ -39,32 +39,32 @@ namespace VDVI.Services
 
 
                     GetFullReservationDetailsDto dto = new GetFullReservationDetailsDto();
-                    while (BusinessStartDate < currentYearStartDate)
-                    {
-                        foreach (string property in ApmaProperties)
-                        {
-                            var dailyHistoryListResponse = await _hcsGetDailyHistoryService.GetListHcsDailyHistoryAsync(BusinessStartDate, BusinessStartDate.AddDays(6), property);
+                    //while (BusinessStartDate < currentYearStartDate)
+                    //{
+                    //    foreach (string property in ApmaProperties)
+                    //    {
+                    //        var dailyHistoryListResponse = await _hcsGetDailyHistoryService.GetListHcsDailyHistoryAsync(BusinessStartDate, BusinessStartDate.AddDays(6), property);
 
-                            if (dailyHistoryListResponse.IsSuccess)
-                            {
-                                var uniquePMSNumberList = ((List<DailyHistoryDto>)dailyHistoryListResponse.Value.Data).Select(x => x.PmsSegmentNumber).Distinct();
-                                foreach (var uniquePMS in uniquePMSNumberList)
-                                {
-                                    var list = await GetFullReservationDetailsAsync(property, uniquePMS, pmsAuthentication);
+                    //        if (dailyHistoryListResponse.IsSuccess)
+                    //        {
+                    //            var uniquePMSNumberList = ((List<DailyHistoryDto>)dailyHistoryListResponse.Value.Data).Select(x => x.PmsSegmentNumber).Distinct();
+                    //            foreach (var uniquePMS in uniquePMSNumberList)
+                    //            {
+                    //                //var list = await GetFullReservationDetailsAsync(property, uniquePMS, pmsAuthentication);
 
-                                    //if(list.Count>0)
-                                    //{
-                                    //    //Save into DB
-                                    //    var result = _hcsGetFullReservationDetailService.BulkInsertWithProcAsync(list);
-                                    //} 
+                    //                //if(list.Count>0)
+                    //                //{
+                    //                //    //Save into DB
+                    //                //    var result = _hcsGetFullReservationDetailService.BulkInsertWithProcAsync(list);
+                    //                //} 
 
-                                }
-                            }
+                    //            }
+                    //        }
                            
-                        }
-                        BusinessStartDate = BusinessStartDate.AddDays(7);
-                        index++;
-                    }
+                    //    }
+                    //    BusinessStartDate = BusinessStartDate.AddDays(7);
+                    //    index++;
+                    //}
                     return PrometheusResponse.Success("", "Data retrived Successfuly");
                 },
                 exception => new TryCatchExtensionResult<Result<PrometheusResponse>>
@@ -80,7 +80,7 @@ namespace VDVI.Services
         {
           
             //var  res = await client.HcsGetFullReservationDetailsAsync(pmsAuthentication, PropertyCode: propertyCode, "NUL-FC193726", pmsNumber, "", "", "");
-            //List<GetFullReservationDetailsDto> listOfFullReservationDetail = new List<GetFullReservationDetailsDto>();
+            List<GetFullReservationDetailsDto> listOfFullReservationDetail = new List<GetFullReservationDetailsDto>();
 
 
             //if(res.HcsGetFullReservationDetailsResult.Success)
@@ -91,7 +91,7 @@ namespace VDVI.Services
             //    }
             //}
 
-            return listOfFullReservationDetail;
+           return listOfFullReservationDetail;
         }
     }
 }
